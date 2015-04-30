@@ -1,0 +1,111 @@
+<h1>Create new Digital ID</h1>
+
+<div ng-controller="NewHostCtrl">
+
+    <br>
+    <div class="col-sm-10">
+        <input type="text" class="form-control" name="digitalIdName" id="digitalIdName" placeholder="Enter name for this Digital ID" ng-model="$parent.digitalIdName">
+    </div>
+    <br>
+    <br>
+
+    <form id="addHostForm" name="addHostForm" class="form-horizontal" role="form">
+
+        <legend class="sm-col-12">Hosts</legend>
+        <p ng-show="hosts.length == 0">No hosts</p>
+
+        <accordion ng-show="hosts.length > 0" close-others="oneAtATime">
+            <accordion-group ng-repeat="h in $parent.hosts" heading="{{h.hostName}}">
+                <accordion-heading>
+                    {{h.hostName}}
+                    <button type="submit" class="btn btn-success" id="btn_editHost" style="float: right"  ng-click="open('Host', h, $index, $event)">Edit host</button>
+                </accordion-heading>
+
+                Hostname: {{h.hostName}}
+                <br/>
+                Username: {{h.sessionName}}
+                <br/>
+                Password: {{h.password}}
+                <br/>
+                Type: {{h.componentType}}
+            </accordion-group>
+        </accordion>
+
+        <div class="form-group">
+            <div class="col-sm-offset-4 col-sm-8 text-right">
+                <!--<a ng-href="/#/" id="btn_cancel" class="btn btn-warning">Cancel</a>-->
+
+                <button class="btn btn-success" id="btn_addHost" ng-click="open('Host', null, $index, $event)">Add host</button>
+            </div>
+        </div>
+
+    </form>
+
+
+    <form id="addFabricForm" name="addFabricForm" class="form-horizontal" role="form">
+
+        <legend class="sm-col-12">Switches</legend>
+        <p ng-show="switches.length == 0">No Switches</p>
+
+        <accordion ng-show="switches.length > 0">
+            <accordion-group ng-repeat="s in switches" heading="{{s.hostName}}">
+
+                <accordion-heading>
+                    {{s.hostName}}
+                    <button type="submit" class="btn btn-success" id="btn_editSwitch" style="float: right"  ng-click="open('Switch', s, $index, $event)">Edit switch</button>
+                </accordion-heading>
+
+                {{s.hostName}}
+                <br/>
+                {{s.sessionName}}
+                <br/>
+                {{s.password}}
+                <br/>
+                {{s.componentType}}
+            </accordion-group>
+        </accordion>
+
+        <div class="form-group">
+            <div class="col-sm-offset-4 col-sm-8 text-right">
+                <!--<a ng-href="/#/" id="btn_cancel" class="btn btn-warning">Cancel</a>-->
+
+                <button type="submit" class="btn btn-success" id="btn_addSwitch" ng-click="open('Switch', null, $index, $event)">Add Switch</button>
+            </div>
+        </div>
+
+    </form>
+
+
+    <form id="addArrayForm" name="addArrayForm" class="form-horizontal" role="form">
+
+        <legend class="sm-col-12">Arrays</legend>
+        <p ng-show="arrays.length == 0">No Arrays</p>
+
+        <accordion ng-show="arrays.length > 0">
+            <accordion-group ng-repeat="a in arrays" heading="{{a.hostName}}">
+
+                <accordion-heading>
+                    {{s.hostName}}
+                    <button type="submit" class="btn btn-success" id="btn_editArray" style="float: right"  ng-click="open('Array', a, $index, $event)">Edit array</button>
+                </accordion-heading>
+
+                {{a.hostName}}
+                <br/>
+                {{a.sessionName}}
+                <br/>
+                {{a.password}}
+            </accordion-group>
+        </accordion>
+
+        <div class="form-group">
+            <div class="col-sm-offset-4 col-sm-8 text-right">
+                <!--<a ng-href="/#/" id="btn_cancel" class="btn btn-warning">Cancel</a>-->
+
+                <button type="submit" class="btn btn-success" id="btn_addArray" ng-click="open('Array', null, $index, $event)">Add Array</button>
+            </div>
+        </div>
+
+    </form>
+
+    <button type="submit" class="btn btn-success" id="btn_buildDigitalID" ng-click="buildDigitalID()">Build Digital ID</button>
+</div>
