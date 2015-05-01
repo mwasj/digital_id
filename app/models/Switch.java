@@ -29,7 +29,7 @@ public abstract class Switch extends Connectable
 
     private String flogiDatabase;
 
-    public abstract CommandResponse<String> setPortSpeed(SwitchPort switchPort, int newSpeed) throws IOException, JSchException;
+    public abstract CommandResponse setPortSpeed(SwitchPort switchPort, int newSpeed) throws IOException, JSchException;
 
     public abstract int getPortSpeed(String portName);
 
@@ -57,7 +57,7 @@ public abstract class Switch extends Connectable
 
     }
 
-    protected Switch(String hostName, String userName, String password, ArrayList<SwitchPort> activePorts, ArrayList<Command> commands)
+    protected Switch(String hostName, String userName, String password, ArrayList<SwitchPort> activePorts, ArrayList<CommandResponse> commands)
     {
         super(hostName,userName,password, commands);
         this.activePorts = activePorts;

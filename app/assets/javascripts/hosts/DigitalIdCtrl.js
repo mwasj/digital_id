@@ -72,6 +72,8 @@
             var modalInstance = $modal.open({
                 templateUrl: '/assets/partials/new-host.html',
                 controller: 'NewComponentModalCtrl',
+                backdrop: 'static',
+                keyboard: false,
                 transclude: true,
                 resolve:
                 {
@@ -135,6 +137,51 @@
             }, function (){
                 $log.info("Modal dismissed.");
             });
+
+            $scope.removeArray = function (array, e)
+            {
+                    if (e) {
+                        e.originalEvent.cancelBubble=true;
+                    }
+
+                    for(var i = 0; i < $scope.arrays.length; i++)
+                    {
+                        if(array === $scope.arrays[i])
+                        {
+                            $scope.arrays.splice(i, 1);
+                        }
+                    }
+            }
+
+            $scope.removeHost = function (host, e)
+            {
+                    if (e) {
+                        e.originalEvent.cancelBubble=true;
+                    }
+
+                    for(var i = 0; i < $scope.hosts.length; i++)
+                    {
+                        if(host === $scope.hosts[i])
+                        {
+                            $scope.hosts.splice(i, 1);
+                        }
+                    }
+            }
+
+            $scope.removeSwitch = function (s, e)
+            {
+                    if (e) {
+                        e.originalEvent.cancelBubble=true;
+                    }
+
+                    for(var i = 0; i < $scope.switches.length; i++)
+                    {
+                        if(s === $scope.switches[i])
+                        {
+                            $scope.switches.splice(i, 1);
+                        }
+                    }
+            }
         };
 
         //Called after Build Digital ID button is clicked.
@@ -145,7 +192,8 @@
             digitalId.hosts = $scope.hosts;
             digitalId.switches = $scope.switches;
             digitalId.arrays = $scope.arrays;
-
+            digitalId.digitalIdName = $scope.digitalIdName;
+            console.log("The name of this digital id will be: " + $scope.digitalIdName);
             var progressWindow = $modal.open({
                     templateUrl: '/assets/partials/build-updater.html',
                     controller: 'DigitalIdProgressCtrl',
@@ -160,5 +208,7 @@
                         }
                     });
         }
+
+
 
 }})();

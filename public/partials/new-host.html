@@ -32,7 +32,7 @@
 
     <div class="btn-group" dropdown is-open="dropdownisopen">
 
-        <label id="lbl_componentType" for="componentType" class="col-sm-4 control-label" is-required="type">{{$parent.currentDeviceType}} Type</label>
+        <label id="lbl_componentType" for="componentType" class="col-sm-4 control-label">{{$parent.currentDeviceType}} Type</label>
 
         <button type="button" class="btn btn-primary dropdown-toggle" dropdown-toggle ng-disabled="disabled" id="componentType">
              {{$parent.componentLabel}}<span class="caret"></span>
@@ -44,19 +44,21 @@
             </li>
         </ul>
     </div>
-    <br />
-    <div class="btn-group">
 
-        <p>Execute the following commands</p>
+    <div class="form-group">
+
+        <label>Execute the following commands:</label>
+        <br />
         <button class="btn btn-primary" ng-click="createEmptyCommand()">Add command</button>
         <br />
         <table>
-            <tr>
-                <th>Command</th><th>Iterations</th><th>Interval</th>
+            <tr ng-show="$parent.commandResponses != 0">
+                <th>Command</th><th>Then wait for</th>
             </tr>
             <tr ng-repeat="command in $parent.commands">
                 <td><input type="text" class="form-control" name="command" id="command" placeholder="Type your command here" ng-model="command.command"></td>
-                <td><input type="text" class="form-control" name="interval" id="interval" placeholder="0" ng-model="command.interval"></td>
+                <td><input type="text" class="form-control" name="interval" id="interval" placeholder="0 sec." ng-model="command.interval"></td>
+                <td><button class="btn btn-danger" ng-click="removeCommand(command)">Delete</button></td>
             </tr>
         </table>
     </div>

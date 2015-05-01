@@ -180,7 +180,9 @@ public class DigitalID implements WebUpdater
     public void buildDigitalID() throws IOException, JSchException
     {
         collectHostInformation();
-
+        collectFabricInformation();
+        collectInservInformation();
+        DigitalIdMarshaller.marshall(this);
         //collectInservInformation();
         //collectFabricInformation();
     }
@@ -195,6 +197,7 @@ public class DigitalID implements WebUpdater
             {
                 //logger.addTag(host.getHostName());
                 //logger.openTag();
+
                 host.setWebUpdater(this);
                 host.connect();
                 //host.prepare();
@@ -227,15 +230,7 @@ public class DigitalID implements WebUpdater
 
                 inserv.connect();
                 inserv.setWebUpdater(this);
-                if(hosts != null && hosts.size() > 0)
-                {
-                    for(Host host : hosts)
-                    {
-                        inserv.retrieveHostDetailedInfo(host.getHostName());
-                        inserv.retrieveHostLesbInfo(host.getHostName());
-                        inserv.retrieveHostPathSumInfo(host.getHostName());
-                    }
-                }
+                inserv.runCommands();
                 inserv.disconnect();
 
                 //logger.closeTag();
@@ -261,9 +256,7 @@ public class DigitalID implements WebUpdater
 
                 s.setWebUpdater(this);
                 s.connect();
-                s.retrieveSwitchInformation();
-                s.retrieveFlogiDatabase();
-                s.retrievePortInformation();
+                s.runCommands();
                 s.disconnect();
 
                 //logger.closeTag();

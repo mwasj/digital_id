@@ -16,3 +16,95 @@ footer {
   top:100px; bottom: 0; left: 0; right: 0;
   margin: auto
 }
+
+.spinner {
+  float: right;
+  width: 50px;
+  height: 30px;
+  text-align: center;
+  font-size: 10px;
+}
+
+.spinner > div {
+  background-color: #333;
+  height: 100%;
+  width: 6px;
+  display: inline-block;
+
+  -webkit-animation: stretchdelay 1.2s infinite ease-in-out;
+  animation: stretchdelay 1.2s infinite ease-in-out;
+}
+
+.spinner .rect2 {
+  -webkit-animation-delay: -1.1s;
+  animation-delay: -1.1s;
+}
+
+.spinner .rect3 {
+  -webkit-animation-delay: -1.0s;
+  animation-delay: -1.0s;
+}
+
+.spinner .rect4 {
+  -webkit-animation-delay: -0.9s;
+  animation-delay: -0.9s;
+}
+
+.spinner .rect5 {
+  -webkit-animation-delay: -0.8s;
+  animation-delay: -0.8s;
+}
+
+@-webkit-keyframes stretchdelay {
+  0%, 40%, 100% { -webkit-transform: scaleY(0.4) }
+  20% { -webkit-transform: scaleY(1.0) }
+}
+
+@keyframes stretchdelay {
+  0%, 40%, 100% {
+    transform: scaleY(0.4);
+    -webkit-transform: scaleY(0.4);
+  }  20% {
+    transform: scaleY(1.0);
+    -webkit-transform: scaleY(1.0);
+  }
+}
+
+@import url('//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css');
+
+.isa_info, .isa_success, .isa_warning, .isa_error {
+    float: right;
+}
+.isa_info {
+    color: #00529B;
+    background-color: #BDE5F8;
+}
+.isa_success {
+    color: #4F8A10;
+    background-color: #DFF2BF;
+}
+.isa_warning {
+    color: #9F6000;
+    background-color: #FEEFB3;
+}
+.isa_error {
+    color: #D8000C;
+    background-color: #FFBABA;
+}
+.isa_info i, .isa_success i, .isa_warning i, .isa_error i {
+    font-size:2em;
+}
+
+
+.component-options-button {
+    vertical-align: center;
+    margin-top: -5px;
+    margin-right: 10px;
+    float: right;
+}
+
+.center-div {
+    margin-left: auto;
+    margin-right: auto;
+    width: 100%;
+}

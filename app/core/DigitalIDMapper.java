@@ -17,8 +17,11 @@ public class DigitalIDMapper
 {
     public static DigitalID map(String jsonString, String sessionName)
     {
-        System.out.println(DateTime.now() + " The following JSON String was received: " + jsonString);
-        DigitalID digitalID = new DigitalID("test", sessionName);
+        System.out.println(DateTime.now() + "DigitalID mapper: The following JSON String was received: " + jsonString);
+        JSONObject jsnobject = new JSONObject(jsonString);
+        String name = jsnobject.getString("digitalIdName");
+        System.out.println(name);
+        DigitalID digitalID = new DigitalID(name, sessionName);
         digitalID.addHosts(mapHosts(jsonString));
         digitalID.addSwitches(mapSwitches(jsonString));
         digitalID.addInservs(mapArrays(jsonString));
@@ -43,9 +46,14 @@ public class DigitalIDMapper
             String password = jsonObject.getString("password");
             Type type = new TypeToken<ArrayList<Command>>(){}.getType();
             ArrayList<Command> commands = new Gson().fromJson(jsonObject.getJSONArray("commands").toString(), type);
+            ArrayList<CommandResponse> commandResponses = new ArrayList<>();
+            for(Command c : commands)
+            {
+                commandResponses.add(new CommandResponse(null, null, null, c, null, null));
+            }
             if(hostType.equals("Windows"))
             {
-                host = new WindowsHost(hostName, username, password, commands);
+                host = new WindowsHost(hostName, username, password, commandResponses);
             }
             else if(hostType.equals("Linux"))
             {
@@ -74,14 +82,19 @@ public class DigitalIDMapper
             String username = jsonObject.getString("userName");
             String password = jsonObject.getString("password");
             Type type = new TypeToken<ArrayList<Command>>(){}.getType();
-            ArrayList<Command> commands = new Gson().fromJson(jsonObject.getString("commands"), type);
+            ArrayList<Command> commands = new Gson().fromJson(jsonObject.getJSONArray("commands").toString(), type);
+            ArrayList<CommandResponse> commandResponses = new ArrayList<>();
+            for(Command c : commands)
+            {
+                commandResponses.add(new CommandResponse(null, null, null, c, null, null));
+            }
             if(hostType.equals("Cisco"))
             {
-                s = new CiscoSwitch(hostName, username, password, null, commands);
+                s = new CiscoSwitch(hostName, username, password, null, commandResponses);
             }
             else if(hostType.equals("Brocade"))
             {
-                s = new BrocadeSwitch(hostName, username, password, null, commands);
+                s = new BrocadeSwitch(hostName, username, password, null, commandResponses);
             }
             else if(hostType.equals("Qlogic"))
             {
@@ -110,8 +123,13 @@ public class DigitalIDMapper
             String username = jsonObject.getString("userName");
             String password = jsonObject.getString("password");
             Type type = new TypeToken<ArrayList<Command>>(){}.getType();
-            ArrayList<Command> commands = new Gson().fromJson(jsonObject.getString("commands"), type);
-            inserv = new Inserv(hostName,username,password, commands);
+            ArrayList<Command> commands = new Gson().fromJson(jsonObject.getJSONArray("commands").toString(), type);
+            ArrayList<CommandResponse> commandResponses = new ArrayList<>();
+            for(Command c : commands)
+            {
+                commandResponses.add(new CommandResponse(null, null, null, c, null, null));
+            }
+            inserv = new Inserv(hostName,username,password, commandResponses);
 
             arrays.add(inserv);
         }

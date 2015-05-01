@@ -35,12 +35,12 @@ public class ConnectionManager {
      * @throws IOException
      * @throws JSchException
      */
-    public CommandResponse<String> sendCommand(Command command, CommandType commandType) throws IOException, JSchException
+    public CommandResponse sendCommand(Command command, CommandType commandType) throws IOException, JSchException
     {
         int id = Calendar.getInstance().get(Calendar.MILLISECOND);
 
         connectable.getWebUpdater().update(new WebUpdate("Executing command: " + command.getCommand(), id, null));
-        CommandResponse<String> commandResponse = null;
+        CommandResponse commandResponse = null;
 
         if(session == null)
         {
@@ -65,7 +65,7 @@ public class ConnectionManager {
         return commandResponse;
     }
 
-    private CommandResponse<String> sendShellCommand(Command command) throws JSchException, IOException
+    private CommandResponse sendShellCommand(Command command) throws JSchException, IOException
     {
         DateTime startDate = DateTime.now();
         String errorMessage = "";
@@ -91,10 +91,10 @@ public class ConnectionManager {
         channel.getInputStream().close();
         channel.getOutputStream().close();
 
-        return new CommandResponse<>(result, commandResponseCode, errorMessage, command, startDate, DateTime.now());
+        return new CommandResponse(result, commandResponseCode, errorMessage, command, startDate, DateTime.now());
     }
 
-    private CommandResponse<String> sendExecCommand(Command command) throws JSchException, IOException
+    private CommandResponse sendExecCommand(Command command) throws JSchException, IOException
     {
         DateTime startDate = DateTime.now();
         String errorMessage = "";
@@ -130,10 +130,10 @@ public class ConnectionManager {
         channel.getOutputStream().close();
         channel.disconnect();
 
-        return new CommandResponse<>(result, commandResponseCode, errorMessage, command, startDate, DateTime.now());
+        return new CommandResponse(result, commandResponseCode, errorMessage, command, startDate, DateTime.now());
     }
 
-    public CommandResponse<File> getFile(String remoteFile, String localFile)
+    public CommandResponse getFile(String remoteFile, String localFile)
     {
         FileOutputStream fos=null;
         String errorMessages = "";
@@ -270,10 +270,11 @@ public class ConnectionManager {
             }
         }
 
-        return new CommandResponse<>(new File(localFile), commandResponseCode, errorMessages , null, null,null);
+        //return new CommandResponse(new File(localFile), commandResponseCode, errorMessages , null, null,null);
+        return null;
     }
 
-    public CommandResponse<String> readFile(String remoteFile)
+    public CommandResponse readFile(String remoteFile)
     {
         CommandResponseCode commandResponseCode = CommandResponseCode.Success;
         String errorMessage = "";
@@ -380,7 +381,7 @@ public class ConnectionManager {
             commandResponseCode = CommandResponseCode.Failure;
         }
 
-        return new CommandResponse<>(result, commandResponseCode, errorMessage, null,null,null);
+        return new CommandResponse(result, commandResponseCode, errorMessage, null,null,null);
     }
 
     /**
@@ -388,7 +389,7 @@ public class ConnectionManager {
      * @param localFile - local file to be sent.
      * @param remoteFile - file to be written to on the remote host.
      */
-    public CommandResponse<Void> sendFile(String localFile, String remoteFile)
+    public CommandResponse sendFile(String localFile, String remoteFile)
     {
         FileInputStream fis=null;
         String errorMessages = "";
@@ -483,7 +484,7 @@ public class ConnectionManager {
             catch(Exception ee){}
         }
 
-        return new CommandResponse<>(null, commandResponseCode, errorMessages, null,null,null);
+        return new CommandResponse(null, commandResponseCode, errorMessages, null,null,null);
     }
 
     private static int checkAck(InputStream in) throws IOException{
@@ -576,13 +577,13 @@ public class ConnectionManager {
             if(session.isConnected())
             {
                 connectable.getWebUpdater().update(new WebUpdate(null, id,
-                        new CommandResponse<>("Successfully connected to: " + connectable.getHostName(), CommandResponseCode.Success, null, null, startDate, DateTime.now())));
+                        new CommandResponse("Successfully connected to: " + connectable.getHostName(), CommandResponseCode.Success, null, null, startDate, DateTime.now())));
             }
         }
         catch (JSchException e)
         {
             connectable.getWebUpdater().update(new WebUpdate(null, id,
-                    new CommandResponse<>("Could not connect to: " + connectable.getHostName(), CommandResponseCode.Failure, null, null, startDate, DateTime.now())));
+                    new CommandResponse("Could not connect to: " + connectable.getHostName(), CommandResponseCode.Failure, null, null, startDate, DateTime.now())));
             e.printStackTrace();
         }
     }

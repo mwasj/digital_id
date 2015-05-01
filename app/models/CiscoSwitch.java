@@ -25,13 +25,13 @@ public class CiscoSwitch extends Switch
      * @param password - password required to log in.
      * @param activePorts - list of active ports for this configuration.
      */
-    public CiscoSwitch(String switchName, String username, String password, ArrayList<SwitchPort> activePorts, ArrayList<Command> commands)
+    public CiscoSwitch(String switchName, String username, String password, ArrayList<SwitchPort> activePorts, ArrayList<CommandResponse> commands)
     {
         super(switchName, username, password, activePorts, commands);
     }
 
     @Override
-    public CommandResponse<String> setPortSpeed(SwitchPort switchPort, int newSpeed) throws IOException, JSchException
+    public CommandResponse setPortSpeed(SwitchPort switchPort, int newSpeed) throws IOException, JSchException
     {
         return null;
     }
@@ -72,7 +72,17 @@ public class CiscoSwitch extends Switch
     }
 
     @Override
-    public void runCommands() {
+    public void runCommands()
+    {
+        for(CommandResponse commandResponse : getCommandResponses())
+        {
+            try {
+                commandResponse = getConnectionManager().sendCommand(commandResponse.getCommand(), CommandType.Exec);
+                Thread.sleep(commandResponse.getCommand().getInterval()*1000);
+            } catch (IOException | JSchException | InterruptedException e) {
+                e.printStackTrace();
+            }
 
+        }
     }
 }

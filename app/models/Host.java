@@ -2,6 +2,7 @@ package models;
 
 import com.jcraft.jsch.JSchException;
 import context.Context;
+import core.CommandResponse;
 import core.DigitalID;
 
 import javax.xml.bind.annotation.XmlSeeAlso;
@@ -50,7 +51,7 @@ public abstract class Host extends Connectable
      * @param username
      * @param password
      */
-    protected Host(String hostName, String username, String password, ArrayList<Command> commands)
+    protected Host(String hostName, String username, String password, ArrayList<CommandResponse> commands)
     {
         super(hostName, username, password, commands);
     }

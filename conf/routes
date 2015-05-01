@@ -14,6 +14,7 @@ POST    /user                       @controllers.Users.createUser
 PUT     /user/:firstName/:lastName  @controllers.Users.updateUser(firstName: String, lastName: String)
 
 POST     /digitalid/create                         controllers.DigitalIdController.build(sessionName)
+GET      /digitalid/create                         controllers.DigitalIdController.render
 GET      /digitalid/socketUpdater                  controllers.DigitalIdController.socketUpdater(sessionName)
 
 # Map static resources from the /public folder to the /assets URL path

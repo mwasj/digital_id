@@ -18,6 +18,7 @@
         //Define custom object to hold our commands.
         function Command (command, interval) {
             this.command = command;
+            this.interval = interval;
         }
 
         $scope.hostName = currentComponent.hostName;
@@ -29,13 +30,13 @@
         $scope.commands = currentComponent.commands;
 
         //Temporary TODO - delete.
-        $scope.commands.push(new Command("mpclaim -s -d 5",0));
-        $scope.componentType = componentOptions[0];
+        //$scope.commands.push(new Command("mpclaim -s -d 5",0));
+        //$scope.componentType = componentOptions[0];
 
         //Temporary to save time.
-        $scope.hostName = "dl380pg8-73";
-        $scope.userName = "Administrator";
-        $scope.password = "ssmssm";
+        //$scope.hostName = "dl380pg8-73";
+        //$scope.userName = "Administrator";
+        //$scope.password = "ssmssm";
 
         $scope.componentLabel = $scope.componentType == undefined ? "Select " + currentComponent.currentDeviceType + " Type":  $scope.componentType;
 
@@ -43,7 +44,6 @@
 
         $scope.ok = function ()
         {
-
             currentComponent.hostName = $scope.hostName;
             currentComponent.userName = $scope.userName;
             currentComponent.password =  $scope.password;
@@ -68,6 +68,18 @@
         $scope.createEmptyCommand = function (){
             console.log("createEmptyCommand called");
             $scope.commands.push(new Command("",0));
+        }
+
+        $scope.removeCommand = function (command)
+        {
+            for(var i = 0; i < $scope.commands.length; i++)
+            {
+                if(command === $scope.commands[i])
+                {
+                    console.log("Command removed.");
+                    $scope.commands.splice(i, 1);
+                }
+            }
         }
     };
 })();

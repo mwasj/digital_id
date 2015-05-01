@@ -3,18 +3,11 @@ package models;
 import com.jcraft.jsch.JSchException;
 import context.Context;
 import core.CommandResponse;
-import core.DigitalID;
-import interfaces.ConnectableInterface;
 import interfaces.WebUpdater;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlSeeAlso;
-import javax.xml.bind.annotation.XmlTransient;
+import javax.xml.bind.annotation.*;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Created by Michal on 08/02/15.
@@ -44,19 +37,12 @@ public abstract class Connectable
         return password;
     }
 
+    @XmlElement(name="commandResponses")
+    private ArrayList<CommandResponse> commandResponses;
 
-    private ArrayList<Command> commands;
-
-    public ArrayList<Command> getCommands() {
-        return commands;
+    public ArrayList<CommandResponse> getCommandResponses() {
+        return commandResponses;
     }
-
-    public ArrayList<Instruction> getCommandsToRun() {
-        return commandsToRun;
-    }
-
-    @XmlTransient
-    public ArrayList<Instruction> commandsToRun;
 
     public void setContext(Context context) {
         this.context = context;
@@ -88,14 +74,13 @@ public abstract class Connectable
     @XmlTransient
     private String password;
 
-    protected Connectable(String hostName, String userName, String password, ArrayList<Command> commands)
+    protected Connectable(String hostName, String userName, String password, ArrayList<CommandResponse> commandResponses)
     {
         this.hostName = hostName;
         this.userName = userName;
         this.password = password;
-        this.commandsToRun = new ArrayList<>();
         connectionManager = new ConnectionManager(this);
-        this.commands = commands;
+        this.commandResponses = commandResponses;
     }
 
     protected Connectable()

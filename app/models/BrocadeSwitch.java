@@ -37,13 +37,13 @@ public class BrocadeSwitch extends Switch {
      * @param password - password required to log in.
      * @param activePorts - list of active ports for this configuration.
      */
-    public BrocadeSwitch(String switchName, String username, String password, ArrayList<SwitchPort> activePorts, ArrayList<Command> commands)
+    public BrocadeSwitch(String switchName, String username, String password, ArrayList<SwitchPort> activePorts, ArrayList<CommandResponse> commands)
     {
         super(switchName, username, password, activePorts, commands);
     }
 
     @Override
-    public CommandResponse<String> setPortSpeed(SwitchPort switchPort, int newSpeed) throws IOException, JSchException {
+    public CommandResponse setPortSpeed(SwitchPort switchPort, int newSpeed) throws IOException, JSchException {
         return null;
     }
 

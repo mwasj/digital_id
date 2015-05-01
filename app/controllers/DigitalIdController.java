@@ -20,6 +20,12 @@ public class DigitalIdController extends Controller
         return ok();
     }
 
+    public static Result render()
+    {
+        System.out.println(request().path());
+        return redirect("/");
+    }
+
     public static WebSocket<JsonNode> socketUpdater(final String username) {
         return new WebSocket<JsonNode>() {
 

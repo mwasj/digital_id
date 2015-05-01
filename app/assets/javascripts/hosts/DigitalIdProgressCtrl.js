@@ -18,10 +18,11 @@
         var sock = new WS("ws://127.0.0.1:9000/digitalid/socketUpdater?sessionName="+sessionName)
 
         //Define custom object to hold our updates.
-        function Update (id, text, data) {
+        function Update (id, text, data, status) {
             this.id = id;
             this.text = text;
             this.data = data;
+            this.status = status;
         }
 
         sock.onmessage = function (evt)
@@ -56,13 +57,14 @@
                         if($scope.updates[i].id === parsedContent.id)
                         {
                             console.log(parsedContent.commandResponse.result);
-                            $scope.updates[i].data = parsedContent.commandResponse.result
+                            $scope.updates[i].data = parsedContent.commandResponse.result;
+                            $scope.updates[i].status = parsedContent.commandResponse.commandResponseCode
                         }
                     }
                 }
                 else
                 {
-                    $scope.updates.push(new Update(parsedContent.id, parsedContent.text, null));
+                    $scope.updates.push(new Update(parsedContent.id, parsedContent.text, null, null));
                 }
             }
 

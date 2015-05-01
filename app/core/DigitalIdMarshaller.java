@@ -17,7 +17,7 @@ public class DigitalIdMarshaller
     {
         JAXBContext contextA = null;
         try {
-            contextA = JAXBContext.newInstance(DigitalID.class, Switch.class, CiscoSwitch.class, Inserv.class, Host.class, Connectable.class, BrocadeSwitch.class);
+            contextA = JAXBContext.newInstance(DigitalID.class, Switch.class, CiscoSwitch.class, Inserv.class, Host.class, Connectable.class, BrocadeSwitch.class, CommandResponse.class);
             Marshaller marshaller = contextA.createMarshaller();
             marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
             marshaller.setProperty("jaxb.encoding", "Unicode");

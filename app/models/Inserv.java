@@ -3,7 +3,6 @@ package models;
 import com.jcraft.jsch.JSchException;
 import context.InservContext;
 import core.CommandResponse;
-import core.CommandResponseCode;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -29,12 +28,12 @@ public class Inserv extends Connectable
     @Override
     public void runCommands()
     {
-        for(Command command : getCommands())
+        for(CommandResponse commandResponse : getCommandResponses())
         {
             try
             {
-                getConnectionManager().sendCommand(command, CommandType.Exec);
-                Thread.sleep(command.getInterval()*1000);
+                getConnectionManager().sendCommand(commandResponse.getCommand(), CommandType.Exec);
+                Thread.sleep(commandResponse.getCommand().getInterval()*1000);
             } catch (IOException | JSchException | InterruptedException e) {
                 e.printStackTrace();
             }
@@ -59,7 +58,7 @@ public class Inserv extends Connectable
         return hostPathSumInformation;
     }
 
-    public Inserv(String hostName, String userName, String password, ArrayList<Command> commands) {
+    public Inserv(String hostName, String userName, String password, ArrayList<CommandResponse> commands) {
         super(hostName, userName, password, commands);
         this.hostDetailedInformation = "";
         this.hostLesbInformation = "";

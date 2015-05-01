@@ -26,7 +26,7 @@ public class WindowsHost extends Host {
      * @param username
      * @param password
      */
-    public WindowsHost(String hostName, String username, String password, ArrayList<Command> commands) {
+    public WindowsHost(String hostName, String username, String password, ArrayList<CommandResponse> commands) {
         super(hostName, username, password, commands);
     }
 
@@ -41,11 +41,12 @@ public class WindowsHost extends Host {
     @Override
     public void runCommands()
     {
-        for(Command command : getCommands())
+        for(CommandResponse commandResponse : getCommandResponses())
         {
             try {
-                getConnectionManager().sendCommand(command, CommandType.Shell);
-                Thread.sleep(command.getInterval()*1000);
+                commandResponse =  getConnectionManager().sendCommand(commandResponse.getCommand(), CommandType.Shell);
+                System.out.println(commandResponse.getResult());
+                Thread.sleep(commandResponse.getCommand().getInterval()*1000);
             } catch (IOException | JSchException | InterruptedException e) {
                 e.printStackTrace();
             }
@@ -64,7 +65,7 @@ public class WindowsHost extends Host {
     {
         System.out.println("Preparing host " + getHostName());
         System.out.println("Sending zip file...");
-        CommandResponse<Void> commandResponse = getConnectionManager().sendFile("C:/digital_id.zip", "c:\\digital_id.zip");
+        CommandResponse commandResponse = getConnectionManager().sendFile("C:/digital_id.zip", "c:\\digital_id.zip");
 
         if(commandResponse.getCommandResponseCode() == CommandResponseCode.Success)
         {

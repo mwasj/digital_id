@@ -4,7 +4,7 @@
 
     <br>
     <div class="col-sm-10">
-        <input type="text" class="form-control" name="digitalIdName" id="digitalIdName" placeholder="Enter name for this Digital ID" ng-model="$parent.digitalIdName">
+        <input type="text" class="form-control" name="digitalIdName" id="digitalIdName" placeholder="Enter name for this Digital ID" ng-model="digitalIdName">
     </div>
     <br>
     <br>
@@ -18,7 +18,11 @@
             <accordion-group ng-repeat="h in $parent.hosts" heading="{{h.hostName}}">
                 <accordion-heading>
                     {{h.hostName}}
-                    <button type="submit" class="btn btn-success" id="btn_editHost" style="float: right"  ng-click="open('Host', h, $index, $event)">Edit host</button>
+
+                    <a href="" class="btn btn-sm btn-danger component-options-button" ng-click="removeHost(h, $event)">Delete</a>
+
+                    <a href="" class="btn btn-sm btn-default component-options-button" ng-click="open('Host', h, $index, $event)">Edit</a>
+
                 </accordion-heading>
 
                 Hostname: {{h.hostName}}
@@ -52,7 +56,10 @@
 
                 <accordion-heading>
                     {{s.hostName}}
-                    <button type="submit" class="btn btn-success" id="btn_editSwitch" style="float: right"  ng-click="open('Switch', s, $index, $event)">Edit switch</button>
+
+                    <a href="" class="btn btn-sm btn-danger component-options-button" ng-click="removeSwitch(s, $event)">Delete</a>
+
+                    <a href="" class="btn btn-sm btn-default component-options-button" ng-click="open('Switch', s, $index, $event)">Edit</a>
                 </accordion-heading>
 
                 {{s.hostName}}
@@ -85,8 +92,12 @@
             <accordion-group ng-repeat="a in arrays" heading="{{a.hostName}}">
 
                 <accordion-heading>
-                    {{s.hostName}}
-                    <button type="submit" class="btn btn-success" id="btn_editArray" style="float: right"  ng-click="open('Array', a, $index, $event)">Edit array</button>
+                    {{a.hostName}}
+
+                    <a href="" class="btn btn-sm btn-danger component-options-button" ng-click="removeArray(a, $event)">Delete</a>
+
+                    <a href="" class="btn btn-sm btn-default component-options-button" ng-click="open('Array', a, $index, $event)">Edit</a>
+
                 </accordion-heading>
 
                 {{a.hostName}}
