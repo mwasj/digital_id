@@ -4,11 +4,12 @@ import com.jcraft.jsch.*;
 import core.CommandResponse;
 import core.CommandResponseCode;
 import org.apache.commons.io.IOUtils;
+import org.joda.time.DateTime;
 
 import java.io.*;
+import java.util.Calendar;
 
 public class ConnectionManager {
-
 
     private Session session;
     private boolean isOpen;
@@ -22,22 +23,58 @@ public class ConnectionManager {
 
     public void connect()
     {
-        System.out.println("Connecting to: " + connectable.getHostName());
         session = getSession();
         establishSession();
     }
 
+    /***
+     *
+     * @param command
+     * @param commandType
+     * @return
+     * @throws IOException
+     * @throws JSchException
+     */
+    public CommandResponse<String> sendCommand(Command command, CommandType commandType) throws IOException, JSchException
+    {
+        int id = Calendar.getInstance().get(Calendar.MILLISECOND);
+
+        connectable.getWebUpdater().update(new WebUpdate("Executing command: " + command.getCommand(), id, null));
+        CommandResponse<String> commandResponse = null;
+
+        if(session == null)
+        {
+            session = getSession();
+        }
+
+        if(!session.isConnected()) {
+            channelCounter = 0;
+            establishSession();
+        }
+
+        if(commandType == CommandType.Exec)
+        {
+            commandResponse = sendExecCommand(command);
+        }
+        else if (commandType == CommandType.Shell)
+        {
+            commandResponse = sendShellCommand(command);
+        }
+
+        connectable.getWebUpdater().update(new WebUpdate(null, id, commandResponse));
+        return commandResponse;
+    }
+
     private CommandResponse<String> sendShellCommand(Command command) throws JSchException, IOException
     {
+        DateTime startDate = DateTime.now();
         String errorMessage = "";
         Channel channel = session.openChannel("shell");
         OutputStream outputStream = channel.getOutputStream();
         PrintStream commander = new PrintStream(outputStream, true);
 
         channel.connect();
-        command.setUserText("Executing command: " + command + " on " + connectable.getHostName());
-        connectable.getWebUpdater().update(new CommandResponse(null, CommandResponseCode.Success, null, command));
-        commander.println(command);
+        commander.println(command.getCommand());
         commander.println("exit");
         commander.close();
 
@@ -54,39 +91,12 @@ public class ConnectionManager {
         channel.getInputStream().close();
         channel.getOutputStream().close();
 
-        return new CommandResponse<>(result, commandResponseCode, errorMessage, command);
-    }
-
-    public CommandResponse<String> sendCommand(Command command, CommandType commandType) throws IOException, JSchException {
-
-        CommandResponse<String> commandResponse = null;
-
-        if(session == null)
-        {
-            session = getSession();
-        }
-
-        if(!session.isConnected())
-        {
-            channelCounter = 0;
-            establishSession();
-        }
-
-        if(commandType == CommandType.Exec)
-        {
-            commandResponse = sendExecCommand(command);
-        }
-        else if (commandType == CommandType.Shell)
-        {
-            commandResponse = sendShellCommand(command);
-        }
-
-        connectable.getWebUpdater().update(commandResponse);
-        return commandResponse;
+        return new CommandResponse<>(result, commandResponseCode, errorMessage, command, startDate, DateTime.now());
     }
 
     private CommandResponse<String> sendExecCommand(Command command) throws JSchException, IOException
     {
+        DateTime startDate = DateTime.now();
         String errorMessage = "";
         channelCounter += 1;
 
@@ -101,8 +111,6 @@ public class ConnectionManager {
         }
 
         Channel channel=session.openChannel("exec");
-        command.setUserText("Executing command: " + command + " on " + connectable.getHostName());
-        connectable.getWebUpdater().update(new CommandResponse(null, CommandResponseCode.Success, null, command));
         ((ChannelExec)channel).setCommand(command.getCommand());
 
         channel.connect();
@@ -122,7 +130,7 @@ public class ConnectionManager {
         channel.getOutputStream().close();
         channel.disconnect();
 
-        return new CommandResponse<>(result, commandResponseCode, errorMessage, command);
+        return new CommandResponse<>(result, commandResponseCode, errorMessage, command, startDate, DateTime.now());
     }
 
     public CommandResponse<File> getFile(String remoteFile, String localFile)
@@ -262,7 +270,7 @@ public class ConnectionManager {
             }
         }
 
-        return new CommandResponse<>(new File(localFile), commandResponseCode, errorMessages , null);
+        return new CommandResponse<>(new File(localFile), commandResponseCode, errorMessages , null, null,null);
     }
 
     public CommandResponse<String> readFile(String remoteFile)
@@ -372,7 +380,7 @@ public class ConnectionManager {
             commandResponseCode = CommandResponseCode.Failure;
         }
 
-        return new CommandResponse<>(result, commandResponseCode, errorMessage, null);
+        return new CommandResponse<>(result, commandResponseCode, errorMessage, null,null,null);
     }
 
     /**
@@ -475,7 +483,7 @@ public class ConnectionManager {
             catch(Exception ee){}
         }
 
-        return new CommandResponse<>(null, commandResponseCode, errorMessages, null);
+        return new CommandResponse<>(null, commandResponseCode, errorMessages, null,null,null);
     }
 
     private static int checkAck(InputStream in) throws IOException{
@@ -541,31 +549,40 @@ public class ConnectionManager {
         return s;
     }
 
+    /**
+     * Responsible for establishing session to the host.
+     */
     private void establishSession()
     {
+        int id = Calendar.getInstance().get(Calendar.MILLISECOND);
+        DateTime startDate = DateTime.now();
+
         if(session == null)
         {
-            System.out.println("Session is null, please initialise session!");
-            return;
+            session = getSession();
         }
 
         if(session.isConnected())
         {
-            System.out.println("Session is already connected");
+            //Already connected.
             return;
         }
 
-        try {
+        try
+        {
+            connectable.getWebUpdater().update(new WebUpdate("Connecting to: " + connectable.getHostName(), id, null));
             session.connect();
 
             if(session.isConnected())
             {
-                //connectable.getWebUpdater().update(new CommandResponse(null, CommandResponseCode.Success, null, "Session successfully established."));
+                connectable.getWebUpdater().update(new WebUpdate(null, id,
+                        new CommandResponse<>("Successfully connected to: " + connectable.getHostName(), CommandResponseCode.Success, null, null, startDate, DateTime.now())));
             }
         }
         catch (JSchException e)
         {
-            //connectable.getWebUpdater().update(new CommandResponse(null, CommandResponseCode.Success, null, "Could not establish session!."));
+            connectable.getWebUpdater().update(new WebUpdate(null, id,
+                    new CommandResponse<>("Could not connect to: " + connectable.getHostName(), CommandResponseCode.Failure, null, null, startDate, DateTime.now())));
             e.printStackTrace();
         }
     }

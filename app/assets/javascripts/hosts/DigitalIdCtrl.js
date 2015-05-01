@@ -71,7 +71,7 @@
 
             var modalInstance = $modal.open({
                 templateUrl: '/assets/partials/new-host.html',
-                controller: 'ModalInstanceCtrl',
+                controller: 'NewComponentModalCtrl',
                 transclude: true,
                 resolve:
                 {
@@ -137,6 +137,7 @@
             });
         };
 
+        //Called after Build Digital ID button is clicked.
         $scope.buildDigitalID = function ()
         {
             console.log("Building DigitalID");
@@ -145,16 +146,19 @@
             digitalId.switches = $scope.switches;
             digitalId.arrays = $scope.arrays;
 
-            var modalInstance2 = $modal.open({
-                            templateUrl: '/assets/partials/build-updater.html',
-                            controller: 'BuildProgressCtrl',
-                            backdrop: 'static',
-                            keyboard: false,
-                            resolve:
-                                {
-                                    digitalID: function () {
-                                        return digitalId;
-                                 }
-                            }});
+            var progressWindow = $modal.open({
+                    templateUrl: '/assets/partials/build-updater.html',
+                    controller: 'DigitalIdProgressCtrl',
+                    backdrop: 'static',
+                    keyboard: false,
+                    windowClass: 'large-Modal',
+                    resolve:
+                        {
+                            digitalID: function () {
+                                return digitalId;
+                            }
+                        }
+                    });
+        }
 
-}}})();
+}})();

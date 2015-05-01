@@ -1,26 +1,23 @@
 /**
- * Created by wasinski on 26/03/2015.
+ * Represents the controller responsible for handling of modal window for adding new components.
  */
 (function () {
     'use strict';
 
     angular
         .module('myApp')
-        .controller('ModalInstanceCtrl', ModalInstanceCtrl);
+        .controller('NewComponentModalCtrl', NewComponentModalCtrl);
 
-    ModalInstanceCtrl.$inject = ['$scope', '$modalInstance', 'currentComponent', 'componentOptions'];
+    NewComponentModalCtrl.$inject = ['$scope', '$modalInstance', 'currentComponent', 'componentOptions'];
 
     /**
      * @namespace ProfileController
      */
-    function ModalInstanceCtrl($scope, $modalInstance, currentComponent, componentOptions)
+    function NewComponentModalCtrl($scope, $modalInstance, currentComponent, componentOptions)
     {
-        //Define custom object to hold our actions.
-        function Command (id, command, iterations, interval) {
-            this.id = id;
+        //Define custom object to hold our commands.
+        function Command (command, interval) {
             this.command = command;
-            this.iterations = iterations;
-            this.interval = interval
         }
 
         $scope.hostName = currentComponent.hostName;
@@ -31,6 +28,11 @@
         $scope.currentDeviceType = currentComponent.currentDeviceType;
         $scope.commands = currentComponent.commands;
 
+        //Temporary TODO - delete.
+        $scope.commands.push(new Command("mpclaim -s -d 5",0));
+        $scope.componentType = componentOptions[0];
+
+        //Temporary to save time.
         $scope.hostName = "dl380pg8-73";
         $scope.userName = "Administrator";
         $scope.password = "ssmssm";
@@ -47,12 +49,12 @@
             currentComponent.password =  $scope.password;
             currentComponent.componentType = $scope.componentType;
 
-            console.log("From modal: " + currentComponent.id);
+            console.log("New component window, ok clicked.");
             $modalInstance.close(currentComponent);
         };
 
         $scope.cancel = function () {
-            console.log("cancel clicked");
+            console.log("New component window, cancel clicked.");
             $modalInstance.dismiss('cancel');
         };
 
@@ -62,13 +64,10 @@
             $scope.componentLabel = action;
         };
 
-        /*sendMessage((JSON.stringify({
-            text: "example message: " + new Date().getDate()}
-        )))*/
 
         $scope.createEmptyCommand = function (){
             console.log("createEmptyCommand called");
-            $scope.commands.push(new Command($scope.commands.length, "",0,0))
+            $scope.commands.push(new Command("",0));
         }
     };
 })();

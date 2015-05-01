@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.gson.Gson;
 import core.CommandResponse;
 import models.Instruction;
+import models.WebUpdate;
 import play.mvc.*;
 import play.libs.*;
 import play.libs.F.*;
@@ -57,7 +58,7 @@ public class CaptureUpdater extends UntypedActor
         else if (message instanceof Update)
         {
             Update update = (Update) message;
-            sendProgressUpdate(update.username, update.commandResponse);
+            sendProgressUpdate(update.username, update.webUpdate);
             System.out.println("update message");
         }
 
@@ -71,17 +72,17 @@ public class CaptureUpdater extends UntypedActor
         members.get(username).write(event);
     }
 
-    private void sendProgressUpdate(String username, CommandResponse commandResponse)
+    private void sendProgressUpdate(String username, WebUpdate webUpdate)
     {
         ObjectNode event = Json.newObject();
         event.put("type", "progressUpdate");
-        event.put("content", new Gson().toJson(commandResponse));
+        event.put("content", new Gson().toJson(webUpdate));
         members.get(username).write(event);
     }
 
-    public static void update(String id, CommandResponse commandResponse) throws Exception
+    public static void update(String id, WebUpdate webUpdate) throws Exception
     {
-        actor.tell(new Update(id, commandResponse), null);
+        actor.tell(new Update(id, webUpdate), null);
         //String result = (String)  Await.result(ask(actor, new Update(id, infornatmion), 1000), Duration.create(1, TimeUnit.SECONDS));
     }
 
@@ -209,11 +210,11 @@ public class CaptureUpdater extends UntypedActor
 
     public static class Update {
         final String username;
-        final CommandResponse commandResponse;
+        final WebUpdate webUpdate;
 
-        public Update(String username, CommandResponse commandResponse) {
+        public Update(String username, WebUpdate webUpdate) {
             this.username = username;
-            this.commandResponse = commandResponse;
+            this.webUpdate = webUpdate;
         }
     }
 

@@ -43,18 +43,11 @@ public class WindowsHost extends Host {
     {
         for(Command command : getCommands())
         {
-            for(int i = 0; i < command.getIterations(); i++)
-            {
-                try {
-                    getConnectionManager().sendCommand(command, CommandType.Shell);
-                    Thread.sleep(command.getInterval()*1000);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                } catch (JSchException e) {
-                    e.printStackTrace();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
+            try {
+                getConnectionManager().sendCommand(command, CommandType.Shell);
+                Thread.sleep(command.getInterval()*1000);
+            } catch (IOException | JSchException | InterruptedException e) {
+                e.printStackTrace();
             }
 
         }

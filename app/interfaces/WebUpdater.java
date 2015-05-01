@@ -1,11 +1,11 @@
 package interfaces;
 
-import core.CommandResponse;
+import models.WebUpdate;
 
 /**
  * Created by wasinski on 10/04/2015.
  */
 public interface WebUpdater
 {
-    public void update(CommandResponse commandResponse);
+    public void update(WebUpdate webUpdate);
 }

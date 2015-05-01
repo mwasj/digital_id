@@ -1,6 +1,13 @@
 <div ng-controller="NewHostCtrl">
-    <ul type="a">
-        <li ng-repeat="update in $parent.updates">{{update}}</li>
-    </ul>
+    <accordion>
+        <accordion-group ng-repeat="update in $parent.updates" heading="{{h.hostName}}">
+            <accordion-heading>
+                {{update.text}}
+            </accordion-heading>
 
+            <pre>{{update.data}}</pre>
+        </accordion-group>
+    </accordion>
+
+    <button type="submit" class="btn btn-sm btn-danger" id="btn_cancel" ng-click="$parent.cancel()">Cancel</button>
 </div>

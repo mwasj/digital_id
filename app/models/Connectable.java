@@ -110,10 +110,10 @@ public abstract class Connectable
 
     public abstract void runCommands();
 
-    public void updateWebInterface(CommandResponse commandResponse)
+    public void updateWebInterface(WebUpdate webUpdate)
     {
         if(webUpdater != null)
-            webUpdater.update(commandResponse);
+            webUpdater.update(webUpdate);
         else
             System.out.println("Web updater == null, please set it first.");
     }

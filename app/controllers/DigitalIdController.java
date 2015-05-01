@@ -3,6 +3,7 @@ package controllers;
 import async.DigitalIdBuilder;
 import com.fasterxml.jackson.databind.JsonNode;
 import core.CommandResponse;
+import models.WebUpdate;
 import play.mvc.Controller;
 import play.mvc.Result;
 import play.mvc.WebSocket;
@@ -38,10 +39,10 @@ public class DigitalIdController extends Controller
         };
     }
 
-    public static void updateWebInterface(String username, CommandResponse commandResponse)
+    public static void updateWebInterface(String username, WebUpdate webUpdate)
     {
         try {
-            CaptureUpdater.update(username, commandResponse);
+            CaptureUpdater.update(username, webUpdate);
         } catch (Exception e) {
             e.printStackTrace();
         }

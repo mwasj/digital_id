@@ -31,20 +31,13 @@ public class Inserv extends Connectable
     {
         for(Command command : getCommands())
         {
-            for(int i = 0; i < command.getIterations(); i++)
+            try
             {
-                try {
-                    getConnectionManager().sendCommand(command, CommandType.Exec);
-                    Thread.sleep(command.getInterval()*1000);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                } catch (JSchException e) {
-                    e.printStackTrace();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
+                getConnectionManager().sendCommand(command, CommandType.Exec);
+                Thread.sleep(command.getInterval()*1000);
+            } catch (IOException | JSchException | InterruptedException e) {
+                e.printStackTrace();
             }
-
         }
     }
 

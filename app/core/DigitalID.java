@@ -177,29 +177,15 @@ public class DigitalID implements WebUpdater
         }
     }
 
-    public ArrayList<CommandContainer> analyse()
-    {
-        ArrayList<CommandContainer> allCommands = new ArrayList<>();
-
-        for(Host host : hosts)
-        {
-            host.getCommandsToRun().add(new Instruction("Collect system information", 1));
-            host.getCommandsToRun().add(new Instruction("Collect multipath information", 2));
-            allCommands.add(new CommandContainer(host.getHostName(), host.getCommandsToRun()));
-        }
-        System.out.println("ALL COMMANDS: " + allCommands.size());
-        return allCommands;
-    }
-
     public void buildDigitalID() throws IOException, JSchException
     {
-        collectHostInformation(true, true, true);
+        collectHostInformation();
 
         //collectInservInformation();
         //collectFabricInformation();
     }
 
-    private void collectHostInformation(boolean systemInfo, boolean multipathInfo, boolean sg3utilsInfo) throws IOException, JSchException
+    private void collectHostInformation() throws IOException, JSchException
     {
         //logger.addTag("Hosts");
         //logger.openTag();
@@ -210,7 +196,7 @@ public class DigitalID implements WebUpdater
                 //logger.addTag(host.getHostName());
                 //logger.openTag();
                 host.setWebUpdater(this);
-                //host.connect();
+                host.connect();
                 //host.prepare();
 
                 host.runCommands();
@@ -313,8 +299,8 @@ public class DigitalID implements WebUpdater
     }
 
     @Override
-    public void update(CommandResponse commandResponse) {
-        DigitalIdController.updateWebInterface(sessionName, commandResponse);
+    public void update(WebUpdate webUpdate) {
+        DigitalIdController.updateWebInterface(sessionName, webUpdate);
     }
 
 

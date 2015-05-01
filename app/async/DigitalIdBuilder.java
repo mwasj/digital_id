@@ -30,7 +30,6 @@ public class DigitalIdBuilder extends Thread
         this.jsonString = jsonString;
         this.sessionName = sessionName;
         digitalID = DigitalIDMapper.map(jsonString, sessionName);
-        analysisResults = digitalID.analyse();
     }
 
     public void run()
