@@ -10,6 +10,7 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 import java.io.IOException;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 /**
@@ -41,17 +42,20 @@ public class WindowsHost extends Host {
     @Override
     public void runCommands()
     {
+        ArrayList<CommandResponse> responses = new ArrayList<>();
+
         for(CommandResponse commandResponse : getCommandResponses())
         {
             try {
-                commandResponse =  getConnectionManager().sendCommand(commandResponse.getCommand(), CommandType.Shell);
-                System.out.println(commandResponse.getResult());
+                responses.add(getConnectionManager().sendCommand(commandResponse.getCommand(), CommandType.Shell));
                 Thread.sleep(commandResponse.getCommand().getInterval()*1000);
             } catch (IOException | JSchException | InterruptedException e) {
                 e.printStackTrace();
             }
 
         }
+
+        setCommandResponses(responses);
     }
 
     /**

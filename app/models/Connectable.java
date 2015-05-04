@@ -12,12 +12,17 @@ import java.util.ArrayList;
 /**
  * Created by Michal on 08/02/15.
  */
-
+@XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlSeeAlso({Host.class, Switch.class, Inserv.class})
 public abstract class Connectable
 {
+    public void setCommandResponses(ArrayList<CommandResponse> commandResponses) {
+        this.commandResponses = commandResponses;
+    }
+
     @XmlTransient
+
     private ConnectionManager connectionManager;
 
     public ConnectionManager getConnectionManager()
@@ -37,7 +42,6 @@ public abstract class Connectable
         return password;
     }
 
-    @XmlElement(name="commandResponses")
     private ArrayList<CommandResponse> commandResponses;
 
     public ArrayList<CommandResponse> getCommandResponses() {

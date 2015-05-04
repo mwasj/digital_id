@@ -8,7 +8,6 @@ import javax.xml.bind.annotation.*;
 /**
  * Represents a command response object.
  */
-@XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
 public class CommandResponse
 {

@@ -1,6 +1,8 @@
 package core;
 
+import com.google.gson.Gson;
 import models.*;
+import org.joda.time.DateTime;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
@@ -15,9 +17,11 @@ public class DigitalIdMarshaller
 {
     public static void marshall(DigitalID digitalID)
     {
+
+        System.out.println(digitalID.getHosts().get(0).getCommandResponses().get(0).getExecutionStartTime());
         JAXBContext contextA = null;
         try {
-            contextA = JAXBContext.newInstance(DigitalID.class, Switch.class, CiscoSwitch.class, Inserv.class, Host.class, Connectable.class, BrocadeSwitch.class, CommandResponse.class);
+            contextA = JAXBContext.newInstance(DigitalID.class, Switch.class, CiscoSwitch.class, Inserv.class, Host.class, Connectable.class, BrocadeSwitch.class, CommandResponse.class, DateTime.class, Command.class);
             Marshaller marshaller = contextA.createMarshaller();
             marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
             marshaller.setProperty("jaxb.encoding", "Unicode");

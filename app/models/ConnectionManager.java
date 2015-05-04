@@ -82,7 +82,7 @@ public class ConnectionManager {
         BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
 
         String result = IOUtils.toString(bufferedReader).replaceAll("\0", "").replaceAll("�", "");
-
+        System.out.println(result);
         CommandResponseCode commandResponseCode = waitForCommandToFinish(channel);
 
         outputStream.close();
