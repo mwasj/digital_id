@@ -39,7 +39,7 @@ public class ConnectionManager {
     {
         int id = Calendar.getInstance().get(Calendar.MILLISECOND);
 
-        connectable.getWebUpdater().update(new WebUpdate("Executing command: " + command.getCommand(), id, null));
+        connectable.getWebUpdater().update(new WebUpdate("Executing command: " + command.getCommand(), id, null, WebUpdateType.progressUpdate));
         CommandResponse commandResponse = null;
 
         if(session == null)
@@ -61,7 +61,7 @@ public class ConnectionManager {
             commandResponse = sendShellCommand(command);
         }
 
-        connectable.getWebUpdater().update(new WebUpdate(null, id, commandResponse));
+        connectable.getWebUpdater().update(new WebUpdate(null, id, commandResponse, WebUpdateType.progressUpdate));
         return commandResponse;
     }
 
@@ -571,19 +571,19 @@ public class ConnectionManager {
 
         try
         {
-            connectable.getWebUpdater().update(new WebUpdate("Connecting to: " + connectable.getHostName(), id, null));
+            connectable.getWebUpdater().update(new WebUpdate("Connecting to: " + connectable.getHostName(), id, null, WebUpdateType.progressUpdate));
             session.connect();
 
             if(session.isConnected())
             {
                 connectable.getWebUpdater().update(new WebUpdate(null, id,
-                        new CommandResponse("Successfully connected to: " + connectable.getHostName(), CommandResponseCode.Success, null, null, startDate, DateTime.now())));
+                        new CommandResponse("Successfully connected to: " + connectable.getHostName(), CommandResponseCode.Success, null, null, startDate, DateTime.now()), WebUpdateType.progressUpdate));
             }
         }
         catch (JSchException e)
         {
             connectable.getWebUpdater().update(new WebUpdate(null, id,
-                    new CommandResponse("Could not connect to: " + connectable.getHostName(), CommandResponseCode.Failure, null, null, startDate, DateTime.now())));
+                    new CommandResponse("Could not connect to: " + connectable.getHostName(), CommandResponseCode.Failure, null, null, startDate, DateTime.now()), WebUpdateType.progressUpdate));
             e.printStackTrace();
         }
     }

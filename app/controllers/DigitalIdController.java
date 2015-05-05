@@ -2,11 +2,14 @@ package controllers;
 
 import async.DigitalIdBuilder;
 import com.fasterxml.jackson.databind.JsonNode;
-import core.CommandResponse;
+import com.google.gson.Gson;
+import core.DigitalIDUtils;
 import models.WebUpdate;
 import play.mvc.Controller;
 import play.mvc.Result;
 import play.mvc.WebSocket;
+
+import java.io.File;
 
 /**
  * Created by wasinski on 08/04/2015.
@@ -22,8 +25,21 @@ public class DigitalIdController extends Controller
 
     public static Result render()
     {
-        System.out.println(request().path());
         return redirect("/");
+    }
+
+    public static Result list()
+    {
+
+        return ok(new Gson().toJson(DigitalIDUtils.list()));
+    }
+
+    public static Result download(String filename)
+    {
+        System.out.println("download called");
+        response().setContentType("application/x-download");
+        response().setHeader("Content-disposition","attachment; filename="+filename);
+        return ok(new File("C:\\digital_ids\\"+filename));
     }
 
     public static WebSocket<JsonNode> socketUpdater(final String username) {

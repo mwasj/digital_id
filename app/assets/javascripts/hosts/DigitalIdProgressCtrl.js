@@ -10,8 +10,10 @@
     function DigitalIdProgressCtrl($scope, $modalInstance, digitalID, UserService)
     {
         $scope.updates = [];
-
+        $scope.downloadReady = false;
         var sessionName = Math.random().toString(36).substring(7);
+        $scope.digitalID = digitalID;
+
         console.log("Your username is: " + sessionName);
         var WS = window['MozWebSocket'] ? MozWebSocket : WebSocket
 
@@ -32,16 +34,13 @@
 
             if(obj.type === "analysis")
             {
-                console.log(obj.content);
                 var obj2 = JSON.parse(obj.content);
 
                 for(var i = 0; i < obj2.length; i++)
                 {
-                    console.log(obj2[i].hostName);
                     $scope.updates.push(obj2[i].hostName);
                     for(var y = 0; y < obj2[i].instructions.length; y++)
                     {
-                        console.log(obj2[i].instructions[y].command);
                         $scope.updates.push(obj2[i].instructions[y].command);
                     }
                 }
@@ -56,7 +55,6 @@
                     {
                         if($scope.updates[i].id === parsedContent.id)
                         {
-                            console.log(parsedContent.commandResponse.result);
                             $scope.updates[i].data = parsedContent.commandResponse.result;
                             $scope.updates[i].status = parsedContent.commandResponse.commandResponseCode
                         }
@@ -66,6 +64,12 @@
                 {
                     $scope.updates.push(new Update(parsedContent.id, parsedContent.text, null, null));
                 }
+            }
+            else if(obj.type === "finish")
+            {
+                $scope.downloadReady = true;
+                var parsedContent = JSON.parse(obj.content);
+                console.log(parsedContent);
             }
 
             $scope.$apply();
@@ -107,6 +111,11 @@
          $scope.cancel = function(){
                 $modalInstance.dismiss('cancel');
          }
+
+
+        $scope.downloadXml = function(){
+
+        }
     };
 
 

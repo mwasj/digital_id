@@ -9,11 +9,13 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 import java.io.File;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 /**
  * Created by wasinski on 17/02/2015.
  */
-public class DigitalIdMarshaller
+public class DigitalIDUtils
 {
     public static void marshall(DigitalID digitalID)
     {
@@ -25,7 +27,7 @@ public class DigitalIdMarshaller
             Marshaller marshaller = contextA.createMarshaller();
             marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
             marshaller.setProperty("jaxb.encoding", "Unicode");
-            File file = new File(digitalID.getPathToFolder()+"\\"+digitalID.getName()+".xml");
+            File file = new File(digitalID.getPathToXmlFile());
             marshaller.marshal(digitalID, file );
         } catch (JAXBException e) {
             e.printStackTrace();
@@ -48,5 +50,11 @@ public class DigitalIdMarshaller
         }
 
        return digitalID;
+    }
+
+    public static ArrayList<String> list()
+    {
+        File f = new File("C:\\digital_ids");
+        return new ArrayList<>(Arrays.asList(f.list()));
     }
 }

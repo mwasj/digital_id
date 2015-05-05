@@ -67,5 +67,18 @@ class UserService
         )
         deferred.promise
 
+    listDigitalIDs: () ->
+        deferred = @$q.defer()
+        @$http.get("/digitalid/list")
+        .success((data, status, headers) =>
+                @$log.info("Successfully listed digital ids - status #{status}")
+                deferred.resolve(data)
+        )
+        .error((data, status, headers) =>
+                @$log.error("Failed to list Users - status #{status}")
+                deferred.reject(data)
+        )
+        deferred.promise
+
 
 servicesModule.service('UserService', UserService)

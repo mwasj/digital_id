@@ -1,3 +1,7 @@
+<div class="jumbotron" style="margin-top: 20px">
+    <p class="pull-left">Digital ID capture in progress...</p>
+</div>
+
 <div ng-controller="NewHostCtrl">
     <accordion>
         <accordion-group ng-repeat="update in $parent.updates" heading="{{h.hostName}}">
@@ -28,5 +32,6 @@
         </accordion-group>
     </accordion>
 
-    <button type="submit" class="btn btn-sm btn-danger" id="btn_cancel" ng-click="$parent.cancel()">Cancel</button>
+    <button class="btn btn-sm btn-danger" id="btn_cancel" ng-click="$parent.cancel()">Cancel</button>
+    <a href="/digitalid/download/{{$parent.digitalID.digitalIdName}}.xml" class="btn btn-sm btn-success" ng-disabled="!$parent.downloadReady" target="_blank">Download XML file</a>
 </div>

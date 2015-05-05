@@ -32,7 +32,8 @@ public class CaptureUpdater extends UntypedActor
     Map<String, WebSocket.Out<JsonNode>> members = new HashMap<String, WebSocket.Out<JsonNode>>();
 
     @Override
-    public void onReceive(Object message) throws Exception {
+    public void onReceive(Object message) throws Exception
+    {
         System.out.println("OnReceive called: ");
 
         if (message instanceof Join) {
@@ -48,7 +49,8 @@ public class CaptureUpdater extends UntypedActor
                 notifyAll("join", join.username, "has entered the room");
                 getSender().tell("OK", actor);
             }
-        } else if (message instanceof Talk) {
+        }
+        else if (message instanceof Talk) {
             System.out.println("Talk message");
             // Received a Talk message
             Talk talk = (Talk) message;
@@ -58,25 +60,29 @@ public class CaptureUpdater extends UntypedActor
         else if (message instanceof Update)
         {
             Update update = (Update) message;
-            sendProgressUpdate(update.username, update.webUpdate);
-            System.out.println("update message");
+            String content = new Gson().toJson(update.webUpdate);
+            String type = "";
+
+            switch(update.webUpdate.getWebUpdateType())
+            {
+                case finish:
+                    type = "finish";
+                    break;
+                case progressUpdate:
+                    type = "progressUpdate";
+                    break;
+            }
+
+            sendUpdate(update.username, content, type);
         }
 
     }
 
-    private void sendAnslysis(String username, String text)
+    private void sendUpdate(String username, String content, String type)
     {
         ObjectNode event = Json.newObject();
-        event.put("type", "analysis");
-        event.put("content", text);
-        members.get(username).write(event);
-    }
-
-    private void sendProgressUpdate(String username, WebUpdate webUpdate)
-    {
-        ObjectNode event = Json.newObject();
-        event.put("type", "progressUpdate");
-        event.put("content", new Gson().toJson(webUpdate));
+        event.put("type", type);
+        event.put("content", content);
         members.get(username).write(event);
     }
 
@@ -171,19 +177,6 @@ public class CaptureUpdater extends UntypedActor
         }
     }
 
-    public static class MoveMessage {
-
-        public float longitude;
-
-        public float latitude;
-
-        public MoveMessage(float longitude, float latitude) {
-            this.longitude = longitude;
-            this.latitude = latitude;
-        }
-
-    }
-
     public static class Join {
 
         final String username;
@@ -208,7 +201,8 @@ public class CaptureUpdater extends UntypedActor
 
     }
 
-    public static class Update {
+    public static class Update
+    {
         final String username;
         final WebUpdate webUpdate;
 

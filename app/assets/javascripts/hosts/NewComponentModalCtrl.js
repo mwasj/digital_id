@@ -30,13 +30,13 @@
         $scope.commands = currentComponent.commands;
 
         //Temporary TODO - delete.
-        //$scope.commands.push(new Command("mpclaim -s -d 5",0));
-        //$scope.componentType = componentOptions[0];
+        $scope.commands.push(new Command("systeminfo",0));
+        $scope.componentType = componentOptions[0];
 
         //Temporary to save time.
-        //$scope.hostName = "dl380pg8-73";
-        //$scope.userName = "Administrator";
-        //$scope.password = "ssmssm";
+        $scope.hostName = "dl380pg8-74";
+        $scope.userName = "Administrator";
+        $scope.password = "ssmssm";
 
         $scope.componentLabel = $scope.componentType == undefined ? "Select " + currentComponent.currentDeviceType + " Type":  $scope.componentType;
 

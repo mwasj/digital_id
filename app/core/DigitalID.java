@@ -71,13 +71,6 @@ public class DigitalID implements WebUpdater
     }
 
     @XmlTransient
-    private String pathToFolder;
-
-    public String getPathToFolder() {
-        return pathToFolder;
-    }
-
-    @XmlTransient
     private Logger logger;
 
     /**
@@ -112,9 +105,8 @@ public class DigitalID implements WebUpdater
 
     private void initialisePath()
     {
-        pathToDigitalIDFile = basePath + name + "/" + name + ".digitalid";
-        pathToXmlFile = basePath + name + "/" + name + ".xml";
-        pathToFolder = basePath + name;
+        pathToDigitalIDFile = basePath + "/" + name + ".digitalid";
+        pathToXmlFile = basePath  + "/" + name + ".xml";
         logger = new Logger(pathToDigitalIDFile);
     }
 
@@ -170,11 +162,11 @@ public class DigitalID implements WebUpdater
     {
         System.out.println("DigitalID " + this.name + " will be created in: " + this.pathToDigitalIDFile);
 
-        if(!name.isEmpty())
+        /*if(!name.isEmpty())
         {
             createDirectory(basePath + name);
             logger.initialise();
-        }
+        }*/
     }
 
     public void buildDigitalID() throws IOException, JSchException
@@ -182,9 +174,10 @@ public class DigitalID implements WebUpdater
         collectHostInformation();
         collectFabricInformation();
         collectInservInformation();
-        DigitalIdMarshaller.marshall(this);
+        DigitalIDUtils.marshall(this);
         //collectInservInformation();
         //collectFabricInformation();
+        update(new WebUpdate(this.getName(), 0, null, WebUpdateType.finish));
     }
 
     private void collectHostInformation() throws IOException, JSchException
