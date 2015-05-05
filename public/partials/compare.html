@@ -1,0 +1,9 @@
+<div ng-controller="CompareCtrl">
+    <h1>Compare Digital IDs</h1>
+
+    <div class="center-div">
+        <input ng-model="digitalID1"
+               onchange="angular.element(this).scope().file_changed(this)"
+               type="file" accept="image/*" />
+    </div>
+</div>

@@ -21,6 +21,9 @@ angular.module('myApp.routeConfig', ['ngRoute'])
             .when('/digitalid/create', {
                 templateUrl: '/assets/partials/create.html'
             })
+            .when('/digitalid/compare', {
+                    templateUrl: '/assets/partials/compare.html'
+                })
             .otherwise({redirectTo: '/'})
     .config ($locationProvider) ->
         $locationProvider.html5Mode({
