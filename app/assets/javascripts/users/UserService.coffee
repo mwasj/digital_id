@@ -80,5 +80,18 @@ class UserService
         )
         deferred.promise
 
+    compareDigitalIDs: (list) ->
+       @$log.debug("This is the list" + list)
+       deferred = @$q.defer()
+       @$http.post("/digitalid/compare", list)
+       .success((data, status, headers) =>
+             @$log.info("Successfully compared digital ids - status #{status}")
+             deferred.resolve(data)
+       )
+       .error((data, status, headers) =>
+             @$log.error("Failed to compare digital ids - status #{status}")
+             deferred.reject(data)
+       )
+       deferred.promise
 
 servicesModule.service('UserService', UserService)

@@ -120,8 +120,10 @@ public class ConnectionManager {
         BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
 
         String result = IOUtils.toString(reader).replaceAll("\0", "").replaceAll("�", "");
-
-        System.out.println("DEBUG: " +  command + channel.getExitStatus() + " " + channel.isEOF() + " " + session.isConnected());
+        //String error = IOUtils.toString(new BufferedReader(new InputStreamReader(((ChannelExec) channel).getErrStream()))).replaceAll("\0", "").replaceAll("�", "");
+        //System.out.println(error);
+        System.out.println("RESULT: " + result);
+        System.out.println("DEBUG: " +  command.getCommand() + " " + channel.getExitStatus() + " " + channel.isEOF() + " " + session.isConnected());
         CommandResponseCode commandResponseCode = waitForCommandToFinish(channel);
 
         inputStream.close();

@@ -1,9 +1,20 @@
 <div ng-controller="CompareCtrl">
     <h1>Compare Digital IDs</h1>
 
-    <div class="center-div">
-        <input ng-model="digitalID1"
-               onchange="angular.element(this).scope().file_changed(this)"
-               type="file" accept="image/*" />
+    <div class="jumbotron" style="margin-top: 20px">
+        <p class="pull-left">Existing Digital IDs</p>
+
+        <br><br><br>
+
+        <ul ng-repeat="digitalId in digitalIds">
+            <input
+                    type="checkbox"
+                    name="{{digitalId}}"
+                    value="{{digitalId}}"
+                    ng-click="toggleSelection(digitalId)"
+                    ng-checked="selection.indexOf(digitalId) > -1">{{digitalId}}<br><br><br>
+        </ul>
+
+        <button class="btn btn-success" id="btn_compare" ng-click="goCompare()">Go</button>
     </div>
 </div>

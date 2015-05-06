@@ -2,14 +2,20 @@ package controllers;
 
 import async.DigitalIdBuilder;
 import com.fasterxml.jackson.databind.JsonNode;
+import com.google.common.reflect.TypeToken;
 import com.google.gson.Gson;
+import core.DigitalID;
 import core.DigitalIDUtils;
+import core.DigitalIdComparator;
+import core.HtmlGenerator;
 import models.WebUpdate;
 import play.mvc.Controller;
 import play.mvc.Result;
 import play.mvc.WebSocket;
 
 import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
 
 /**
  * Created by wasinski on 08/04/2015.
@@ -32,6 +38,23 @@ public class DigitalIdController extends Controller
     {
 
         return ok(new Gson().toJson(DigitalIDUtils.list()));
+    }
+
+    public static Result compare()
+    {
+        System.out.println("Compare called with: " + request().body().asJson().toString());
+        ArrayList<String> xmls = new Gson().fromJson(request().body().asJson().toString(), new TypeToken<ArrayList<String>>(){}.getType());
+        DigitalID digitalID1 = DigitalIDUtils.unMarshall("C:\\digital_ids\\"+xmls.get(0));
+        DigitalID digitalID2 = DigitalIDUtils.unMarshall("C:\\digital_ids\\"+xmls.get(1));
+        DigitalIdComparator comparator = new DigitalIdComparator(digitalID1, digitalID2);
+        comparator.compareHosts();
+        HtmlGenerator generator = new HtmlGenerator(comparator.getAccordions());
+        try {
+            generator.generateHtml("C:\\digital_ids\\html\\"+digitalID1.getName()+"_"+digitalID2.getName()+".html");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return ok();
     }
 
     public static Result download(String filename)

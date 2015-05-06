@@ -53,11 +53,19 @@
         <br />
         <table>
             <tr ng-show="$parent.commandResponses != 0">
-                <th>Command</th><th>Then wait for</th>
+                <th>Command</th><th>Then wait for</th><th>Comparable</th>
             </tr>
             <tr ng-repeat="command in $parent.commands">
                 <td><input type="text" class="form-control" name="command" id="command" placeholder="Type your command here" ng-model="command.command"></td>
                 <td><input type="text" class="form-control" name="interval" id="interval" placeholder="0 sec." ng-model="command.interval"></td>
+                <td>
+                    <input
+                            type="checkbox"
+                            name=command.command"
+                            value="command.command"
+                            ng-click="$parent.toggleSelection(command)"
+                            ng-checked="false">
+                </td>
                 <td><button class="btn btn-danger" ng-click="removeCommand(command)">Delete</button></td>
             </tr>
         </table>

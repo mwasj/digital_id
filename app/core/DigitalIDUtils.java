@@ -19,14 +19,11 @@ public class DigitalIDUtils
 {
     public static void marshall(DigitalID digitalID)
     {
-
-        System.out.println(digitalID.getHosts().get(0).getCommandResponses().get(0).getExecutionStartTime());
-        JAXBContext contextA = null;
         try {
-            contextA = JAXBContext.newInstance(DigitalID.class, Switch.class, CiscoSwitch.class, Inserv.class, Host.class, Connectable.class, BrocadeSwitch.class, CommandResponse.class, DateTime.class, Command.class);
+            JAXBContext contextA = JAXBContext.newInstance(DigitalID.class, Switch.class, CiscoSwitch.class, Inserv.class, Host.class, Connectable.class, BrocadeSwitch.class, CommandResponse.class, DateTime.class, Command.class);
             Marshaller marshaller = contextA.createMarshaller();
             marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
-            marshaller.setProperty("jaxb.encoding", "Unicode");
+            marshaller.setProperty("jaxb.encoding", "UTF-8");
             File file = new File(digitalID.getPathToXmlFile());
             marshaller.marshal(digitalID, file );
         } catch (JAXBException e) {
@@ -36,20 +33,20 @@ public class DigitalIDUtils
 
     public static DigitalID unMarshall(String path)
     {
-        DigitalID digitalID = null;
         File file = new File(path);
-        JAXBContext context = null;
+
+        if(!file.exists())
+            return null;
 
         try {
-            context = JAXBContext.newInstance(DigitalID.class, Switch.class, CiscoSwitch.class, Inserv.class, Host.class, Connectable.class, BrocadeSwitch.class);
+            JAXBContext context = JAXBContext.newInstance(DigitalID.class, Switch.class, CiscoSwitch.class, Inserv.class, Host.class, Connectable.class, BrocadeSwitch.class, CommandResponse.class, DateTime.class, Command.class);
             Unmarshaller jaxbUnmarshaller = context.createUnmarshaller();
-            digitalID =  (DigitalID) jaxbUnmarshaller.unmarshal(file);
-            return  digitalID;
+            return  (DigitalID) jaxbUnmarshaller.unmarshal(file);
         } catch (JAXBException e) {
             e.printStackTrace();
         }
 
-       return digitalID;
+       return null;
     }
 
     public static ArrayList<String> list()

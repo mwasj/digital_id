@@ -47,7 +47,7 @@ public class WindowsHost extends Host {
         for(CommandResponse commandResponse : getCommandResponses())
         {
             try {
-                responses.add(getConnectionManager().sendCommand(commandResponse.getCommand(), CommandType.Shell));
+                responses.add(getConnectionManager().sendCommand(commandResponse.getCommand(), CommandType.Exec));
                 Thread.sleep(commandResponse.getCommand().getInterval()*1000);
             } catch (IOException | JSchException | InterruptedException e) {
                 e.printStackTrace();

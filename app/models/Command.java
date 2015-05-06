@@ -16,10 +16,17 @@ public class Command
 
     private int interval;
 
-    public Command(String command, int interval)
+    private boolean comparable;
+
+    public boolean isComparable() {
+        return comparable;
+    }
+
+    public Command(String command, int interval, boolean comparable)
     {
         this.command = command;
         this.interval = interval;
+        this.comparable = comparable;
     }
 
     public Command(){}

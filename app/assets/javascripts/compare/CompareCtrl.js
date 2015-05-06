@@ -5,29 +5,47 @@
         .module('myApp')
         .controller('CompareCtrl', CompareCtrl);
 
-    CompareCtrl.$inject = ['$scope', '$log'];
+    CompareCtrl.$inject = ['$scope', '$log', 'UserService'];
 
 
-    function CompareCtrl($scope, $log) {
+    function CompareCtrl($scope, $log, UserService) {
         console.log("CompareCtrl constructed.");
 
-        //Check if file APIs are supported.
-        if (window.File && window.FileReader && window.FileList && window.Blob) {
-            console.log("File APIs supported!");
-        } else {
-            alert('The File APIs are not fully supported in this browser.');
-        }
+        $scope.digitalIds = [];
+        $scope.selection = [];
 
-        $scope.file_changed = function(element, $scope) {
+        UserService.listDigitalIDs()
+            .then(function(data) {
+                console.log(data);
+                $scope.digitalIds = data;
+            }, function(error) {
+                console.log(error);
+            });
 
-             $scope.$apply(function(scope) {
-                 var photofile = element.files[0];
-                 var reader = new FileReader();
-                 reader.onload = function(e) {
+        $scope.toggleSelection = function toggleSelection(digitalId) {
+            var idx = $scope.selection.indexOf(digitalId);
 
-                 };
-                 reader.readAsDataURL(photofile);
-             });
+            // is currently selected
+            if (idx > -1) {
+              $scope.selection.splice(idx, 1);
+            }
+
+            // is newly selected
+            else {
+              $scope.selection.push(digitalId);
+            }
+
+            console.log($scope.selection);
         };
+
+        $scope.goCompare = function(){
+            UserService.compareDigitalIDs($scope.selection)
+                    .then(function(data) {
+                        console.log(data);
+                        $scope.digitalIds = data;
+                    }, function(error) {
+                        console.log(error);
+                    });
+        }
     }
 })();
