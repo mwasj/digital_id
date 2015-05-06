@@ -36,6 +36,13 @@ public class HtmlGenerator
         Desktop.getDesktop().browse(new File(path).toURI());
     }
 
+    public String getHtml(String path) throws IOException {
+        String htmlTemplate = new String(readAllBytes(get("C:\\digital_ids\\html\\template2.html")));
+        htmlTemplate = htmlTemplate.replaceAll("<#generate_html#>", generateDivs(accordion, ""));
+        htmlTemplate = htmlTemplate.replaceAll("<#generate_function_calls#>", generateJsFunctionCalls(accordion, ""));
+        return htmlTemplate;
+    }
+
     private String convertToJavaScriptString(String s)
     {
         String[] split = s.split("\\r?\\n");

@@ -5,10 +5,10 @@
         .module('myApp')
         .controller('CompareCtrl', CompareCtrl);
 
-    CompareCtrl.$inject = ['$scope', '$log', 'UserService'];
+    CompareCtrl.$inject = ['$scope', '$log', 'UserService', '$sce'];
 
 
-    function CompareCtrl($scope, $log, UserService) {
+    function CompareCtrl($scope, $log, UserService, $sce) {
         console.log("CompareCtrl constructed.");
 
         $scope.digitalIds = [];
@@ -42,7 +42,7 @@
             UserService.compareDigitalIDs($scope.selection)
                     .then(function(data) {
                         console.log(data);
-                        $scope.digitalIds = data;
+                        //$scope.htmlString = $sce.trustAsHtml(data);
                     }, function(error) {
                         console.log(error);
                     });

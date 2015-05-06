@@ -43,12 +43,14 @@ public class DigitalIdController extends Controller
     public static Result compare()
     {
         System.out.println("Compare called with: " + request().body().asJson().toString());
-        ArrayList<String> xmls = new Gson().fromJson(request().body().asJson().toString(), new TypeToken<ArrayList<String>>(){}.getType());
+        ArrayList<String> xmls = new Gson().fromJson(request().body().asJson().toString(), new TypeToken<ArrayList<String>>() {
+        }.getType());
         DigitalID digitalID1 = DigitalIDUtils.unMarshall("C:\\digital_ids\\"+xmls.get(0));
         DigitalID digitalID2 = DigitalIDUtils.unMarshall("C:\\digital_ids\\"+xmls.get(1));
         DigitalIdComparator comparator = new DigitalIdComparator(digitalID1, digitalID2);
         comparator.compareHosts();
         HtmlGenerator generator = new HtmlGenerator(comparator.getAccordions());
+        String html = "";
         try {
             generator.generateHtml("C:\\digital_ids\\html\\"+digitalID1.getName()+"_"+digitalID2.getName()+".html");
         } catch (IOException e) {
