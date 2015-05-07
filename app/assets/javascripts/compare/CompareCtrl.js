@@ -5,13 +5,14 @@
         .module('myApp')
         .controller('CompareCtrl', CompareCtrl);
 
-    CompareCtrl.$inject = ['$scope', '$log', 'UserService', '$sce'];
+    CompareCtrl.$inject = ['$scope', '$log', 'UserService', '$sce', '$parse'];
 
-    function CompareCtrl($scope, $log, UserService, $sce) {
+    function CompareCtrl($scope, $log, UserService, $sce, $parse) {
         console.log("CompareCtrl constructed.");
 
         $scope.digitalIds = [];
         $scope.selection = [];
+        $scope.generationInProgress = false;
         $scope.htmlString = '<a ng-click="click(1)" href="#">Click me</a>';
         console.log($scope.htmlString);
         UserService.listDigitalIDs()
@@ -39,38 +40,57 @@
         };
 
         $scope.goCompare = function(){
+            $scope.generationInProgress = true;
             UserService.compareDigitalIDs($scope.selection)
+
                     .then(function(data) {
+                        $scope.generationInProgress = false;
                         console.log(data);
-                        $scope.htmlString = data;
+                        //var obj = JSON.parse(data);
+                        console.log(data.accordionHtml)
+                        $scope.htmlString = data.accordionHtml;
+                        console.log(data.accordions.length);
+                        for(var i = 0; i < data.accordions.length; i++)
+                        {
+                            diffUsingJS(0, data.accordions[i].divName, data.accordions[i].content1, data.accordions[i].content2, $scope);
+                        }
                     }, function(error) {
                         console.log(error);
                     });
+
         }
 
-        //diffUsingJS(0, "test", "string1", "string2");
+        function diffUsingJS(viewType, sectionName, s1, s2, $scope)
+            {
+                //console.log(s1);
+                //console.log(s2);
+                sectionName = sectionName.replace(/\s/g, "");
+                console.log(sectionName);
+                var base = difflib.stringAsLines(s1);
+                var newtxt = difflib.stringAsLines(s2);
+                var sm = new difflib.SequenceMatcher(base, newtxt);
+                var opcodes = sm.get_opcodes();
+                var contextSize = 0;
+                $scope[sectionName] = diffview.buildView({
+                                                              baseTextLines: base,
+                                                              newTextLines: newtxt,
+                                                              opcodes: opcodes,
+                                                              baseTextName: "Before",
+                                                              newTextName: "After",
+                                                              contextSize: 0,
+                                                              viewType: viewType
+                                                      });
+                console.log(diffview.buildView({
+                                                                                                          baseTextLines: base,
+                                                                                                          newTextLines: newtxt,
+                                                                                                          opcodes: opcodes,
+                                                                                                          baseTextName: "Before",
+                                                                                                          newTextName: "After",
+                                                                                                          contextSize: 0,
+                                                                                                          viewType: viewType
+                                                                                                  }));
+            }
     }
 
-    function diffUsingJS(viewType, sectionName, s1, s2)
-    {
-        "use strict";
-        var byId = function (id) { return document.getElementById(id); },
-        base = difflib.stringAsLines(s1),
-        newtxt = difflib.stringAsLines(s2),
-        sm = new difflib.SequenceMatcher(base, newtxt),
-        opcodes = sm.get_opcodes(),
-        diffoutputdiv = byId(sectionName),
-        contextSize = 0
-        contextSize = contextSize || null;
 
-        diffoutputdiv.appendChild(diffview.buildView({
-                baseTextLines: base,
-                newTextLines: newtxt,
-                opcodes: opcodes,
-                baseTextName: "Before",
-                newTextName: "After",
-                contextSize: 0,
-                viewType: viewType
-        }));
-    }
 })();

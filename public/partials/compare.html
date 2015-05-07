@@ -19,27 +19,17 @@
         <button class="btn btn-success" id="btn_compare" ng-click="goCompare()">Go</button>
     </div>
 
+    <div ng-show="generationInProgress" class="center-div">
+        <h1>Diff generation in progress</h1>
+
+        <div class="spinner">
+            <div class="rect1"></div>
+            <div class="rect2"></div>
+            <div class="rect3"></div>
+            <div class="rect4"></div>
+            <div class="rect5"></div>
+        </div>
+    </div>
+
     <div dynamic="htmlString"></div>
-
-    <accordion>
-        <accordion-group heading="test1">
-            <accordion-heading>
-                test1 - header
-
-            </accordion-heading>
-
-            test1 - content
-
-            <accordion>
-                <accordion-group heading="test1">
-                    <accordion-heading>
-                        test1 - header
-
-                    </accordion-heading>
-
-                    test1 - content
-                </accordion-group>
-            </accordion>
-        </accordion-group>
-    </accordion>
 </div>

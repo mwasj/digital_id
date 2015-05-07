@@ -108,3 +108,17 @@ footer {
     margin-right: auto;
     width: 100%;
 }
+
+.changes_detected{
+     background:yellow !important;
+     display: block;
+     color: inherit;
+     padding: 5px;
+}
+
+.no_changes_detected{
+    background:LightGreen !important;
+    display: block;
+    color: inherit;
+    padding: 5px;
+}

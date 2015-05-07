@@ -1,5 +1,8 @@
 package core;
 
+import com.google.gson.Gson;
+import dtos.ContentDto;
+import dtos.DiffReportDto;
 import models.Accordion;
 
 import java.awt.*;
@@ -18,10 +21,12 @@ import static java.nio.file.Paths.get;
 public class HtmlGenerator
 {
     private Accordion accordion;
+    private ArrayList<ContentDto> contentDtos;
 
-    public HtmlGenerator(ArrayList<Accordion> accordions)
+    public HtmlGenerator(ArrayList<Accordion> accordions, ArrayList<ContentDto> contentDtos)
     {
         accordion = new Accordion(null, null, null, null, 0);
+        this.contentDtos = contentDtos;
         accordion.setSubAccordions(accordions);
     }
 
@@ -42,7 +47,7 @@ public class HtmlGenerator
         htmlTemplate = htmlTemplate.replaceAll("<#generate_function_calls#>", generateJsFunctionCalls(accordion, ""));
         return htmlTemplate;*/
 
-        return generateAccordions(accordion, "");
+        return new Gson().toJson(new DiffReportDto(contentDtos, generateAccordions(accordion, "")));
     }
 
     private String convertToJavaScriptString(String s)
@@ -108,7 +113,7 @@ public class HtmlGenerator
     {
         if(a.getTitle() != null)
         {
-            s = s + "<accordion><accordion-group heading='" + a.getTitle() + " " + a.getNoOfChanges() + " changes detected'><accordion-heading>"+ a.getTitle() +"</accordion-heading>";
+            s = s + "<accordion><accordion-group><accordion-heading><a "+ (a.getNoOfChanges() == 0 ? "class=\"no_changes_detected\"" : "class=\"changes_detected\"") + "> "+ a.getTitle() + ": " + a.getNoOfChanges() +" changes detected </a> </accordion-heading><div dynamic="+a.getDivName().replace("-","").replace(" ", "")+"></div>";
         }
 
         if(a.getSubAccordions() != null)

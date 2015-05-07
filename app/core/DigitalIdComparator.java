@@ -1,5 +1,6 @@
 package core;
 
+import dtos.ContentDto;
 import models.*;
 
 import java.util.ArrayList;
@@ -13,6 +14,11 @@ public class DigitalIdComparator
     private DigitalID digitalID1;
     private DigitalID digitalID2;
     private ArrayList<Accordion> accordions;
+    private ArrayList<ContentDto> contentDtos;
+
+    public ArrayList<ContentDto> getContentDtos() {
+        return contentDtos;
+    }
 
     public ArrayList<Accordion> getAccordions() {
         return accordions;
@@ -23,6 +29,7 @@ public class DigitalIdComparator
         this.digitalID1 = digitalID1;
         this.digitalID2 = digitalID2;
         this.accordions = new ArrayList<>();
+        this.contentDtos = new ArrayList<>();
     }
 
     public void compareHosts()
@@ -62,11 +69,16 @@ public class DigitalIdComparator
                                     commandResponse.getCommand().isComparable() == commandResponse1.getCommand().isComparable())
                             {
                                 Accordion accordion = mainAccordion.addSubAccordion(new Accordion(connectable.getHostName(), connectable2.getHostName(), null, null, 0));
+
+                                String divName = createDivName(connectable, commandResponse.getCommand().getCommand() + Calendar.getInstance().get(Calendar.MILLISECOND));
+
                                 accordion.addSubAccordion(new Accordion(commandResponse.getCommand().getCommand(),
-                                        createDivName(connectable, commandResponse.getCommand().getCommand()+ Calendar.getInstance().get(Calendar.MILLISECOND)),
+                                        divName,
                                         commandResponse.getResult(),
                                         commandResponse1.getResult(),
                                         levenshteinDistance(commandResponse.getResult(), commandResponse1.getResult())));
+
+                                contentDtos.add(new ContentDto( commandResponse.getResult(), commandResponse1.getResult(), divName));
                             }
                         }
                     }
@@ -219,6 +231,6 @@ public class DigitalIdComparator
 
     private static String createDivName(Connectable connectable, String s)
     {
-        return s+connectable.getHostName();
+        return s+connectable.getHostName().replace("-", "");
     }
 }

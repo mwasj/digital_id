@@ -49,7 +49,7 @@ public class DigitalIdController extends Controller
         DigitalID digitalID2 = DigitalIDUtils.unMarshall("C:\\digital_ids\\"+xmls.get(1));
         DigitalIdComparator comparator = new DigitalIdComparator(digitalID1, digitalID2);
         comparator.compareHosts();
-        HtmlGenerator generator = new HtmlGenerator(comparator.getAccordions());
+        HtmlGenerator generator = new HtmlGenerator(comparator.getAccordions(), comparator.getContentDtos());
         String html = "";
         try {
             html = generator.getHtml("C:\\digital_ids\\html\\"+digitalID1.getName()+"_"+digitalID2.getName()+".html");
