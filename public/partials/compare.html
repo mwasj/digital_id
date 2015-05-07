@@ -1,4 +1,5 @@
 <div ng-controller="CompareCtrl">
+
     <h1>Compare Digital IDs</h1>
 
     <div class="jumbotron" style="margin-top: 20px">
@@ -18,5 +19,27 @@
         <button class="btn btn-success" id="btn_compare" ng-click="goCompare()">Go</button>
     </div>
 
-    <div ng-bind-html="htmlString"></div>
+    <div dynamic="htmlString"></div>
+
+    <accordion>
+        <accordion-group heading="test1">
+            <accordion-heading>
+                test1 - header
+
+            </accordion-heading>
+
+            test1 - content
+
+            <accordion>
+                <accordion-group heading="test1">
+                    <accordion-heading>
+                        test1 - header
+
+                    </accordion-heading>
+
+                    test1 - content
+                </accordion-group>
+            </accordion>
+        </accordion-group>
+    </accordion>
 </div>

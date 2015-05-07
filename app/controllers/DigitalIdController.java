@@ -52,11 +52,11 @@ public class DigitalIdController extends Controller
         HtmlGenerator generator = new HtmlGenerator(comparator.getAccordions());
         String html = "";
         try {
-            generator.generateHtml("C:\\digital_ids\\html\\"+digitalID1.getName()+"_"+digitalID2.getName()+".html");
+            html = generator.getHtml("C:\\digital_ids\\html\\"+digitalID1.getName()+"_"+digitalID2.getName()+".html");
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return ok();
+        return ok(html);
     }
 
     public static Result download(String filename)

@@ -37,10 +37,12 @@ public class HtmlGenerator
     }
 
     public String getHtml(String path) throws IOException {
-        String htmlTemplate = new String(readAllBytes(get("C:\\digital_ids\\html\\template2.html")));
+        /*String htmlTemplate = new String(readAllBytes(get("C:\\digital_ids\\html\\template2.html")));
         htmlTemplate = htmlTemplate.replaceAll("<#generate_html#>", generateDivs(accordion, ""));
         htmlTemplate = htmlTemplate.replaceAll("<#generate_function_calls#>", generateJsFunctionCalls(accordion, ""));
-        return htmlTemplate;
+        return htmlTemplate;*/
+
+        return generateAccordions(accordion, "");
     }
 
     private String convertToJavaScriptString(String s)
@@ -78,6 +80,8 @@ public class HtmlGenerator
 
     private String generateDivs(Accordion a,  String s)
     {
+        //return "<accordion><accordion-group heading='test'></accordion-group></accordion>";
+
         if(a.getTitle() != null)
         {
             s = s + "<div class=\"accordion\"><h3 " + (a.getNoOfChanges() == 0 ? "class=\"no_changes_detected\"" : "class=\"changes_detected\"") + ">" + a.getTitle() + " " + a.getNoOfChanges() + " changes detected</h3><div id=\"" + a.getDivName() + "\">";
@@ -95,6 +99,30 @@ public class HtmlGenerator
         if(a.getTitle() != null)
         {
             s = s + "</div>";
+        }
+
+        return s;
+    }
+
+    private String generateAccordions(Accordion a,  String s)
+    {
+        if(a.getTitle() != null)
+        {
+            s = s + "<accordion><accordion-group heading='" + a.getTitle() + " " + a.getNoOfChanges() + " changes detected'><accordion-heading>"+ a.getTitle() +"</accordion-heading>";
+        }
+
+        if(a.getSubAccordions() != null)
+        {
+            for(Accordion accordion1 : a.getSubAccordions())
+            {
+                s = s + generateAccordions(accordion1, "");
+                s = s + "</accordion>";
+            }
+        }
+
+        if(a.getTitle() != null)
+        {
+            s = s + "</accordion></accordion-group>";
         }
 
         return s;
