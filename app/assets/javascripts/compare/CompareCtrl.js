@@ -29,7 +29,7 @@
                 e.originalEvent.cancelBubble=true;
             }
 
-            var idx = $scope.selection.indexOf(digitalId.fileName);
+            var idx = $scope.selection.indexOf(digitalId.url);
 
             // is currently selected
             if (idx > -1) {
@@ -38,7 +38,7 @@
 
             // is newly selected
             else {
-              $scope.selection.push(digitalId.fileName);
+              $scope.selection.push(digitalId.url);
             }
 
             console.log($scope.selection);

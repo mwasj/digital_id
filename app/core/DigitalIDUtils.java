@@ -87,7 +87,14 @@ public class DigitalIDUtils
             {
                 DateTime date = new DateTime(attributes.creationTime().toMillis());
                 String formattedDate = date.toString("dd-MMM-yy HH:mm:ss", Locale.getDefault());
-                digitalIdFileAttributeses.add(new DigitalIdFileAttributes(f.getName(), formattedDate, String.valueOf(attributes.size()/1024)));
+
+                String author = f.getName().contains("_") ? f.getName().substring(f.getName().lastIndexOf("_")+1, f.getName().length()-4) : null;
+                String url = f.getName();
+                String displayName = author == null ? f.getName() : f.getName().substring(0, f.getName().lastIndexOf("_"));
+
+                digitalIdFileAttributeses.add(
+                        new DigitalIdFileAttributes(author, url,displayName,
+                        formattedDate, String.valueOf(attributes.size()/1024)));
             }
         }
 

@@ -53,6 +53,8 @@ public class DigitalID implements WebUpdater
 
     private String name;
 
+    private String author;
+
     @XmlTransient
     private String basePath = "C:/digital_ids/";
 
@@ -70,6 +72,10 @@ public class DigitalID implements WebUpdater
         return pathToDigitalIDFile;
     }
 
+    public String getAuthor() {
+        return author;
+    }
+
     @XmlTransient
     private Logger logger;
 
@@ -85,9 +91,10 @@ public class DigitalID implements WebUpdater
      * @param inservs - ArrayList of inserv objects.
      * @param switches - ArrayList of switch objects.
      */
-    public DigitalID(String name, ArrayList<Host> hosts, ArrayList<Inserv> inservs, ArrayList<Switch> switches, String sessionName)
+    public DigitalID(String author, String name, ArrayList<Host> hosts, ArrayList<Inserv> inservs, ArrayList<Switch> switches, String sessionName)
     {
-        this.name = name;
+        this.author = author;
+        this.name = name+"_"+author;
         this.hosts = hosts;
         this.inservs = inservs;
         this.switches = switches;
@@ -96,9 +103,10 @@ public class DigitalID implements WebUpdater
         initialisePath();
     }
 
-    public DigitalID(String name, String sessionName)
+    public DigitalID(String author, String name, String sessionName)
     {
-        this.name = name;
+        this.author = author;
+        this.name = name+"_"+author;
         this.sessionName = sessionName;
         initialisePath();
     }
@@ -220,9 +228,10 @@ public class DigitalID implements WebUpdater
 
                 //logger.addTag(inserv.getHostName());
                 //logger.openTag();
-
-                inserv.connect();
+                System.out.println(inserv.getHostName());
                 inserv.setWebUpdater(this);
+                inserv.connect();
+
                 inserv.runCommands();
                 inserv.disconnect();
 

@@ -38,6 +38,10 @@
         {
             for(var i = 0; i < arr.length; i++)
             {
+                if(arr[i].author === undefined)
+                {
+                    arr[i].author = "unknown";
+                }
                 $scope.digitalIds.push(arr[i]);
             }
         }

@@ -20,8 +20,9 @@ public class DigitalIDMapper
         System.out.println(DateTime.now() + "DigitalID mapper: The following JSON String was received: " + jsonString);
         JSONObject jsnobject = new JSONObject(jsonString);
         String name = jsnobject.getString("digitalIdName");
-        System.out.println(name);
-        DigitalID digitalID = new DigitalID(name, sessionName);
+        String author = jsnobject.getString("digitalIdAuthor");
+        System.out.println(author);
+        DigitalID digitalID = new DigitalID(author, name, sessionName);
         digitalID.addHosts(mapHosts(jsonString));
         digitalID.addSwitches(mapSwitches(jsonString));
         digitalID.addInservs(mapArrays(jsonString));

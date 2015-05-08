@@ -573,6 +573,8 @@ public class ConnectionManager {
 
         try
         {
+            System.out.println(connectable == null);
+            System.out.println(connectable.getWebUpdater() == null);
             connectable.getWebUpdater().update(new WebUpdate("Connecting to: " + connectable.getHostName(), id, null, WebUpdateType.progressUpdate));
             session.connect();
 

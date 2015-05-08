@@ -3,10 +3,13 @@
 <div ng-controller="NewHostCtrl">
 
     <br>
-    <div class="col-sm-10">
-        <input type="text" class="form-control" name="digitalIdName" id="digitalIdName" placeholder="Enter name for this Digital ID" ng-model="digitalIdName">
-    </div>
+    <legend class="sm-col-12">Author</legend>
+    <input type="text" class="form-control" name="digitalIdAuthor" id="digitalIdAuthor" placeholder="Enter your name" ng-model="digitalIdAuthor" class="col-sm-8">
     <br>
+
+    <br>
+    <legend class="sm-col-12">DigitalID Name</legend>
+    <input type="text" class="form-control" name="digitalIdName" id="digitalIdName" placeholder="Enter name for this Digital ID" ng-model="digitalIdName" class="col-sm-8">
     <br>
 
     <form id="addHostForm" name="addHostForm" class="form-horizontal" role="form">

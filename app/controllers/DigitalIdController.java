@@ -61,7 +61,7 @@ public class DigitalIdController extends Controller
 
     public static Result download(String filename)
     {
-        System.out.println("download called");
+        System.out.println("download called: " + filename);
         response().setContentType("application/x-download");
         response().setHeader("Content-disposition","attachment; filename="+filename);
         return ok(new File("C:\\digital_ids\\"+filename));

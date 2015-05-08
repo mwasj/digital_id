@@ -3,11 +3,12 @@
     <h1>Compare Digital IDs</h1>
 
     <div class="jumbotron" style="margin-top: 20px">
-        <p class="pull-left">Existing Digital IDs</p>
+        <p class="pull-left">Select two Digital IDs from the list below:</p>
         <br><br><br>
         <label ng-show="digitalIds.length == 0" class="no-digitalIds-label">There are currently no Digital IDs present on this server</label>
         <br><br><br>
-
+        <label style="float: right; margin-right: 15px;" ng-show="digitalIds.length > 0">Select</label>
+        <br><br>
         <accordion ng-show="digitalIds.length > 0">
             <accordion-group ng-repeat="digitalId in digitalIds"  heading="{{digitalId.fileName}}">
 
@@ -21,12 +22,14 @@
                             ng-checked="selection.indexOf(digitalId) > -1"
                             class="roundedTwo">
 
-                    <label ng-click="downloadDigitalId(digitalId)">
-                        {{digitalId.fileName}}
-                    </label>
+                    <a ng-click="downloadDigitalId(digitalId)">
+                        {{digitalId.displayName}}
+                    </a>
                 </accordion-heading>
 
                 <label>Created on: {{digitalId.creationTime}}</label>
+                <br>
+                <label>Author: {{digitalId.author}}</label>
                 <br>
                 <label>Size: {{digitalId.size}} KB</label>
 

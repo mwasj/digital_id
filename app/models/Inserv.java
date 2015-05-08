@@ -28,16 +28,20 @@ public class Inserv extends Connectable
     @Override
     public void runCommands()
     {
+        ArrayList<CommandResponse> responses = new ArrayList<>();
+
         for(CommandResponse commandResponse : getCommandResponses())
         {
-            try
-            {
-                getConnectionManager().sendCommand(commandResponse.getCommand(), CommandType.Exec);
+            try {
+                responses.add(getConnectionManager().sendCommand(commandResponse.getCommand(), CommandType.Exec));
                 Thread.sleep(commandResponse.getCommand().getInterval()*1000);
             } catch (IOException | JSchException | InterruptedException e) {
                 e.printStackTrace();
             }
+
         }
+
+        setCommandResponses(responses);
     }
 
     private String inservName;

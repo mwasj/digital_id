@@ -1,7 +1,7 @@
 <div ng-controller="IndexCtrl as uc">
     <div class="jumbotron">
         <h2>Digital ID Manager</h2>
-        <p class="pull-right">... a UI created using AngularJS and Bootstrap</p>
+        <p class="pull-right">SAN environment snapshot & comparison tool.</p>
      </div>
 
     <div class="center-div">
@@ -22,15 +22,18 @@
 
                 <accordion-heading>
                     <div ng-click="downloadDigitalId(digitalId)">
-                        {{digitalId.fileName}}
+                        {{digitalId.displayName}}
                     </div>
                 </accordion-heading>
 
                 <label>Created on: {{digitalId.creationTime}}</label>
                 <br>
+                <label>Author: {{digitalId.author}}</label>
+                <br>
                 <label>Size: {{digitalId.size}} KB</label>
 
-                <a href="/digitalid/download/{{digitalId.fileName}}" target="_blank" class="btn btn-success component-options-button" ng-click="cancelEvent($event)">download as xml</a>
+                <a href="/digitalid/download/{{digitalId.url}}" target="_blank"
+                   class="btn btn-success component-options-button" ng-click="cancelEvent($event)">download as xml</a>
 
             </accordion-group>
         </accordion>

@@ -126,10 +126,11 @@ footer {
 /* .roundedTwo */
 .roundedTwo {
   float: right;
-  width: 28px;
-  height: 28px;
+  width: 20px;
+  height: 20px;
   position: relative;
   margin: 20px auto;
+
   background: #fcfff4;
   background: linear-gradient(top, #fcfff4 0%, #dfe5d7 40%, #b3bead 100%);
   border-radius: 50px;

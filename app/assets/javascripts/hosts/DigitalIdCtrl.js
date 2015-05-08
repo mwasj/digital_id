@@ -14,6 +14,8 @@
         $scope.switches = [];
         $scope.arrays = [];
         $scope.digitalIdName = "";
+        $scope.digitalIdAuthor = "";
+
         console.log("The name of this digital id is: " + $scope.digitalIdName);
         $scope.currentComponent = {};
 
@@ -188,11 +190,14 @@
         $scope.buildDigitalID = function ()
         {
             console.log("Building DigitalID");
+
             var digitalId = {};
             digitalId.hosts = $scope.hosts;
             digitalId.switches = $scope.switches;
             digitalId.arrays = $scope.arrays;
             digitalId.digitalIdName = $scope.digitalIdName;
+            digitalId.digitalIdAuthor = $scope.digitalIdAuthor;
+
             console.log("The name of this digital id will be: " + $scope.digitalIdName);
             var progressWindow = $modal.open({
                     templateUrl: '/assets/partials/build-updater.html',
