@@ -18,12 +18,6 @@ public class DigitalIdBuilder extends Thread
     private String jsonString;
     private String sessionName;
     private DigitalID digitalID;
-    private ArrayList<CommandContainer> analysisResults;
-
-    public ArrayList<CommandContainer> getAnalysisResults()
-    {
-        return analysisResults;
-    }
 
     public DigitalIdBuilder(String jsonString, String sessionName)
     {
@@ -38,9 +32,7 @@ public class DigitalIdBuilder extends Thread
 
         try {
             digitalID.buildDigitalID();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (JSchException e) {
+        } catch (IOException | JSchException e) {
             e.printStackTrace();
         }
     }

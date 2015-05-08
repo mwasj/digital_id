@@ -10,16 +10,32 @@
     </div>
 
     <div class="jumbotron" style="margin-top: 20px">
+
         <p class="pull-left">Existing Digital IDs</p>
 
         <br>
         <br>
         <br>
-        <ul>
-            <li ng-repeat="digitalId in digitalIds">
-                <a href="/digitalid/download/{{digitalId}}" target="_blank">{{digitalId}}</a>
-            </li>
-        </ul>
+
+        <accordion ng-show="digitalIds.length > 0">
+            <accordion-group ng-repeat="digitalId in digitalIds"  heading="{{digitalId.fileName}}">
+
+                <accordion-heading>
+                    <div ng-click="downloadDigitalId(digitalId)">
+                        {{digitalId.fileName}}
+                    </div>
+                </accordion-heading>
+
+                <label>Created on: {{digitalId.creationTime}}</label>
+                <br>
+                <label>Size: {{digitalId.size}} KB</label>
+
+                <a href="/digitalid/download/{{digitalId.fileName}}" target="_blank" class="btn btn-success component-options-button" ng-click="cancelEvent($event)">download as xml</a>
+
+            </accordion-group>
+        </accordion>
+
+        <label ng-show="digitalIds.length == 0" class="no-digitalIds-label">There are currently no Digital IDs present on this server</label>
     </div>
 
 

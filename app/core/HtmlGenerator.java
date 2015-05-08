@@ -113,7 +113,7 @@ public class HtmlGenerator
     {
         if(a.getTitle() != null)
         {
-            s = s + "<accordion><accordion-group><accordion-heading><a "+ (a.getNoOfChanges() == 0 ? "class=\"no_changes_detected\"" : "class=\"changes_detected\"") + "> "+ a.getTitle() + ": " + a.getNoOfChanges() +" changes detected </a> </accordion-heading><div dynamic="+a.getDivName().replace("-","").replace(" ", "")+"></div>";
+            s = s + "<accordion><accordion-group><accordion-heading><a "+ (a.getNoOfChanges() == 0 ? "class=\"no_changes_detected\"" : "class=\"changes_detected\"") + "> "+ a.getTitle() + ": " + a.getNoOfChanges() +" changes detected </a> </accordion-heading><div dynamic="+a.getDivName()+"></div>";
         }
 
         if(a.getSubAccordions() != null)

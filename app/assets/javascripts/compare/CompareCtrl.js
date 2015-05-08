@@ -13,7 +13,7 @@
         $scope.digitalIds = [];
         $scope.selection = [];
         $scope.generationInProgress = false;
-        $scope.htmlString = '<a ng-click="click(1)" href="#">Click me</a>';
+        $scope.htmlString = '';
         console.log($scope.htmlString);
         UserService.listDigitalIDs()
             .then(function(data) {
@@ -23,8 +23,13 @@
                 console.log(error);
             });
 
-        $scope.toggleSelection = function toggleSelection(digitalId) {
-            var idx = $scope.selection.indexOf(digitalId);
+        $scope.toggleSelection = function toggleSelection(digitalId, e)
+        {
+            if (e) {
+                e.originalEvent.cancelBubble=true;
+            }
+
+            var idx = $scope.selection.indexOf(digitalId.fileName);
 
             // is currently selected
             if (idx > -1) {
@@ -33,7 +38,7 @@
 
             // is newly selected
             else {
-              $scope.selection.push(digitalId);
+              $scope.selection.push(digitalId.fileName);
             }
 
             console.log($scope.selection);
@@ -43,10 +48,9 @@
             $scope.generationInProgress = true;
             UserService.compareDigitalIDs($scope.selection)
 
-                    .then(function(data) {
+                    .then(function(data)
+                    {
                         $scope.generationInProgress = false;
-                        console.log(data);
-                        //var obj = JSON.parse(data);
                         console.log(data.accordionHtml)
                         $scope.htmlString = data.accordionHtml;
                         console.log(data.accordions.length);
@@ -61,35 +65,23 @@
         }
 
         function diffUsingJS(viewType, sectionName, s1, s2, $scope)
-            {
-                //console.log(s1);
-                //console.log(s2);
-                sectionName = sectionName.replace(/\s/g, "");
-                console.log(sectionName);
-                var base = difflib.stringAsLines(s1);
-                var newtxt = difflib.stringAsLines(s2);
-                var sm = new difflib.SequenceMatcher(base, newtxt);
-                var opcodes = sm.get_opcodes();
-                var contextSize = 0;
-                $scope[sectionName] = diffview.buildView({
-                                                              baseTextLines: base,
-                                                              newTextLines: newtxt,
-                                                              opcodes: opcodes,
-                                                              baseTextName: "Before",
-                                                              newTextName: "After",
-                                                              contextSize: 0,
-                                                              viewType: viewType
-                                                      });
-                console.log(diffview.buildView({
-                                                                                                          baseTextLines: base,
-                                                                                                          newTextLines: newtxt,
-                                                                                                          opcodes: opcodes,
-                                                                                                          baseTextName: "Before",
-                                                                                                          newTextName: "After",
-                                                                                                          contextSize: 0,
-                                                                                                          viewType: viewType
-                                                                                                  }));
-            }
+        {
+            var base = difflib.stringAsLines(s1);
+            var newtxt = difflib.stringAsLines(s2);
+            var sm = new difflib.SequenceMatcher(base, newtxt);
+            var opcodes = sm.get_opcodes();
+            var contextSize = 0;
+            $scope[sectionName] = diffview.buildView({
+                      baseTextLines: base,
+                      newTextLines: newtxt,
+                      opcodes: opcodes,
+                      baseTextName: "Before",
+                      newTextName: "After",
+                      contextSize: 0,
+                      viewType: viewType
+              });
+
+        }
     }
 
 

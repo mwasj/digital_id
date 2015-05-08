@@ -3,14 +3,22 @@ package core;
 import com.google.gson.Gson;
 import models.*;
 import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 import java.io.File;
-import java.util.ArrayList;
-import java.util.Arrays;
+import java.io.FilenameFilter;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.attribute.BasicFileAttributes;
+import java.nio.file.attribute.FileTime;
+import java.util.*;
 
 /**
  * Created by wasinski on 17/02/2015.
@@ -49,9 +57,41 @@ public class DigitalIDUtils
        return null;
     }
 
-    public static ArrayList<String> list()
+    public static ArrayList<DigitalIdFileAttributes> list()
     {
-        File f = new File("C:\\digital_ids");
-        return new ArrayList<>(Arrays.asList(f.list()));
+        //List & filter all files in the base directory
+        File baseDirectory = new File("C:\\digital_ids");
+        File[] files = baseDirectory.listFiles(new FilenameFilter()
+               {
+                   public boolean accept(File dir, String name) {
+                       return name.toLowerCase().endsWith(".xml");
+                   }
+               }
+        );
+
+        ArrayList<DigitalIdFileAttributes> digitalIdFileAttributeses = new ArrayList<>();
+
+        for(File f : files)
+        {
+            String p = f.getAbsolutePath();
+            Path path = Paths.get(p);
+            BasicFileAttributes attributes = null;
+
+            try {
+                attributes = Files.readAttributes(path, BasicFileAttributes.class);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            if(attributes != null)
+            {
+                DateTime date = new DateTime(attributes.creationTime().toMillis());
+                String formattedDate = date.toString("dd-MMM-yy HH:mm:ss", Locale.getDefault());
+                digitalIdFileAttributeses.add(new DigitalIdFileAttributes(f.getName(), formattedDate, String.valueOf(attributes.size()/1024)));
+            }
+        }
+
+        return digitalIdFileAttributeses;
     }
 }
+

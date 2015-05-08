@@ -4,24 +4,43 @@
 
     <div class="jumbotron" style="margin-top: 20px">
         <p class="pull-left">Existing Digital IDs</p>
-
+        <br><br><br>
+        <label ng-show="digitalIds.length == 0" class="no-digitalIds-label">There are currently no Digital IDs present on this server</label>
         <br><br><br>
 
-        <ul ng-repeat="digitalId in digitalIds">
-            <input
-                    type="checkbox"
-                    name="{{digitalId}}"
-                    value="{{digitalId}}"
-                    ng-click="toggleSelection(digitalId)"
-                    ng-checked="selection.indexOf(digitalId) > -1">{{digitalId}}<br><br><br>
-        </ul>
+        <accordion ng-show="digitalIds.length > 0">
+            <accordion-group ng-repeat="digitalId in digitalIds"  heading="{{digitalId.fileName}}">
 
-        <button class="btn btn-success" id="btn_compare" ng-click="goCompare()">Go</button>
+                <accordion-heading>
+
+                    <input
+                            type="checkbox"
+                            name="{{digitalId}}"
+                            value="{{digitalId}}"
+                            ng-click="toggleSelection(digitalId, $event)"
+                            ng-checked="selection.indexOf(digitalId) > -1"
+                            class="roundedTwo">
+
+                    <label ng-click="downloadDigitalId(digitalId)">
+                        {{digitalId.fileName}}
+                    </label>
+                </accordion-heading>
+
+                <label>Created on: {{digitalId.creationTime}}</label>
+                <br>
+                <label>Size: {{digitalId.size}} KB</label>
+
+            </accordion-group>
+
+
+        </accordion>
+
+        <button class="btn btn-success" id="btn_compare" ng-click="goCompare()" ng-disabled="selection.length != 2" ng-show="digitalIds.length >= 2">GO</button>
     </div>
 
     <div ng-show="generationInProgress" class="center-div">
         <h1>Diff generation in progress</h1>
-
+        <br>
         <div class="spinner">
             <div class="rect1"></div>
             <div class="rect2"></div>

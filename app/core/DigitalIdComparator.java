@@ -66,11 +66,11 @@ public class DigitalIdComparator
                         for(CommandResponse commandResponse1 : connectable2.getCommandResponses())
                         {
                             if(commandResponse.getCommand().getCommand().equals(commandResponse1.getCommand().getCommand()) &&
-                                    commandResponse.getCommand().isComparable() == commandResponse1.getCommand().isComparable())
+                                    (commandResponse.getCommand().isComparable() && commandResponse1.getCommand().isComparable()))
                             {
-                                Accordion accordion = mainAccordion.addSubAccordion(new Accordion(connectable.getHostName(), connectable2.getHostName(), null, null, 0));
+                                String divName = createDivName(connectable);
 
-                                String divName = createDivName(connectable, commandResponse.getCommand().getCommand() + Calendar.getInstance().get(Calendar.MILLISECOND));
+                                Accordion accordion = mainAccordion.addSubAccordion(new Accordion(connectable.getHostName(), divName, null, null, 0));
 
                                 accordion.addSubAccordion(new Accordion(commandResponse.getCommand().getCommand(),
                                         divName,
@@ -87,89 +87,6 @@ public class DigitalIdComparator
         }
 
         accordions.add(mainAccordion);
-    }
-
-    public void compareInservs()
-    {
-        if(digitalID1.getInservs() == null || digitalID2.getInservs() == null)
-        {
-            return;
-        }
-
-        Accordion inservAccordion = new Accordion("Storage Arrays", "StorageArrays",null, null, 0);
-
-        for(Inserv inserv : digitalID1.getInservs())
-        {
-            for(Inserv inserv1 : digitalID2.getInservs())
-            {
-                if(inserv.getHostName().equals(inserv1.getHostName()))
-                {
-                    Accordion accordion = inservAccordion.addSubAccordion(new Accordion(inserv.getHostName(), createDivName(inserv, "storeserv"), null, null, 0));
-
-                    String hostInfo = inserv.getContext().applyDiffFilters(inserv.getHostDetailedInformation());
-                    String hostInfo2 = inserv1.getContext().applyDiffFilters(inserv1.getHostDetailedInformation());
-                    accordion.addSubAccordion(new Accordion("Showhost -d", createDivName(inserv, "showhostd"), hostInfo, hostInfo2, levenshteinDistance(hostInfo, hostInfo2)));
-
-                    String hostLesbInfo = inserv.getContext().applyDiffFilters(inserv.getHostLesbInformation());
-                    String hostLesbInfo2 = inserv1.getContext().applyDiffFilters(inserv1.getHostLesbInformation());
-                    accordion.addSubAccordion(new Accordion("Showhost -lesb", createDivName(inserv, "showhostlesb"), hostLesbInfo, hostLesbInfo2, levenshteinDistance(hostLesbInfo, hostLesbInfo2)));
-
-                    String hostPathSumInfo = inserv.getContext().applyDiffFilters(inserv.getHostPathSumInformation());
-                    String hostPathSumInfo2 = inserv1.getContext().applyDiffFilters(inserv1.getHostPathSumInformation());
-                    accordion.addSubAccordion(new Accordion("Showhost -pathsum", createDivName(inserv, "showhostpathsum"), hostPathSumInfo, hostPathSumInfo2, levenshteinDistance(hostPathSumInfo, hostPathSumInfo2)));
-                }
-            }
-        }
-
-        accordions.add(inservAccordion);
-    }
-
-    public void compareSwitches()
-    {
-        if(digitalID1.getSwitches() == null || digitalID2.getSwitches() == null)
-        {
-            return;
-        }
-
-        Accordion switchAccordion = new Accordion("Fabric", "Fabric", null, null, 0);
-
-        for(Switch switch1 : digitalID1.getSwitches())
-        {
-            for(Switch switch2 : digitalID2.getSwitches())
-            {
-                if(switch1.getHostName().equals(switch2.getHostName()))
-                {
-                    Accordion accordion = switchAccordion.addSubAccordion(new Accordion(switch1.getHostName(), switch1.getHostName(),null, null, 0));
-                    System.out.println(switch1.getHostName());
-                    String switchInfo = switch1.getContext().applyDiffFilters(switch1.getSwitchInformation());
-                    String switchInfo2 = switch2.getContext().applyDiffFilters(switch2.getSwitchInformation());
-                    accordion.addSubAccordion(new Accordion("System Information", createDivName(switch1, "sysinfo"), switchInfo, switchInfo2, levenshteinDistance(switchInfo,switchInfo2)));
-
-                    String flogiInfo = switch1.getContext().applyDiffFilters(switch1.getFlogiDatabase());
-                    String flogiInfo2 = switch2.getContext().applyDiffFilters(switch2.getFlogiDatabase());
-
-                    accordion.addSubAccordion(new Accordion("Flogi Database", createDivName(switch1, "flogidatabase"), flogiInfo, flogiInfo2, levenshteinDistance(flogiInfo,flogiInfo2)));
-
-                    Accordion activePortsHeaderAccordion = accordion.addSubAccordion(new Accordion("Active Ports", createDivName(switch1, "activeports"), null, null,0));
-
-                    for(SwitchPort port1 : switch1.getActivePorts())
-                    {
-                        for(SwitchPort port2 : switch2.getActivePorts())
-                        {
-                            if(port1.getPortNumber().equals(port2.getPortNumber()))
-                            {
-                                String portInfo = switch1.getContext().applyDiffFilters(port1.getPortInformation());
-                                String portInfo2 = switch2.getContext().applyDiffFilters(port2.getPortInformation());
-
-                                activePortsHeaderAccordion.addSubAccordion(new Accordion(port1.getPortNumber(), createDivName(switch1, port1.getPortNumber().replaceAll("/", "")), portInfo, portInfo2, levenshteinDistance(portInfo,portInfo2)));
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
-        accordions.add(switchAccordion);
     }
 
     /**
@@ -229,8 +146,9 @@ public class DigitalIdComparator
         return difference;
     }
 
-    private static String createDivName(Connectable connectable, String s)
+    private static String createDivName(Connectable connectable)
     {
-        return s+connectable.getHostName().replace("-", "");
+        long timeMilli2 =  Calendar.getInstance().getTimeInMillis();
+        return connectable.getHostName().replaceAll("-", "")+timeMilli2;
     }
 }
