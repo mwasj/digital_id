@@ -6,7 +6,9 @@ import models.*;
 import java.math.BigInteger;
 import java.security.SecureRandom;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
+import java.util.List;
 
 /**
  * Created by wasinski on 10/02/2015.
@@ -79,7 +81,7 @@ public class DigitalIdComparator
                                         divName2,
                                         commandResponse.getResult(),
                                         commandResponse1.getResult(),
-                                        levenshteinDistance(commandResponse.getResult(), commandResponse1.getResult())));
+                                        lineDifference(commandResponse.getResult(), commandResponse1.getResult())));
 
                                 contentDtos.add(new ContentDto( commandResponse.getResult(), commandResponse1.getResult(), divName2));
                             }
@@ -145,6 +147,25 @@ public class DigitalIdComparator
 
         String[] array1 = s0.split("\\r?\\n");
         String[] array2 = s1.split("\\r?\\n");
+
+        List<String> array3 = Arrays.asList(array1);
+        List<String> array4 = Arrays.asList(array2);
+
+        for(String line : array1)
+        {
+            if(!array4.contains(line))
+            {
+                difference += 1;
+            }
+        }
+
+        for(String line : array2)
+        {
+            if(!array3.contains(line))
+            {
+                difference += 1;
+            }
+        }
 
         return difference;
     }
