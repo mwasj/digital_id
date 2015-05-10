@@ -27,6 +27,7 @@ public class DigitalIdComparator
     public ArrayList<Accordion> getAccordions() {
         return accordions;
     }
+    private boolean incompatible;
 
     public DigitalIdComparator(DigitalID digitalID1, DigitalID digitalID2)
     {
@@ -34,28 +35,40 @@ public class DigitalIdComparator
         this.digitalID2 = digitalID2;
         this.accordions = new ArrayList<>();
         this.contentDtos = new ArrayList<>();
+        this.incompatible = true;
     }
 
     public void compareHosts()
     {
-        if(digitalID1.getHosts() != null || digitalID2.getHosts() != null)
+        if(digitalID1.getHosts() != null && digitalID2.getHosts() != null)
         {
             buildAccordion(digitalID1.getHosts(), digitalID2.getHosts(), "Hosts");
         }
 
-        if(digitalID1.getSwitches() != null || digitalID2.getSwitches() != null)
+        if(digitalID1.getSwitches() != null && digitalID2.getSwitches() != null)
         {
             buildAccordion(digitalID1.getSwitches(), digitalID2.getSwitches(), "Switches");
         }
 
-        if(digitalID1.getInservs() != null || digitalID2.getInservs() != null)
+        if(digitalID1.getInservs() != null && digitalID2.getInservs() != null)
         {
             buildAccordion(digitalID1.getInservs(), digitalID2.getInservs(), "Arrays");
+        }
+
+        if(incompatible)
+        {
+            String message = "Error, these two Digital IDs are incompatible.";
+            String divName = "incompatible";
+            Accordion mainAccordion = new Accordion(message, divName, null, null, -1);
+            accordions.add(mainAccordion);
+            contentDtos.add(new ContentDto(message, null, divName));
         }
     }
 
     private <T> void buildAccordion (ArrayList<T> array1, ArrayList<T> array2, String title)
     {
+        boolean foundConnectable = false;
+        boolean foundCommand = false;
         Accordion mainAccordion = new Accordion(title, title, null, null, 0);
 
         for(Connectable connectable : (ArrayList<Connectable>) array1)
@@ -64,6 +77,8 @@ public class DigitalIdComparator
             {
                 if(connectable.getHostName().equals(connectable2.getHostName()))
                 {
+                    foundConnectable = true;
+                    incompatible = false;
                     String divName = createDivName(connectable);
 
                     Accordion accordion = mainAccordion.addSubAccordion(new Accordion(connectable.getHostName(), divName, null, null, 0));
@@ -75,6 +90,8 @@ public class DigitalIdComparator
                             if(commandResponse.getCommand().getCommand().equals(commandResponse1.getCommand().getCommand()) &&
                                     (commandResponse.getCommand().isComparable() && commandResponse1.getCommand().isComparable()))
                             {
+                                foundCommand = true;
+
                                 String divName2 = createDivName(connectable);
 
                                 accordion.addSubAccordion(new Accordion(commandResponse.getCommand().getCommand(),
@@ -83,12 +100,24 @@ public class DigitalIdComparator
                                         commandResponse1.getResult(),
                                         lineDifference(commandResponse.getResult(), commandResponse1.getResult())));
 
-                                contentDtos.add(new ContentDto( commandResponse.getResult(), commandResponse1.getResult(), divName2));
+                                contentDtos.add(new ContentDto(commandResponse.getResult(), commandResponse1.getResult(), divName2));
                             }
                         }
                     }
+
+                    //Could not find any commands that match.
+                    if(!foundCommand)
+                    {
+                        contentDtos.add(new ContentDto("Could not find matching commands to compare in both Digital IDs", null, divName));
+                    }
                 }
             }
+        }
+
+        //Could find any connectable objects whose names match.
+        if(!foundConnectable)
+        {
+            contentDtos.add(new ContentDto("Could not find matching devices to compare in both Digital IDs", null, mainAccordion.getDivName()));
         }
 
         accordions.add(mainAccordion);

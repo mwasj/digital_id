@@ -111,9 +111,14 @@ public class HtmlGenerator
     {
         if(a.getTitle() != null)
         {
+            String style = (a.getNoOfChanges() == 0 ? "class=\"no_changes_detected\"" : "class=\"changes_detected\"");
+            style = a.getNoOfChanges() == -1 ? "class=\"incompatible\"" : style;
+
+            String changes = a.getNoOfChanges() == -1 ? "" : a.getNoOfChanges() +" changes detected";
+
             System.out.println(a.getTitle());
-            s = s + "<accordion><accordion-group><accordion-heading><a "+ (a.getNoOfChanges() == 0 ? "class=\"no_changes_detected\"" : "class=\"changes_detected\"") + "> "
-                    + a.getTitle() + ": " + a.getNoOfChanges() +" changes detected </a> </accordion-heading><div dynamic="+a.getDivName()+"></div>";
+            s = s + "<accordion><accordion-group><accordion-heading><a "+ style + "> "
+                    + a.getTitle() + " " + changes +"  </a> </accordion-heading><div dynamic="+a.getDivName()+"></div>";
         }
 
         if(a.getSubAccordions() != null)

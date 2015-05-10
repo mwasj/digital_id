@@ -123,6 +123,22 @@ footer {
     padding: 5px;
 }
 
+.incompatible{
+    background: #CD5C5C !important;
+    display: block;
+    color: inherit;
+    padding: 5px;
+    color: white;
+}
+
+hr
+{
+    padding: 0px;
+    margin: 0px;
+    display: block;
+    border-bottom: 1px solid black;
+}
+
 /* .roundedTwo */
 .roundedTwo {
   float: right;

@@ -8,7 +8,7 @@ import core.CommandResponse;
 public class WebUpdate
 {
     private String text;
-    private int id;
+    private long  id;
     private CommandResponse commandResponse;
     private WebUpdateType webUpdateType;
 
@@ -20,7 +20,7 @@ public class WebUpdate
         return text;
     }
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 
@@ -28,7 +28,7 @@ public class WebUpdate
         return commandResponse;
     }
 
-    public WebUpdate(String text, int id, CommandResponse commandResponse, WebUpdateType webUpdateType)
+    public WebUpdate(String text, long id, CommandResponse commandResponse, WebUpdateType webUpdateType)
     {
         this.text = text;
         this.id = id;

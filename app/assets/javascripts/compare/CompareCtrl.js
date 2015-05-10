@@ -56,7 +56,15 @@
                         console.log(data.accordions.length);
                         for(var i = 0; i < data.accordions.length; i++)
                         {
-                            diffUsingJS(0, data.accordions[i].divName, data.accordions[i].content1, data.accordions[i].content2, $scope);
+                            if(data.accordions[i].content2 != undefined)
+                            {
+                                diffUsingJS(0, data.accordions[i].divName, data.accordions[i].content1, data.accordions[i].content2);
+                            }
+                            else
+                            {
+                                addIncompatible(data.accordions[i].divName, data.accordions[i].content1);
+                            }
+
                         }
                     }, function(error) {
                         console.log(error);
@@ -64,7 +72,7 @@
 
         }
 
-        function diffUsingJS(viewType, sectionName, s1, s2, $scope)
+        function diffUsingJS(viewType, sectionName, s1, s2)
         {
             var base = difflib.stringAsLines(s1);
             var newtxt = difflib.stringAsLines(s2);
@@ -81,6 +89,11 @@
                       viewType: viewType
               });
 
+        }
+
+        function addIncompatible(divName, note)
+        {
+            $scope[divName] = note;
         }
     }
 

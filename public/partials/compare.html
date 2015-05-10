@@ -4,9 +4,7 @@
 
     <div class="jumbotron" style="margin-top: 20px">
         <p class="pull-left">Select two Digital IDs from the list below:</p>
-        <br><br><br>
         <label ng-show="digitalIds.length == 0" class="no-digitalIds-label">There are currently no Digital IDs present on this server</label>
-        <br><br><br>
         <label style="float: right; margin-right: 15px;" ng-show="digitalIds.length > 0">Select</label>
         <br><br>
         <accordion ng-show="digitalIds.length > 0">
@@ -38,9 +36,11 @@
 
         </accordion>
 
-        <button class="btn btn-success" id="btn_compare" ng-click="goCompare()" ng-disabled="selection.length != 2" ng-show="digitalIds.length >= 2">GO</button>
+        <button class="btn btn-success" id="btn_compare" ng-click="goCompare()" ng-disabled="selection.length != 2" ng-show="digitalIds.length >= 2">Compare</button>
     </div>
-
+    <br>
+    <hr>
+    <br>
     <div ng-show="generationInProgress" class="center-div">
         <h1>Diff generation in progress</h1>
         <br>

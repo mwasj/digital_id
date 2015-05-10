@@ -4,12 +4,14 @@ import com.jcraft.jsch.JSchException;
 import command_sets.BrocadeCommandSet;
 import context.BrocadeSwitchContext;
 import core.CommandResponse;
+import core.CommandResponseCode;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Calendar;
 
 /**
  * Created by wasinski on 19/02/2015.
@@ -34,8 +36,18 @@ public class BrocadeSwitch extends Switch {
         {
             try {
                 responses.add(getConnectionManager().sendCommand(commandResponse.getCommand(), CommandType.Exec));
-                Thread.sleep(commandResponse.getCommand().getInterval()*1000);
-            } catch (IOException | JSchException | InterruptedException e) {
+
+                if(commandResponse.getCommand().getInterval() > 0)
+                {
+                    long id =  Calendar.getInstance().getTimeInMillis();
+                    int seconds = (commandResponse.getCommand().getInterval());
+                    getWebUpdater().update(new WebUpdate("Sleeping for: " + seconds+" seconds",id, null, WebUpdateType.progressUpdate));
+                    Thread.sleep(commandResponse.getCommand().getInterval() * 1000);
+                    getWebUpdater().update(new WebUpdate("Resuming after " + seconds+" seconds",id,
+                            new CommandResponse("Resuming after " + seconds+" seconds", CommandResponseCode.Success, null, null, null, null), WebUpdateType.progressUpdate));
+                }
+            } catch (IOException | JSchException | InterruptedException e)
+            {
                 e.printStackTrace();
             }
 

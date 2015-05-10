@@ -48,7 +48,7 @@ public class ConnectionManager {
      */
     public CommandResponse sendCommand(Command command, CommandType commandType) throws IOException, JSchException
     {
-        int id = Calendar.getInstance().get(Calendar.MILLISECOND);
+        long id =  Calendar.getInstance().getTimeInMillis();
 
         connectable.getWebUpdater().update(new WebUpdate("Executing command: " + command.getCommand(), id, null, WebUpdateType.progressUpdate));
         CommandResponse commandResponse = null;
@@ -570,7 +570,7 @@ public class ConnectionManager {
      */
     private void establishSession(boolean reset)
     {
-        int id = Calendar.getInstance().get(Calendar.MILLISECOND);
+        long id =  Calendar.getInstance().getTimeInMillis();
         DateTime startDate = DateTime.now();
 
         if(session == null)
