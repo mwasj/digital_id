@@ -13,6 +13,8 @@
         $scope.downloadReady = false;
         var sessionName = Math.random().toString(36).substring(7);
         $scope.digitalID = digitalID;
+        $scope.downloadUrl = undefined;
+        $scope.headerTitle = "Building digital ID ... ";
 
         console.log("Your username is: " + sessionName);
         var WS = window['MozWebSocket'] ? MozWebSocket : WebSocket
@@ -69,6 +71,8 @@
             {
                 $scope.downloadReady = true;
                 var parsedContent = JSON.parse(obj.content);
+                $scope.downloadUrl = parsedContent.text
+                $scope.headerTitle = "Building digital ID ... Complete!";
                 console.log(parsedContent);
             }
 
@@ -76,35 +80,32 @@
         }
 
         function sendMessage(msg){
-                    // Wait until the state of the socket is not ready and send the message when it is...
-                    waitForSocketConnection(sock, function(){
-                        console.log("Message has been sent.");
-                        sock.send(msg);
-                    });
-                }
-
-        function postUpdate(){
-
+            // Wait until the state of the socket is not ready and send the message when it is...
+            waitForSocketConnection(sock, function(){
+                console.log("Message has been sent.");
+                sock.send(msg);
+            });
         }
 
+
         // Make the function wait until the connection is made...
-                function waitForSocketConnection(socket, callback){
-                    setTimeout(
-                        function () {
-                            if (socket.readyState === 1) {
-                                console.log("Websocket connection made")
-                                if(callback != null){
-                                    callback();
-                                }
-                                return;
+        function waitForSocketConnection(socket, callback){
+            setTimeout(
+                function () {
+                    if (socket.readyState === 1) {
+                        console.log("Websocket connection made")
+                        if(callback != null){
+                            callback();
+                        }
+                        return;
 
-                            } else {
-                                console.log("wait for connection... " + socket.readyState)
-                                waitForSocketConnection(socket, callback);
-                            }
+                    } else {
+                        console.log("wait for connection... " + socket.readyState)
+                        waitForSocketConnection(socket, callback);
+                    }
 
-                        }, 5); // wait 5 milisecond for the connection...
-                }
+                }, 5); // wait 5 milisecond for the connection...
+        }
 
         UserService.buildDigitalID(digitalID, sessionName);
 

@@ -49,7 +49,7 @@
             currentComponent.userName = $scope.userName;
             currentComponent.password =  $scope.password;
             currentComponent.componentType = $scope.componentType;
-
+            currentComponent.commands = $scope.commands;
             console.log("New component window, ok clicked.");
             $modalInstance.close(currentComponent);
         };
@@ -66,9 +66,10 @@
         };
 
 
-        $scope.createEmptyCommand = function (){
+        $scope.createEmptyCommand = function ()
+        {
             console.log("createEmptyCommand called");
-            $scope.commands.push(new Command("",0));
+            $scope.commands.push(new Command("",0, false));
         }
 
         $scope.removeCommand = function (command)
@@ -89,7 +90,7 @@
              {
                  if(command === $scope.commands[i])
                  {
-                     $scope.commands[i].comparable = ! $scope.commands[i].comparable
+                     $scope.commands[i].comparable = ! $scope.commands[i].comparable;
                      console.log($scope.commands[i]);
                  }
              }

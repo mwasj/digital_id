@@ -26,8 +26,22 @@ public class BrocadeSwitch extends Switch {
     }
 
     @Override
-    public void runCommands() {
+    public void runCommands()
+    {
+        ArrayList<CommandResponse> responses = new ArrayList<>();
 
+        for(CommandResponse commandResponse : getCommandResponses())
+        {
+            try {
+                responses.add(getConnectionManager().sendCommand(commandResponse.getCommand(), CommandType.Exec));
+                Thread.sleep(commandResponse.getCommand().getInterval()*1000);
+            } catch (IOException | JSchException | InterruptedException e) {
+                e.printStackTrace();
+            }
+
+        }
+
+        setCommandResponses(responses);
     }
 
     /**

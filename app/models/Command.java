@@ -22,11 +22,18 @@ public class Command
         return comparable;
     }
 
+    private String id;
+
+    public String getId() {
+        return id;
+    }
+
     public Command(String command, int interval, boolean comparable)
     {
         this.command = command;
         this.interval = interval;
         this.comparable = comparable;
+        this.id = id;
     }
 
     public Command(){}

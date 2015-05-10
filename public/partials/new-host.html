@@ -64,7 +64,7 @@
                             name=command.command"
                             value="command.command"
                             ng-click="$parent.toggleSelection(command)"
-                            ng-checked="false">
+                            ng-checked="command.comparable">
                 </td>
                 <td><button class="btn btn-danger" ng-click="removeCommand(command)">Delete</button></td>
             </tr>

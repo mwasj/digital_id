@@ -15,16 +15,27 @@ public class ConnectionManager {
     private boolean isOpen;
     private Connectable connectable;
     private int channelCounter;
+    private int channelMax;
 
     public ConnectionManager(Connectable connectable)
     {
         this.connectable = connectable;
+
+        if(connectable instanceof CiscoSwitch || connectable instanceof BrocadeSwitch)
+        {
+            System.out.println("This is a switch, setting channelMax variable to 2");
+            channelMax = 2;
+        }
+        else
+        {
+            channelMax  =999;
+        }
     }
 
     public void connect()
     {
         session = getSession();
-        establishSession();
+        establishSession(false);
     }
 
     /***
@@ -47,9 +58,11 @@ public class ConnectionManager {
             session = getSession();
         }
 
-        if(!session.isConnected()) {
+        if(!session.isConnected())
+        {
             channelCounter = 0;
-            establishSession();
+            connectable.getWebUpdater().update(new WebUpdate("Connection interrupted, reconnecting  to: " + connectable.getHostName(), id, null, WebUpdateType.progressUpdate));
+            establishSession(false);
         }
 
         if(commandType == CommandType.Exec)
@@ -100,13 +113,13 @@ public class ConnectionManager {
         String errorMessage = "";
         channelCounter += 1;
 
-        if(channelCounter == 2)
+        if(channelCounter == channelMax)
         {
             System.out.println("Channel limit reached, resetting connection...");
             session.disconnect();
             session = null;
             session = getSession();
-            establishSession();
+            establishSession(true);
             channelCounter = 0;
         }
 
@@ -555,7 +568,7 @@ public class ConnectionManager {
     /**
      * Responsible for establishing session to the host.
      */
-    private void establishSession()
+    private void establishSession(boolean reset)
     {
         int id = Calendar.getInstance().get(Calendar.MILLISECOND);
         DateTime startDate = DateTime.now();
@@ -575,19 +588,26 @@ public class ConnectionManager {
         {
             System.out.println(connectable == null);
             System.out.println(connectable.getWebUpdater() == null);
-            connectable.getWebUpdater().update(new WebUpdate("Connecting to: " + connectable.getHostName(), id, null, WebUpdateType.progressUpdate));
+
+            //Only send an update if a brand new connection is being established.
+            if(!reset)
+                connectable.getWebUpdater().update(new WebUpdate("Connecting to: " + connectable.getHostName(), id, null, WebUpdateType.progressUpdate));
+
             session.connect();
 
             if(session.isConnected())
             {
-                connectable.getWebUpdater().update(new WebUpdate(null, id,
-                        new CommandResponse("Successfully connected to: " + connectable.getHostName(), CommandResponseCode.Success, null, null, startDate, DateTime.now()), WebUpdateType.progressUpdate));
+                if(!reset)
+                    connectable.getWebUpdater().update(new WebUpdate(null, id,
+                            new CommandResponse("Successfully connected to: " + connectable.getHostName(), CommandResponseCode.Success, null, null, startDate, DateTime.now()), WebUpdateType.progressUpdate));
             }
         }
         catch (JSchException e)
         {
-            connectable.getWebUpdater().update(new WebUpdate(null, id,
-                    new CommandResponse("Could not connect to: " + connectable.getHostName(), CommandResponseCode.Failure, null, null, startDate, DateTime.now()), WebUpdateType.progressUpdate));
+            if(!reset)
+                connectable.getWebUpdater().update(new WebUpdate(null, id,
+                        new CommandResponse("Could not connect to: " + connectable.getHostName(), CommandResponseCode.Failure, null, null, startDate, DateTime.now()), WebUpdateType.progressUpdate));
+
             e.printStackTrace();
         }
     }

@@ -85,8 +85,6 @@ public class HtmlGenerator
 
     private String generateDivs(Accordion a,  String s)
     {
-        //return "<accordion><accordion-group heading='test'></accordion-group></accordion>";
-
         if(a.getTitle() != null)
         {
             s = s + "<div class=\"accordion\"><h3 " + (a.getNoOfChanges() == 0 ? "class=\"no_changes_detected\"" : "class=\"changes_detected\"") + ">" + a.getTitle() + " " + a.getNoOfChanges() + " changes detected</h3><div id=\"" + a.getDivName() + "\">";
@@ -113,21 +111,24 @@ public class HtmlGenerator
     {
         if(a.getTitle() != null)
         {
-            s = s + "<accordion><accordion-group><accordion-heading><a "+ (a.getNoOfChanges() == 0 ? "class=\"no_changes_detected\"" : "class=\"changes_detected\"") + "> "+ a.getTitle() + ": " + a.getNoOfChanges() +" changes detected </a> </accordion-heading><div dynamic="+a.getDivName()+"></div>";
+            System.out.println(a.getTitle());
+            s = s + "<accordion><accordion-group><accordion-heading><a "+ (a.getNoOfChanges() == 0 ? "class=\"no_changes_detected\"" : "class=\"changes_detected\"") + "> "
+                    + a.getTitle() + ": " + a.getNoOfChanges() +" changes detected </a> </accordion-heading><div dynamic="+a.getDivName()+"></div>";
         }
 
         if(a.getSubAccordions() != null)
         {
             for(Accordion accordion1 : a.getSubAccordions())
             {
+
                 s = s + generateAccordions(accordion1, "");
-                s = s + "</accordion>";
+                //s = s + "</accordion>";
             }
         }
 
         if(a.getTitle() != null)
         {
-            s = s + "</accordion></accordion-group>";
+            s = s + "</accordion-group></accordion>";
         }
 
         return s;

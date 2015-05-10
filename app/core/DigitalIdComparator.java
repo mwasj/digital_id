@@ -3,6 +3,8 @@ package core;
 import dtos.ContentDto;
 import models.*;
 
+import java.math.BigInteger;
+import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.Calendar;
 
@@ -58,9 +60,12 @@ public class DigitalIdComparator
         {
             for(Connectable connectable2 : (ArrayList<Connectable>) array2)
             {
-
                 if(connectable.getHostName().equals(connectable2.getHostName()))
                 {
+                    String divName = createDivName(connectable);
+
+                    Accordion accordion = mainAccordion.addSubAccordion(new Accordion(connectable.getHostName(), divName, null, null, 0));
+
                     for(CommandResponse commandResponse : connectable.getCommandResponses())
                     {
                         for(CommandResponse commandResponse1 : connectable2.getCommandResponses())
@@ -68,17 +73,15 @@ public class DigitalIdComparator
                             if(commandResponse.getCommand().getCommand().equals(commandResponse1.getCommand().getCommand()) &&
                                     (commandResponse.getCommand().isComparable() && commandResponse1.getCommand().isComparable()))
                             {
-                                String divName = createDivName(connectable);
-
-                                Accordion accordion = mainAccordion.addSubAccordion(new Accordion(connectable.getHostName(), divName, null, null, 0));
+                                String divName2 = createDivName(connectable);
 
                                 accordion.addSubAccordion(new Accordion(commandResponse.getCommand().getCommand(),
-                                        divName,
+                                        divName2,
                                         commandResponse.getResult(),
                                         commandResponse1.getResult(),
                                         levenshteinDistance(commandResponse.getResult(), commandResponse1.getResult())));
 
-                                contentDtos.add(new ContentDto( commandResponse.getResult(), commandResponse1.getResult(), divName));
+                                contentDtos.add(new ContentDto( commandResponse.getResult(), commandResponse1.getResult(), divName2));
                             }
                         }
                     }
@@ -149,6 +152,12 @@ public class DigitalIdComparator
     private static String createDivName(Connectable connectable)
     {
         long timeMilli2 =  Calendar.getInstance().getTimeInMillis();
-        return connectable.getHostName().replaceAll("-", "")+timeMilli2;
+        return connectable.getHostName().replaceAll("-", "")+timeMilli2+nextDiveName();
+    }
+
+    public static String nextDiveName()
+    {
+        SecureRandom random = new SecureRandom();
+        return new BigInteger(130, random).toString(32);
     }
 }
