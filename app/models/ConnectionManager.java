@@ -3,6 +3,7 @@ package models;
 import com.jcraft.jsch.*;
 import core.CommandResponse;
 import core.CommandResponseCode;
+import core.DigitalIDUtils;
 import org.apache.commons.io.IOUtils;
 import org.joda.time.DateTime;
 
@@ -48,7 +49,7 @@ public class ConnectionManager {
      */
     public CommandResponse sendCommand(Command command, CommandType commandType) throws IOException, JSchException
     {
-        long id =  Calendar.getInstance().getTimeInMillis();
+        long id = DigitalIDUtils.getUniqueID();
 
         connectable.getWebUpdater().update(new WebUpdate("Executing command: " + command.getCommand(), id, null, WebUpdateType.progressUpdate));
         CommandResponse commandResponse = null;
@@ -570,7 +571,7 @@ public class ConnectionManager {
      */
     private void establishSession(boolean reset)
     {
-        long id =  Calendar.getInstance().getTimeInMillis();
+        long id =  DigitalIDUtils.getUniqueID();
         DateTime startDate = DateTime.now();
 
         if(session == null)

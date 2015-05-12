@@ -100,5 +100,10 @@ public class DigitalIDUtils
 
         return digitalIdFileAttributeses;
     }
+
+    public static long getUniqueID()
+    {
+        return Calendar.getInstance().getTimeInMillis();
+    }
 }
 

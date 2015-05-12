@@ -77,7 +77,7 @@ public class Main {
         DigitalID digitalID3 = DigitalIdMarshaller.unMarshall("C:/digital_ids/test2/test2.xml");
 
         DigitalIdComparator comparator = new DigitalIdComparator(digitalID2, digitalID3);
-        comparator.compareHosts();
+        comparator.compare();
         comparator.compareInservs();
         comparator.compareSwitches();
 

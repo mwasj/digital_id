@@ -2,6 +2,7 @@
 dependencies = [
     'ngRoute',
     'ui.bootstrap',
+    'ngDragDrop',
     'myApp.filters',
     'myApp.services',
     'myApp.controllers',

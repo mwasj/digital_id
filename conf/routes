@@ -18,6 +18,7 @@ POST     /digitalid/compare                        controllers.DigitalIdControll
 GET      /digitalid/create                         controllers.DigitalIdController.render
 GET      /digitalid/socketUpdater                  controllers.DigitalIdController.socketUpdater(sessionName)
 GET      /digitalid/list                           controllers.DigitalIdController.list
+GET      /digitalid/compare                        controllers.DigitalIdController.render
 GET      /digitalid/download/:filename             controllers.DigitalIdController.download(filename)
 
 # Map static resources from the /public folder to the /assets URL path

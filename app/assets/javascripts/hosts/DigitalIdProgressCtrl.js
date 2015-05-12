@@ -31,7 +31,6 @@
 
         sock.onmessage = function (evt)
         {
-            //console.log(evt)
             var obj = JSON.parse(evt.data)
 
             if(obj.type === "analysis")
@@ -112,11 +111,6 @@
          $scope.cancel = function(){
                 $modalInstance.dismiss('cancel');
          }
-
-
-        $scope.downloadXml = function(){
-
-        }
     };
 
 

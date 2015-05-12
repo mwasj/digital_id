@@ -45,17 +45,17 @@
         </ul>
     </div>
 
-    <div class="form-group">
+    <div class="form-group" style="margin-left: 15px">
 
         <label>Execute the following commands:</label>
         <br />
         <button class="btn btn-primary" ng-click="createEmptyCommand()">Add command</button>
         <br />
         <table>
-            <tr ng-show="$parent.commandResponses != 0">
+            <tr ng-show="$parent.commands.length > 0">
                 <th>Command</th><th>Then wait for</th><th>Comparable</th>
             </tr>
-            <tr ng-repeat="command in $parent.commands">
+            <tr ng-repeat="command in $parent.commands" style="margin-top: 15px">
                 <td><input type="text" class="form-control" name="command" id="command" placeholder="Type your command here" ng-model="command.command"></td>
                 <td><input type="text" class="form-control" name="interval" id="interval" placeholder="0 sec." ng-model="command.interval"></td>
                 <td>

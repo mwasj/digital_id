@@ -21,16 +21,12 @@
                 }
         }
 
-        $scope.downloadDigitalId = function(digitalId)
-        {
-
-        }
-
         UserService.listDigitalIDs()
             .then(function(data)
             {
                 parseFileList(data);
-            }, function(error) {
+            }, function(error)
+            {
                 console.log(error);
             });
 

@@ -76,9 +76,6 @@ public class DigitalID implements WebUpdater
         return author;
     }
 
-    @XmlTransient
-    private Logger logger;
-
     /**
      * Empty constructor requrired by JAXB
      */
@@ -108,6 +105,7 @@ public class DigitalID implements WebUpdater
         this.author = author;
         this.name = name+"_"+author;
         this.sessionName = sessionName;
+
         initialisePath();
     }
 
@@ -115,7 +113,6 @@ public class DigitalID implements WebUpdater
     {
         pathToDigitalIDFile = basePath + "/" + name + ".digitalid";
         pathToXmlFile = basePath  + "/" + name + ".xml";
-        logger = new Logger(pathToDigitalIDFile);
     }
 
     public void addHosts(ArrayList<Host> hosts)
@@ -166,131 +163,58 @@ public class DigitalID implements WebUpdater
         this.inservs.add(inserv);
     }
 
-    public void initialise()
-    {
-        System.out.println("DigitalID " + this.name + " will be created in: " + this.pathToDigitalIDFile);
-
-        /*if(!name.isEmpty())
-        {
-            createDirectory(basePath + name);
-            logger.initialise();
-        }*/
-    }
-
     public void buildDigitalID() throws IOException, JSchException
     {
         collectHostInformation();
         collectFabricInformation();
         collectInservInformation();
         DigitalIDUtils.marshall(this);
-        //collectInservInformation();
-        //collectFabricInformation();
         update(new WebUpdate(this.getName(), 0, null, WebUpdateType.finish));
     }
 
     private void collectHostInformation() throws IOException, JSchException
     {
-        //logger.addTag("Hosts");
-        //logger.openTag();
+
         if(hosts != null && hosts.size() > 0)
         {
             for(Host host : hosts)
             {
-                //logger.addTag(host.getHostName());
-                //logger.openTag();
-
                 host.setWebUpdater(this);
                 host.connect();
-                //host.prepare();
-
                 host.runCommands();
-
-                //host.cleanupHost();
                 host.disconnect();
-                //logger.closeTag();
-                //logger.removeTag();
+
             }
         }
-
-        //logger.closeTag();
-        //logger.removeTag();
     }
 
     private void collectInservInformation() throws IOException, JSchException
     {
-        //logger.addTag("Inservs");
-        //logger.openTag();
-
         if(inservs != null && inservs.size() > 0)
         {
             for(Inserv inserv : inservs)
             {
-
-                //logger.addTag(inserv.getHostName());
-                //logger.openTag();
                 System.out.println(inserv.getHostName());
                 inserv.setWebUpdater(this);
                 inserv.connect();
-
                 inserv.runCommands();
                 inserv.disconnect();
-
-                //logger.closeTag();
-                //logger.removeTag();
             }
         }
-
-        //logger.closeTag();
-        //logger.removeTag();
     }
 
     private void collectFabricInformation()  throws IOException, JSchException
     {
-        //logger.addTag("Fabric");
-        //logger.openTag();
-
         if(switches != null && switches.size() > 0)
         {
             for(Switch s : switches)
             {
-                //logger.addTag(s.getHostName());
-                //logger.openTag();
-
                 s.setWebUpdater(this);
                 s.connect();
                 s.runCommands();
                 s.disconnect();
-
-                //logger.closeTag();
-                //logger.removeTag();
             }
         }
-
-        //logger.closeTag();
-        //logger.removeTag();
-    }
-
-    private String createDirectory(String path)
-    {
-        File f = new File(path);
-
-        if(f.isDirectory())
-        {
-            return f.getAbsolutePath();
-        }
-
-        boolean success = f.mkdirs();
-
-        if(!success)
-        {
-            try {
-                throw new Exception("Failed to create directory!");
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-
-        return f.getAbsolutePath();
     }
 
     @Override

@@ -3,7 +3,8 @@
     <h1>Compare Digital IDs</h1>
 
     <div class="jumbotron" style="margin-top: 20px">
-        <p class="pull-left">Select two Digital IDs from the list below:</p>
+        <p class="pull-left" ng-show="digitalIds.length > 0">Select two Digital IDs from the list below:</p>
+
         <label ng-show="digitalIds.length == 0" class="no-digitalIds-label">There are currently no Digital IDs present on this server</label>
         <label style="float: right; margin-right: 15px;" ng-show="digitalIds.length > 0">Select</label>
         <br><br>

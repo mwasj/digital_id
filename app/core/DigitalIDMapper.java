@@ -17,7 +17,6 @@ public class DigitalIDMapper
 {
     public static DigitalID map(String jsonString, String sessionName)
     {
-        System.out.println(DateTime.now() + "DigitalID mapper: The following JSON String was received: " + jsonString);
         JSONObject jsnobject = new JSONObject(jsonString);
         String name = jsnobject.getString("digitalIdName");
         String author = jsnobject.getString("digitalIdAuthor");

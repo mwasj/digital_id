@@ -38,7 +38,7 @@ public class DigitalIdComparator
         this.incompatible = true;
     }
 
-    public void compareHosts()
+    public void compare()
     {
         if(digitalID1.getHosts() != null && digitalID2.getHosts() != null)
         {
@@ -57,19 +57,24 @@ public class DigitalIdComparator
 
         if(incompatible)
         {
-            String message = "Error, these two Digital IDs are incompatible.";
-            String divName = "incompatible";
-            Accordion mainAccordion = new Accordion(message, divName, null, null, -1);
-            accordions.add(mainAccordion);
-            contentDtos.add(new ContentDto(message, null, divName));
+            markIncompatible();
         }
+    }
+
+    private void markIncompatible()
+    {
+        String message = "Error, these two Digital IDs are incompatible.";
+        String divName = "incompatible";
+        Accordion mainAccordion = new Accordion(message, divName,-1);
+        accordions.add(mainAccordion);
+        contentDtos.add(new ContentDto(message, null, divName));
     }
 
     private <T> void buildAccordion (ArrayList<T> array1, ArrayList<T> array2, String title)
     {
         boolean foundConnectable = false;
         boolean foundCommand = false;
-        Accordion mainAccordion = new Accordion(title, title, null, null, 0);
+        Accordion mainAccordion = new Accordion(title, title, 0);
 
         for(Connectable connectable : (ArrayList<Connectable>) array1)
         {
@@ -81,7 +86,7 @@ public class DigitalIdComparator
                     incompatible = false;
                     String divName = createDivName(connectable);
 
-                    Accordion accordion = mainAccordion.addSubAccordion(new Accordion(connectable.getHostName(), divName, null, null, 0));
+                    Accordion accordion = mainAccordion.addSubAccordion(new Accordion(connectable.getHostName(), divName, 0));
 
                     for(CommandResponse commandResponse : connectable.getCommandResponses())
                     {
@@ -96,8 +101,6 @@ public class DigitalIdComparator
 
                                 accordion.addSubAccordion(new Accordion(commandResponse.getCommand().getCommand(),
                                         divName2,
-                                        commandResponse.getResult(),
-                                        commandResponse1.getResult(),
                                         lineDifference(commandResponse.getResult(), commandResponse1.getResult())));
 
                                 contentDtos.add(new ContentDto(commandResponse.getResult(), commandResponse1.getResult(), divName2));

@@ -12,8 +12,6 @@ public class Accordion
     private String title;
     private ArrayList<Accordion> subAccordions;
     private Accordion parentAccordion;
-    private String baseContent;
-    private String contentToCompare;
     private String divName;
     private int noOfChanges;
     private Map<String, Integer> map;
@@ -25,14 +23,6 @@ public class Accordion
 
     public void setParentAccordion(Accordion parentAccordion) {
         this.parentAccordion = parentAccordion;
-    }
-
-    public String getContentToCompare() {
-        return contentToCompare;
-    }
-
-    public String getBaseContent() {
-        return baseContent;
     }
 
     public ArrayList<Accordion> getSubAccordions() {
@@ -56,11 +46,9 @@ public class Accordion
         return parentAccordion;
     }
 
-    public Accordion(String title, String divName, String baseContent, String contentToCompare, int noOfChanges)
+    public Accordion(String title, String divName, int noOfChanges)
     {
         this.divName = divName;
-        this.baseContent = baseContent;
-        this.contentToCompare = contentToCompare;
         this.title = title;
         this.subAccordions = null;
         this.noOfChanges = noOfChanges;

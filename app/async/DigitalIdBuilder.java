@@ -1,10 +1,8 @@
 package async;
 
 import com.jcraft.jsch.JSchException;
-import core.DigitalID;
-import core.DigitalIDMapper;
-import models.CommandContainer;
-import models.Instruction;
+import core.*;
+import models.*;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -19,6 +17,11 @@ public class DigitalIdBuilder extends Thread
     private String sessionName;
     private DigitalID digitalID;
 
+    /**
+     * Initialises a new instance of the DigitalIdBuilder object.
+     * @param jsonString
+     * @param sessionName
+     */
     public DigitalIdBuilder(String jsonString, String sessionName)
     {
         this.jsonString = jsonString;
@@ -26,14 +29,22 @@ public class DigitalIdBuilder extends Thread
         digitalID = DigitalIDMapper.map(jsonString, sessionName);
     }
 
+    /**
+     * Starts the thread which performs the digital id build process.
+     */
     public void run()
     {
-        digitalID.initialise();
-
-        try {
+        try
+        {
             digitalID.buildDigitalID();
-        } catch (IOException | JSchException e) {
-            e.printStackTrace();
+        }
+        catch (IOException | JSchException e)
+        {
+            long id = DigitalIDUtils.getUniqueID();
+            digitalID.update(new WebUpdate("An exception has occurred, ", id, null, WebUpdateType.progressUpdate));
+            digitalID.update(new WebUpdate(null, id,
+                    new CommandResponse(e.getMessage(), CommandResponseCode.Failure,
+                            "An exception has occurred, ", new Command("An exception has occurred, ", 0, false), null, null), WebUpdateType.progressUpdate));
         }
     }
 }

@@ -15,8 +15,6 @@
         $scope.arrays = [];
         $scope.digitalIdName = "";
         $scope.digitalIdAuthor = "";
-
-        console.log("The name of this digital id is: " + $scope.digitalIdName);
         $scope.currentComponent = {};
 
         $scope.hostName = undefined;
