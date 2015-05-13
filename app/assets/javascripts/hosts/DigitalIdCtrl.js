@@ -37,6 +37,7 @@
             currentComponent.currentDeviceType = deviceType;
             $scope.currentDeviceType = deviceType;
             currentComponent.commands = [];
+            currentComponent.predefinedActions = [];
 
             if(component != undefined)
             {
@@ -45,13 +46,15 @@
                 currentComponent.password = component.password;
                 currentComponent.componentType = component.componentType;
                 currentComponent.commands = component.commands;
+                currentComponent.predefinedActions = component.predefinedActions;
                 currentComponent.id = component.id;
 
-                console.log(component);
                 edit = true;
             }
 
-            if (e) {
+            //Cancel bubble.
+            if (e)
+            {
                 e.originalEvent.cancelBubble=true;
             }
 
@@ -61,6 +64,7 @@
             {
                 case 'Host':
                     componentOptions = ['Windows', 'Linux'];
+                    currentComponent.predefinedActions = ['Run sg3utils'];
                     break;
                 case 'Switch':
                     componentOptions = ['Cisco', 'Qlogic', 'Brocade'];
@@ -196,7 +200,6 @@
             digitalId.digitalIdName = $scope.digitalIdName;
             digitalId.digitalIdAuthor = $scope.digitalIdAuthor;
 
-            console.log("The name of this digital id will be: " + $scope.digitalIdName);
             var progressWindow = $modal.open({
                     templateUrl: '/assets/partials/build-updater.html',
                     controller: 'DigitalIdProgressCtrl',

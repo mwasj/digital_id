@@ -50,13 +50,27 @@
         <label>Execute the following commands:</label>
         <br />
         <button class="btn btn-primary" ng-click="createEmptyCommand()">Add command</button>
-        <br />
+
+        <div class="btn-group" dropdown is-open="dropdownisopen2">
+
+            <button type="button" class="btn btn-primary dropdown-toggle" dropdown-toggle ng-disabled="disabled" id="predefinedAction">
+                {{$parent.predefinedActionLabel}}<span class="caret"></span>
+            </button>
+
+            <ul class="dropdown-menu">
+                <li ng-repeat="a in $parent.predefinedActions">
+                    <a ng-click="createPredefinedCommand(a)">{{a}}</a>
+                </li>
+            </ul>
+        </div>
+
+
         <table>
             <tr ng-show="$parent.commands.length > 0">
                 <th>Command</th><th>Then wait for</th><th>Comparable</th>
             </tr>
             <tr ng-repeat="command in $parent.commands" style="margin-top: 15px">
-                <td><input type="text" class="form-control" name="command" id="command" placeholder="Type your command here" ng-model="command.command"></td>
+                <td><input type="text" class="form-control" name="command" id="command" placeholder="Type your command here" ng-model="command.command" ng-disabled="command.id !== 0"></td>
                 <td><input type="text" class="form-control" name="interval" id="interval" placeholder="0 sec." ng-model="command.interval"></td>
                 <td>
                     <input

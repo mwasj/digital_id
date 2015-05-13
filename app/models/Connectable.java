@@ -3,6 +3,7 @@ package models;
 import com.jcraft.jsch.JSchException;
 import context.Context;
 import core.CommandResponse;
+import core.CommandRunner;
 import interfaces.WebUpdater;
 
 import javax.xml.bind.annotation.*;
@@ -97,12 +98,16 @@ public abstract class Connectable
         connectionManager.connect();
     }
 
-    public abstract void runCommands();
+    public void runCommands()
+    {
+        CommandRunner commandRunner = new CommandRunner(this);
+        this.commandResponses = commandRunner.execute();
+    }
 
     public void updateWebInterface(WebUpdate webUpdate)
     {
         if(webUpdater != null)
-            webUpdater.update(webUpdate);
+            webUpdater.sendUpdate(webUpdate);
         else
             System.out.println("Web updater == null, please set it first.");
     }

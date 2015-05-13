@@ -7,5 +7,5 @@ import models.WebUpdate;
  */
 public interface WebUpdater
 {
-    public void update(WebUpdate webUpdate);
+    public void sendUpdate(WebUpdate webUpdate);
 }

@@ -4,6 +4,7 @@ import com.jcraft.jsch.JSchException;
 import context.Context;
 import core.CommandResponse;
 import core.DigitalID;
+import interfaces.HostPredefinedActionListener;
 
 import javax.xml.bind.annotation.XmlSeeAlso;
 import java.io.IOException;
@@ -13,7 +14,7 @@ import java.util.ArrayList;
  * Created by wasinski on 27/01/2015.
  */
 @XmlSeeAlso({WindowsHost.class})
-public abstract class Host extends Connectable
+public abstract class Host extends Connectable implements HostPredefinedActionListener
 {
     private String systemInformation;
     private String multipathInformation;

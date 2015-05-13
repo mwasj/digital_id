@@ -22,18 +22,25 @@ public class Command
         return comparable;
     }
 
-    private String id;
+    private int id;
 
-    public String getId() {
+    public int getId() {
         return id;
     }
 
-    public Command(String command, int interval, boolean comparable)
+    private boolean causesWebUpdate;
+
+    public boolean isCausingWebUpdate() {
+        return causesWebUpdate;
+    }
+
+    public Command(String command, int interval, boolean comparable, int id, boolean causesWebUpdate)
     {
         this.command = command;
         this.interval = interval;
         this.comparable = comparable;
         this.id = id;
+        this.causesWebUpdate = causesWebUpdate;
     }
 
     public Command(){}

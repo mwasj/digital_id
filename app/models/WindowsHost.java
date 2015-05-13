@@ -6,6 +6,7 @@ import context.WindowsContext;
 import core.CommandResponse;
 import core.CommandResponseCode;
 import org.joda.time.DateTime;
+import predefined_actions.Sg3Utils;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -41,34 +42,6 @@ public class WindowsHost extends Host {
         setContext(new WindowsContext(new WindowsCommandSet()));
     }
 
-    @Override
-    public void runCommands()
-    {
-        ArrayList<CommandResponse> responses = new ArrayList<>();
-
-        for(CommandResponse commandResponse : getCommandResponses())
-        {
-            try {
-                responses.add(getConnectionManager().sendCommand(commandResponse.getCommand(), CommandType.Exec));
-
-                if(commandResponse.getCommand().getInterval() > 0)
-                {
-                    long id =  Calendar.getInstance().getTimeInMillis();
-                    int seconds = (commandResponse.getCommand().getInterval());
-                    getWebUpdater().update(new WebUpdate("Sleeping for: " + seconds+" seconds",id, null, WebUpdateType.progressUpdate));
-                    Thread.sleep(commandResponse.getCommand().getInterval() * 1000);
-                    getWebUpdater().update(new WebUpdate("Resuming after " + seconds+" seconds",id,
-                            new CommandResponse("Resuming after " + seconds+" seconds", CommandResponseCode.Success, null, null, null, null), WebUpdateType.progressUpdate));
-                }
-            } catch (IOException | JSchException | InterruptedException e)
-            {
-                e.printStackTrace();
-            }
-
-        }
-
-        setCommandResponses(responses);
-    }
 
     /**
      * Prepares the windows host to ensure it has all the necessary
@@ -79,21 +52,8 @@ public class WindowsHost extends Host {
     @Override
     public void prepare() throws IOException, JSchException
     {
-        System.out.println("Preparing host " + getHostName());
-        System.out.println("Sending zip file...");
-        CommandResponse commandResponse = getConnectionManager().sendFile("C:/digital_id.zip", "c:\\digital_id.zip");
 
-        if(commandResponse.getCommandResponseCode() == CommandResponseCode.Success)
-        {
-            System.out.println("Unzipping archive...");
 
-            /*CommandResponse<String> commandResponse1 = getConnectionManager().sendCommand("powershell.exe -noprofile -command \"&{ $shell = new-object -com shell.application; $zip = $shell.NameSpace(\"'C:\\digital_id.zip'\"); foreach($item in $zip.items()) { $shell.Namespace(\"'C:\\'\").copyhere($item, 0x10); }}\"", CommandType.Shell);
-
-            if(commandResponse1.getCommandResponseCode() == CommandResponseCode.Success)
-            {
-                System.out.println("Host " + " has been prepared successfully.");
-            }*/
-        }
     }
 
     @Override
@@ -138,11 +98,12 @@ public class WindowsHost extends Host {
     {
         System.out.println("Collecting sg3utils information from host: " + this.getHostName());
 
-        /*CommandResponse<String> commandResponse = getConnectionManager().sendCommand("powershell.exe -executionPolicy bypass -file \"c:\\digital_id\\sg3_utils.ps1", CommandType.Shell);
+        /*CommandResponse commandResponse = getConnectionManager()
+                .sendCommand(new Command("powershell.exe -executionPolicy bypass -file \"c:\\digital_id\\sg3_utils.ps1", 0, true), CommandType.Exec);
 
         if(commandResponse.getCommandResponseCode() == CommandResponseCode.Success)
         {
-            CommandResponse<String> commandResponse1 = getConnectionManager().readFile("c:\\digital_id\\sg3_utils.txt");
+            CommandResponse commandResponse1 = getConnectionManager().readFile("c:\\digital_id\\sg3_utils.txt");
 
             if(commandResponse1.getCommandResponseCode() == CommandResponseCode.Success)
             {
@@ -158,7 +119,12 @@ public class WindowsHost extends Host {
     public void cleanupHost() throws IOException, JSchException
     {
         System.out.println("Cleaning up host: " + this.getHostName());
-        //getConnectionManager().sendCommand("powershell.exe  -noprofile -command \"&{ Remove-item c:\\digital_id -Force -Recurse }\"", CommandType.Shell);
-        //getConnectionManager().sendCommand("powershell.exe  -noprofile -command \"&{ Remove-item c:\\digital_id.zip -Force }\"", CommandType.Shell);
+
+    }
+
+    @Override
+    public CommandResponse runSg3Utils()
+    {
+        return Sg3Utils.getWindowsReport(this);
     }
 }

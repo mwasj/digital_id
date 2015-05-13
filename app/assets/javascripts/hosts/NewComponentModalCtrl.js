@@ -16,10 +16,12 @@
     function NewComponentModalCtrl($scope, $modalInstance, currentComponent, componentOptions)
     {
         //Define custom object to hold our commands.
-        function Command (command, interval, comparable) {
+        function Command (command, interval, comparable, id, causesWebUpdate) {
             this.command = command;
             this.interval = interval;
             this.comparable = comparable;
+            this.id = id;
+            this.causesWebUpdate = causesWebUpdate;
         }
 
         $scope.hostName = currentComponent.hostName;
@@ -29,7 +31,9 @@
         $scope.actions = currentComponent.actions;
         $scope.currentDeviceType = currentComponent.currentDeviceType;
         $scope.commands = currentComponent.commands;
-
+        $scope.predefinedActionLabel = "Add a predefined action";
+        $scope.predefinedActions = currentComponent.predefinedActions;
+        console.log($scope.predefinedActions);
         //Temporary TODO - delete.
         //$scope.commands.push(new Command("systeminfo",0));
         //$scope.componentType = componentOptions[0];
@@ -50,6 +54,7 @@
             currentComponent.password =  $scope.password;
             currentComponent.componentType = $scope.componentType;
             currentComponent.commands = $scope.commands;
+            currentComponent.predefinedActions= $scope.predefinedActions;
             console.log("New component window, ok clicked.");
             $modalInstance.close(currentComponent);
         };
@@ -69,7 +74,12 @@
         $scope.createEmptyCommand = function ()
         {
             console.log("createEmptyCommand called");
-            $scope.commands.push(new Command("",0, false));
+            $scope.commands.push(new Command("",0, false,0,true));
+        }
+
+        $scope.createPredefinedCommand = function (predefinedAction)
+        {
+            $scope.commands.push(new Command(predefinedAction,0,false,1,false))
         }
 
         $scope.removeCommand = function (command)

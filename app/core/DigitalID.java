@@ -6,7 +6,6 @@ import interfaces.WebUpdater;
 import models.*;
 
 import javax.xml.bind.annotation.*;
-import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 
@@ -165,16 +164,6 @@ public class DigitalID implements WebUpdater
 
     public void buildDigitalID() throws IOException, JSchException
     {
-        collectHostInformation();
-        collectFabricInformation();
-        collectInservInformation();
-        DigitalIDUtils.marshall(this);
-        update(new WebUpdate(this.getName(), 0, null, WebUpdateType.finish));
-    }
-
-    private void collectHostInformation() throws IOException, JSchException
-    {
-
         if(hosts != null && hosts.size() > 0)
         {
             for(Host host : hosts)
@@ -186,10 +175,18 @@ public class DigitalID implements WebUpdater
 
             }
         }
-    }
 
-    private void collectInservInformation() throws IOException, JSchException
-    {
+        if(switches != null && switches.size() > 0)
+        {
+            for(Switch s : switches)
+            {
+                s.setWebUpdater(this);
+                s.connect();
+                s.runCommands();
+                s.disconnect();
+            }
+        }
+
         if(inservs != null && inservs.size() > 0)
         {
             for(Inserv inserv : inservs)
@@ -201,24 +198,15 @@ public class DigitalID implements WebUpdater
                 inserv.disconnect();
             }
         }
+
+        DigitalIDUtils.marshall(this);
+
+        sendUpdate(new WebUpdate(this.getName(), 0, null, WebUpdateType.finish));
     }
 
-    private void collectFabricInformation()  throws IOException, JSchException
-    {
-        if(switches != null && switches.size() > 0)
-        {
-            for(Switch s : switches)
-            {
-                s.setWebUpdater(this);
-                s.connect();
-                s.runCommands();
-                s.disconnect();
-            }
-        }
-    }
 
     @Override
-    public void update(WebUpdate webUpdate) {
+    public void sendUpdate(WebUpdate webUpdate) {
         DigitalIdController.updateWebInterface(sessionName, webUpdate);
     }
 

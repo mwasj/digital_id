@@ -8,7 +8,6 @@ import org.apache.commons.io.IOUtils;
 import org.joda.time.DateTime;
 
 import java.io.*;
-import java.util.Calendar;
 
 public class ConnectionManager {
 
@@ -51,7 +50,12 @@ public class ConnectionManager {
     {
         long id = DigitalIDUtils.getUniqueID();
 
-        connectable.getWebUpdater().update(new WebUpdate("Executing command: " + command.getCommand(), id, null, WebUpdateType.progressUpdate));
+        if(command.isCausingWebUpdate())
+        {
+            connectable.getWebUpdater().sendUpdate(new WebUpdate("Executing command: " + command.getCommand(), id, null, WebUpdateType.progressUpdate));
+        }
+
+
         CommandResponse commandResponse = null;
 
         if(session == null)
@@ -62,7 +66,7 @@ public class ConnectionManager {
         if(!session.isConnected())
         {
             channelCounter = 0;
-            connectable.getWebUpdater().update(new WebUpdate("Connection interrupted, reconnecting  to: " + connectable.getHostName(), id, null, WebUpdateType.progressUpdate));
+            connectable.getWebUpdater().sendUpdate(new WebUpdate("Connection interrupted, reconnecting  to: " + connectable.getHostName(), id, null, WebUpdateType.progressUpdate));
             establishSession(false);
         }
 
@@ -75,7 +79,11 @@ public class ConnectionManager {
             commandResponse = sendShellCommand(command);
         }
 
-        connectable.getWebUpdater().update(new WebUpdate(null, id, commandResponse, WebUpdateType.progressUpdate));
+        if(command.isCausingWebUpdate())
+        {
+            connectable.getWebUpdater().sendUpdate(new WebUpdate(null, id, commandResponse, WebUpdateType.progressUpdate));
+        }
+
         return commandResponse;
     }
 
@@ -95,7 +103,7 @@ public class ConnectionManager {
         InputStream inputStream = channel.getInputStream();
         BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
 
-        String result = IOUtils.toString(bufferedReader).replaceAll("\0", "").replaceAll("�", "");
+        String result = IOUtils.toString(bufferedReader).replaceAll("\0", "").replaceAll("�", "").replaceAll("ÿþ","");;
         System.out.println(result);
         CommandResponseCode commandResponseCode = waitForCommandToFinish(channel);
 
@@ -133,7 +141,7 @@ public class ConnectionManager {
 
         BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
 
-        String result = IOUtils.toString(reader).replaceAll("\0", "").replaceAll("�", "");
+        String result = IOUtils.toString(reader).replaceAll("\0", "").replaceAll("�", "").replaceAll("ÿþ","");
         //String error = IOUtils.toString(new BufferedReader(new InputStreamReader(((ChannelExec) channel).getErrStream()))).replaceAll("\0", "").replaceAll("�", "");
         //System.out.println(error);
         System.out.println("RESULT: " + result);
@@ -590,23 +598,23 @@ public class ConnectionManager {
             System.out.println(connectable == null);
             System.out.println(connectable.getWebUpdater() == null);
 
-            //Only send an update if a brand new connection is being established.
+            //Only send an sendUpdate if a brand new connection is being established.
             if(!reset)
-                connectable.getWebUpdater().update(new WebUpdate("Connecting to: " + connectable.getHostName(), id, null, WebUpdateType.progressUpdate));
+                connectable.getWebUpdater().sendUpdate(new WebUpdate("Connecting to: " + connectable.getHostName(), id, null, WebUpdateType.progressUpdate));
 
             session.connect();
 
             if(session.isConnected())
             {
                 if(!reset)
-                    connectable.getWebUpdater().update(new WebUpdate(null, id,
+                    connectable.getWebUpdater().sendUpdate(new WebUpdate(null, id,
                             new CommandResponse("Successfully connected to: " + connectable.getHostName(), CommandResponseCode.Success, null, null, startDate, DateTime.now()), WebUpdateType.progressUpdate));
             }
         }
         catch (JSchException e)
         {
             if(!reset)
-                connectable.getWebUpdater().update(new WebUpdate(null, id,
+                connectable.getWebUpdater().sendUpdate(new WebUpdate(null, id,
                         new CommandResponse("Could not connect to: " + connectable.getHostName(), CommandResponseCode.Failure, null, null, startDate, DateTime.now()), WebUpdateType.progressUpdate));
 
             e.printStackTrace();

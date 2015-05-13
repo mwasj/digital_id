@@ -27,35 +27,6 @@ public class BrocadeSwitch extends Switch {
         }
     }
 
-    @Override
-    public void runCommands()
-    {
-        ArrayList<CommandResponse> responses = new ArrayList<>();
-
-        for(CommandResponse commandResponse : getCommandResponses())
-        {
-            try {
-                responses.add(getConnectionManager().sendCommand(commandResponse.getCommand(), CommandType.Exec));
-
-                if(commandResponse.getCommand().getInterval() > 0)
-                {
-                    long id =  Calendar.getInstance().getTimeInMillis();
-                    int seconds = (commandResponse.getCommand().getInterval());
-                    getWebUpdater().update(new WebUpdate("Sleeping for: " + seconds+" seconds",id, null, WebUpdateType.progressUpdate));
-                    Thread.sleep(commandResponse.getCommand().getInterval() * 1000);
-                    getWebUpdater().update(new WebUpdate("Resuming after " + seconds+" seconds",id,
-                            new CommandResponse("Resuming after " + seconds+" seconds", CommandResponseCode.Success, null, null, null, null), WebUpdateType.progressUpdate));
-                }
-            } catch (IOException | JSchException | InterruptedException e)
-            {
-                e.printStackTrace();
-            }
-
-        }
-
-        setCommandResponses(responses);
-    }
-
     /**
      * Creates a new instance of BrocadeSwitch object.
      * @param switchName - host name of this switch.
