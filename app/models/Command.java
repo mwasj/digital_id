@@ -43,6 +43,11 @@ public class Command
         this.causesWebUpdate = causesWebUpdate;
     }
 
+    public void execute()
+    {
+
+    }
+
     public Command(){}
     public String getCommand() {
         return command;

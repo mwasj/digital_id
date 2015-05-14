@@ -12,12 +12,18 @@ import java.util.Calendar;
  */
 public class CommandRunner
 {
-
     private Connectable connectable;
+    private ConnectionManager connectionManager;
 
     public CommandRunner(Connectable connectable)
     {
         this.connectable = connectable;
+        this.connectionManager = new ConnectionManager(connectable);
+    }
+
+    public void initialise()
+    {
+        connectionManager.connect();
     }
 
     public void analyse()
@@ -57,7 +63,7 @@ public class CommandRunner
                         case 1:
                             if(connectable instanceof Host)
                             {
-                                responses.add(((Host)connectable).runSg3Utils());
+                                responses.add(((Host) connectable).runSg3Utils());
                             }
 
                     }

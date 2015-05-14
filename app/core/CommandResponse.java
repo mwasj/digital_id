@@ -11,7 +11,6 @@ import javax.xml.bind.annotation.*;
 @XmlAccessorType(XmlAccessType.FIELD)
 public class CommandResponse
 {
-
     private String result;
 
     private CommandResponseCode commandResponseCode;

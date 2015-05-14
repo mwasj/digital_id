@@ -2,6 +2,7 @@ package core;
 
 import dtos.ContentDto;
 import models.*;
+import org.apache.commons.lang3.StringUtils;
 
 import java.math.BigInteger;
 import java.security.SecureRandom;
@@ -99,11 +100,16 @@ public class DigitalIdComparator
 
                                 String divName2 = createDivName(connectable);
 
+                                String before = commandResponse.getResult();
+                                String after = commandResponse1.getResult();
+
+                                //printDifference(before, after);
+
                                 accordion.addSubAccordion(new Accordion(commandResponse.getCommand().getCommand(),
                                         divName2,
-                                        lineDifference(commandResponse.getResult(), commandResponse1.getResult())));
+                                        lineDifference(before, after)));
 
-                                contentDtos.add(new ContentDto(commandResponse.getResult(), commandResponse1.getResult(), divName2));
+                                contentDtos.add(new ContentDto(before, after, divName2));
                             }
                         }
                     }
@@ -180,6 +186,16 @@ public class DigitalIdComparator
         String[] array1 = s0.split("\\r?\\n");
         String[] array2 = s1.split("\\r?\\n");
 
+        for(int i = 0; i < array1.length; i++)
+        {
+            array1[i] = array1[i].replaceAll("\\s+","");
+        }
+
+        for(int i = 0; i < array2.length; i++)
+        {
+            array2[i] = array2[i].replaceAll("\\s+","");
+        }
+
         List<String> array3 = Arrays.asList(array1);
         List<String> array4 = Arrays.asList(array2);
 
@@ -191,15 +207,44 @@ public class DigitalIdComparator
             }
         }
 
-        for(String line : array2)
+        return difference;
+    }
+
+    public void printDifference(String s0, String s1)
+    {
+        String[] no_white_spaces = s0.split("\\r?\\n");
+        String[] no_white_spaces2 = s1.split("\\r?\\n");
+
+        for(int i = 0; i < no_white_spaces.length; i++)
         {
-            if(!array3.contains(line))
+            no_white_spaces[i] = no_white_spaces[i].replaceAll("\\s+","");
+        }
+
+        for(int i = 0; i < no_white_spaces2.length; i++)
+        {
+            no_white_spaces2[i] = no_white_spaces2[i].replaceAll("\\s+","");
+        }
+
+        List<String> array3 = Arrays.asList(no_white_spaces);
+        List<String> array4 = Arrays.asList(no_white_spaces2);
+
+        for(String line : no_white_spaces)
+        {
+            if(!array4.contains(line))
             {
-                difference += 1;
+                System.out.println("The difference is: "+line);
             }
         }
 
-        return difference;
+        for(String line : no_white_spaces2)
+        {
+            if(!array3.contains(line))
+            {
+                System.out.println("The difference is: "+line);
+            }
+        }
+
+
     }
 
     private static String createDivName(Connectable connectable)

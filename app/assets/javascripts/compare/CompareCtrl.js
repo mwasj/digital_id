@@ -76,7 +76,21 @@
         {
             var base = difflib.stringAsLines(s1);
             var newtxt = difflib.stringAsLines(s2);
-            var sm = new difflib.SequenceMatcher(base, newtxt);
+
+            var no_white_spaces1 = [];
+            var no_white_spaces2 = [];
+
+            for(var i = 0; i < base.length; i++)
+            {
+                no_white_spaces1.push(base[i].replace(/\s/g, ""));
+            }
+
+            for(var i = 0; i < newtxt.length; i++)
+            {
+                no_white_spaces2.push(newtxt[i].replace(/\s/g, ""));
+            }
+
+            var sm = new difflib.SequenceMatcher(no_white_spaces1, no_white_spaces2);
             var opcodes = sm.get_opcodes();
             var contextSize = 0;
             $scope[sectionName] = diffview.buildView({
