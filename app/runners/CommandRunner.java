@@ -13,15 +13,13 @@ import java.util.Calendar;
  */
 public class CommandRunner
 {
-    private Connectable connectable;
     private ConnectionManager connectionManager;
-    private WebUpdater webUpdater;
+    private ArrayList<Command> commands;
 
-    public CommandRunner(Connectable connectable, WebUpdater webUpdater)
+    public CommandRunner(ConnectionManager connectionManager, ArrayList<Command> commands)
     {
-        this.connectable = connectable;
-        this.connectionManager = new ConnectionManager(this.connectable);
-        this.webUpdater = webUpdater;
+        this.commands = commands;
+        this.connectionManager = connectionManager;
     }
 
     public void initialise()
@@ -31,7 +29,7 @@ public class CommandRunner
 
     public ArrayList<Command> runCommands()
     {
-        for(Command c : connectable.getCommands())
+        for(Command c : commands)
         {
             c.initialise(connectionManager);
             c.execute();
@@ -54,6 +52,6 @@ public class CommandRunner
             }
         }
 
-        return connectable.getCommands();
+        return commands;
     }
 }

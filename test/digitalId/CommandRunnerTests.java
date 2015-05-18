@@ -35,15 +35,15 @@ public class CommandRunnerTests
     @Test
     public void runCommands()
     {
-        windowsHost.setCommands(commandRunner.runCommands());
+        windowsHost.setActions(commandRunner.runCommands());
 
-        for(Command command : windowsHost.getCommands())
+        for(Command command : windowsHost.getActions())
         {
             Assert.notNull(command.getCommandResponse().getResult(), "Result should not be null.");
             Assert.state(command.getCommandResponse().getCommandResponseCode() == CommandResponseCode.Success, "Make sure the command has succeeded.");
         }
 
-        Assert.state(commands.size() == windowsHost.getCommands().size(), "Both arrayslists should be of the same length.");
+        Assert.state(commands.size() == windowsHost.getActions().size(), "Both arrayslists should be of the same length.");
     }
 
 }

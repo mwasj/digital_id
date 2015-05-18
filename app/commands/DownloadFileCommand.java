@@ -4,23 +4,25 @@ import core.CommandResponse;
 import core.ConnectionManager;
 
 /**
- * Created by wasinski on 15/05/2015.
+ * Created by Michal on 18/05/2015.
  */
-public class SendFileCommand extends Command
-{
-    private String localFile;
-    private String remoteFile;
+public class DownloadFileCommand extends Command {
 
-    public SendFileCommand(String localFile, String remoteFile)
-    {
-        super(0, false);
-        this.localFile = localFile;
+    private String remoteFile;
+    private String localFile;
+
+    public DownloadFileCommand(int waitFor, String remoteFile, String localFile) {
+        super(waitFor, false);
+
         this.remoteFile = remoteFile;
+        this.localFile = localFile;
+    }
+
+    public DownloadFileCommand() {
     }
 
     @Override
-    public void initialise(ConnectionManager connectionManager)
-    {
+    public void initialise(ConnectionManager connectionManager) {
         setConnectionManager(connectionManager);
     }
 
@@ -33,7 +35,7 @@ public class SendFileCommand extends Command
             return null;
         }
 
-        setCommandResponse(getConnectionManager().sendFile(localFile, remoteFile));
+        setCommandResponse(getConnectionManager().getFile(localFile, remoteFile));
         return getCommandResponse();
     }
 }

@@ -1,5 +1,6 @@
 package models;
 
+import actions.Action;
 import commands.Command;
 import context.Context;
 import interfaces.WebUpdater;
@@ -15,9 +16,9 @@ import java.util.ArrayList;
 @XmlSeeAlso({Host.class, Switch.class, Inserv.class})
 public abstract class Connectable
 {
-    public void setCommands(ArrayList<Command> commands)
+    public void setActions(ArrayList<Action> actions)
     {
-        this.commands = commands;
+        this.actions = actions;
     }
 
     public String getHostName() {
@@ -32,10 +33,10 @@ public abstract class Connectable
         return password;
     }
 
-    private ArrayList<Command> commands;
+    private ArrayList<Action> actions;
 
-    public ArrayList<Command> getCommands() {
-        return commands;
+    public ArrayList<Action> getActions() {
+        return actions;
     }
 
     public void setContext(Context context) {
@@ -68,12 +69,12 @@ public abstract class Connectable
     @XmlTransient
     private String password;
 
-    protected Connectable(String hostName, String userName, String password, ArrayList<Command> commands)
+    protected Connectable(String hostName, String userName, String password, ArrayList<Action> actions)
     {
         this.hostName = hostName;
         this.userName = userName;
         this.password = password;
-        this.commands = commands;
+        this.actions = actions;
     }
 
     protected Connectable()

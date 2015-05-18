@@ -1,15 +1,10 @@
 package core;
 
-import com.google.common.reflect.TypeToken;
-import com.google.gson.Gson;
 import commands.Command;
-import commands.CommandType;
-import commands.SendRemoteCommand;
 import models.*;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import java.lang.reflect.Type;
 import java.util.ArrayList;
 
 /**
@@ -137,8 +132,6 @@ public class DigitalIDMapper
         for(int i = 0; i < jsonArray.length(); i++)
         {
             JSONObject jsonObject = jsonArray.getJSONObject(i);
-
-            CommandType commandType = (CommandType) jsonObject.getString("commandType");
 
         }
 

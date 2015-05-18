@@ -1,5 +1,6 @@
 package models;
 
+import actions.Action;
 import commands.Command;
 import interfaces.HostPredefinedActionListener;
 
@@ -20,8 +21,8 @@ public abstract class Host extends Connectable implements HostPredefinedActionLi
      * @param username
      * @param password
      */
-    protected Host(String hostName, String username, String password, ArrayList<Command> commands)
+    protected Host(String hostName, String username, String password, ArrayList<Action> actions)
     {
-        super(hostName, username, password, commands);
+        super(hostName, username, password, actions);
     }
 }

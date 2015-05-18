@@ -1,5 +1,6 @@
 package models;
 
+import actions.Action;
 import command_sets.WindowsCommandSet;
 import commands.Command;
 import context.WindowsContext;
@@ -25,8 +26,8 @@ public class WindowsHost extends Host {
      * @param username
      * @param password
      */
-    public WindowsHost(String hostName, String username, String password, ArrayList<Command> commands) {
-        super(hostName, username, password, commands);
+    public WindowsHost(String hostName, String username, String password, ArrayList<Action> actions) {
+        super(hostName, username, password, actions);
     }
 
     /**

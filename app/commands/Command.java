@@ -17,8 +17,6 @@ public abstract class Command implements CommandInterface
 {
     private int waitFor;
     private boolean comparable;
-    private CommandType commandType;
-    private boolean causesWebUpdate;
     private CommandResponse commandResponse;
     private ConnectionManager connectionManager;
     private int webId;
@@ -66,15 +64,6 @@ public abstract class Command implements CommandInterface
         return comparable;
     }
 
-    public CommandType getCommandType() {
-        return commandType;
-    }
-
-    public boolean causesWebUpdate()
-    {
-        return causesWebUpdate;
-    }
-
     public int getWaitForValue()
     {
         return waitFor;
@@ -88,12 +77,10 @@ public abstract class Command implements CommandInterface
         this.webId = webId;
     }
 
-    public Command(CommandType commandType, int waitFor, boolean comparable, boolean causesWebUpdate)
+    public Command(int waitFor, boolean comparable)
     {
         this.waitFor = waitFor;
         this.comparable = comparable;
-        this.commandType = commandType;
-        this.causesWebUpdate = causesWebUpdate;
     }
 
     /**

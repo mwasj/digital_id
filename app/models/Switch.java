@@ -1,5 +1,6 @@
 package models;
 
+import actions.Action;
 import commands.Command;
 
 import javax.xml.bind.annotation.XmlSeeAlso;
@@ -16,9 +17,9 @@ public abstract class Switch extends Connectable
 
     }
 
-    protected Switch(String hostName, String userName, String password, ArrayList<Command> commands)
+    protected Switch(String hostName, String userName, String password, ArrayList<Action> actions)
     {
-        super(hostName,userName,password, commands);
+        super(hostName,userName,password, actions);
     }
 }
 

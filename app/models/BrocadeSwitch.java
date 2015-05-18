@@ -1,5 +1,6 @@
 package models;
 
+import actions.Action;
 import command_sets.BrocadeCommandSet;
 import commands.Command;
 import context.BrocadeSwitchContext;
@@ -29,8 +30,8 @@ public class BrocadeSwitch extends Switch {
      * @param username - username required to log in.
      * @param password - password required to log in.
      */
-    public BrocadeSwitch(String switchName, String username, String password, ArrayList<Command> commands)
+    public BrocadeSwitch(String switchName, String username, String password, ArrayList<Action> actions)
     {
-        super(switchName, username, password, commands);
+        super(switchName, username, password, actions);
     }
 }

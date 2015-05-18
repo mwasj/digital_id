@@ -90,9 +90,9 @@ public class DigitalIdComparator
 
                     Accordion accordion = mainAccordion.addSubAccordion(new Accordion(connectable.getHostName(), divName, 0));
 
-                    for(Command command : connectable.getCommands())
+                    for(Command command : connectable.getActions())
                     {
-                        for(Command command1 : connectable2.getCommands())
+                        for(Command command1 : connectable2.getActions())
                         {
                             if(command instanceof SendRemoteCommand && command1 instanceof SendRemoteCommand)
                             {

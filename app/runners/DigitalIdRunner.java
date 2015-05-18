@@ -1,5 +1,6 @@
 package runners;
 
+import actions.Action;
 import core.DigitalID;
 import core.DigitalIDMapper;
 import core.WebUpdater;
@@ -31,9 +32,12 @@ public class DigitalIdRunner extends Thread
     {
         for(Host host : digitalID.getHosts())
         {
-            CommandRunner commandRunner = new CommandRunner(host, webUpdater);
-            commandRunner.initialise();
-            host.setCommands(commandRunner.runCommands());
+            for(Action action : host.getActions())
+            {
+                action.initialise(host, sessionName);
+                action.perform();
+            }
+
         }
     }
 }

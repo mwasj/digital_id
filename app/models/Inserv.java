@@ -1,5 +1,6 @@
 package models;
 
+import actions.Action;
 import com.jcraft.jsch.JSchException;
 import commands.Command;
 import context.InservContext;
@@ -27,8 +28,8 @@ public class Inserv extends Connectable
 
 
 
-    public Inserv(String hostName, String userName, String password, ArrayList<Command> commands) {
-        super(hostName, userName, password, commands);
+    public Inserv(String hostName, String userName, String password, ArrayList<Action> actions) {
+        super(hostName, userName, password, actions);
     }
 
     public String getInservName() {

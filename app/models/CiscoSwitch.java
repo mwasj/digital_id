@@ -1,5 +1,6 @@
 package models;
 
+import actions.Action;
 import command_sets.CiscoCommandSet;
 import commands.Command;
 import context.CiscoSwitchContext;
@@ -22,9 +23,9 @@ public class CiscoSwitch extends Switch
      * @param username - username required to log in.
      * @param password - password required to log in.
      */
-    public CiscoSwitch(String switchName, String username, String password, ArrayList<Command> commands)
+    public CiscoSwitch(String switchName, String username, String password, ArrayList<Action> actions)
     {
-        super(switchName, username, password, commands);
+        super(switchName, username, password, actions);
     }
 
     /**

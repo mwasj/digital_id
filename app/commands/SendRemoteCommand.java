@@ -23,9 +23,9 @@ public class SendRemoteCommand extends Command {
         return commandString;
     }
 
-    public SendRemoteCommand(String commandString, RemoteCommandType remoteCommandType, int waitFor, boolean comparable, boolean causesWebUpdate)
+    public SendRemoteCommand(String commandString, RemoteCommandType remoteCommandType, int waitFor, boolean comparable)
     {
-        super(CommandType.UserDefined, waitFor, comparable, causesWebUpdate);
+        super(waitFor, comparable);
 
         this.commandString = commandString;
         this.remoteCommandType = remoteCommandType;
