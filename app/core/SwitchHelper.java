@@ -1,8 +1,6 @@
 package core;
 
 import com.jcraft.jsch.JSchException;
-import command_sets.SwitchCommandSet;
-import models.CommandType;
 import models.Switch;
 
 import java.io.IOException;

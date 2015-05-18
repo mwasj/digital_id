@@ -15,13 +15,14 @@
      */
     function NewComponentModalCtrl($scope, $modalInstance, currentComponent, componentOptions)
     {
+
+
         //Define custom object to hold our commands.
-        function Command (command, interval, comparable, id, causesWebUpdate) {
+        function Command (command, interval, comparable, commandType) {
             this.command = command;
             this.interval = interval;
             this.comparable = comparable;
-            this.id = id;
-            this.causesWebUpdate = causesWebUpdate;
+            this.commandType = commandType;
         }
 
         $scope.hostName = currentComponent.hostName;
@@ -74,12 +75,12 @@
         $scope.createEmptyCommand = function ()
         {
             console.log("createEmptyCommand called");
-            $scope.commands.push(new Command("",0, false,0,true));
+            $scope.commands.push(new Command("", 0, false, UserDefined));
         }
 
         $scope.createPredefinedCommand = function (predefinedAction)
         {
-            $scope.commands.push(new Command(predefinedAction,0,false,1,false))
+            $scope.commands.push(new Command(predefinedAction, 0, true, Predefined))
         }
 
         $scope.removeCommand = function (command)

@@ -1,12 +1,9 @@
-package models;
+package core;
 
 import com.jcraft.jsch.*;
-import core.CommandResponse;
-import core.CommandResponseCode;
-import core.DigitalIDUtils;
+import models.*;
 import org.apache.commons.io.IOUtils;
 import org.joda.time.DateTime;
-
 import java.io.*;
 
 public class ConnectionManager {
@@ -17,86 +14,92 @@ public class ConnectionManager {
     private int channelCounter;
     private int channelMax;
 
+    public Session getSession() {
+        return session;
+    }
+
+    public Connectable getConnectable() {
+        return connectable;
+    }
+
     public ConnectionManager(Connectable connectable)
     {
         this.connectable = connectable;
 
         if(connectable instanceof CiscoSwitch || connectable instanceof BrocadeSwitch)
         {
-            System.out.println("This is a switch, setting channelMax variable to 2");
             channelMax = 2;
         }
         else
         {
-            channelMax  =999;
+            channelMax  = 999;
         }
     }
 
+
     public void connect()
     {
-        session = getSession();
+        session = createSession();
         establishSession(false);
     }
 
     /***
      *
      * @param command
-     * @param commandType
+     * @param remoteCommandType
      * @return
      * @throws IOException
      * @throws JSchException
      */
-    public CommandResponse sendCommand(Command command, CommandType commandType) throws IOException, JSchException
+    public CommandResponse sendCommand(String command, RemoteCommandType remoteCommandType) throws IOException, JSchException
     {
         long id = DigitalIDUtils.getUniqueID();
 
-        if(command.isCausingWebUpdate())
+        /*if(command.isCausingWebUpdate())
         {
             connectable.getWebUpdater().sendUpdate(new WebUpdate("Executing command: " + command.getCommand(), id, null, WebUpdateType.progressUpdate));
-        }
-
+        }*/
 
         CommandResponse commandResponse = null;
 
         if(session == null)
         {
-            session = getSession();
+            session = createSession();
         }
 
         if(!session.isConnected())
         {
             channelCounter = 0;
-            connectable.getWebUpdater().sendUpdate(new WebUpdate("Connection interrupted, reconnecting  to: " + connectable.getHostName(), id, null, WebUpdateType.progressUpdate));
+            //connectable.getWebUpdater().sendUpdate(new WebUpdate("Connection interrupted, reconnecting  to: " + connectable.getHostName(), id, null, WebUpdateType.progressUpdate));
             establishSession(false);
         }
 
-        if(commandType == CommandType.Exec)
+        if(remoteCommandType == RemoteCommandType.Exec)
         {
             commandResponse = sendExecCommand(command);
         }
-        else if (commandType == CommandType.Shell)
+        else if (remoteCommandType == RemoteCommandType.Shell)
         {
             commandResponse = sendShellCommand(command);
         }
 
-        if(command.isCausingWebUpdate())
+        /*if(command.isCausingWebUpdate())
         {
             connectable.getWebUpdater().sendUpdate(new WebUpdate(null, id, commandResponse, WebUpdateType.progressUpdate));
-        }
+        }*/
 
         return commandResponse;
     }
 
-    private CommandResponse sendShellCommand(Command command) throws JSchException, IOException
+    private CommandResponse<String> sendShellCommand(String command) throws JSchException, IOException
     {
-        DateTime startDate = DateTime.now();
         String errorMessage = "";
         Channel channel = session.openChannel("shell");
         OutputStream outputStream = channel.getOutputStream();
         PrintStream commander = new PrintStream(outputStream, true);
 
         channel.connect();
-        commander.println(command.getCommand());
+        commander.println(command);
         commander.println("exit");
         commander.close();
 
@@ -104,7 +107,7 @@ public class ConnectionManager {
         BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
 
         String result = IOUtils.toString(bufferedReader).replaceAll("\0", "").replaceAll("�", "").replaceAll("ÿþ","");;
-        System.out.println(result);
+
         CommandResponseCode commandResponseCode = waitForCommandToFinish(channel);
 
         outputStream.close();
@@ -113,12 +116,11 @@ public class ConnectionManager {
         channel.getInputStream().close();
         channel.getOutputStream().close();
 
-        return new CommandResponse(result, commandResponseCode, errorMessage, command, startDate, DateTime.now());
+        return new CommandResponse<>(result, commandResponseCode, errorMessage);
     }
 
-    private CommandResponse sendExecCommand(Command command) throws JSchException, IOException
+    private CommandResponse<String> sendExecCommand(String command) throws JSchException, IOException
     {
-        DateTime startDate = DateTime.now();
         String errorMessage = "";
         channelCounter += 1;
 
@@ -127,13 +129,13 @@ public class ConnectionManager {
             System.out.println("Channel limit reached, resetting connection...");
             session.disconnect();
             session = null;
-            session = getSession();
+            session = createSession();
             establishSession(true);
             channelCounter = 0;
         }
 
         Channel channel=session.openChannel("exec");
-        ((ChannelExec)channel).setCommand(command.getCommand());
+        ((ChannelExec)channel).setCommand(command);
 
         channel.connect();
 
@@ -142,10 +144,7 @@ public class ConnectionManager {
         BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
 
         String result = IOUtils.toString(reader).replaceAll("\0", "").replaceAll("�", "").replaceAll("ÿþ","");
-        //String error = IOUtils.toString(new BufferedReader(new InputStreamReader(((ChannelExec) channel).getErrStream()))).replaceAll("\0", "").replaceAll("�", "");
-        //System.out.println(error);
-        System.out.println("RESULT: " + result);
-        System.out.println("DEBUG: " +  command.getCommand() + " " + channel.getExitStatus() + " " + channel.isEOF() + " " + session.isConnected());
+
         CommandResponseCode commandResponseCode = waitForCommandToFinish(channel);
 
         inputStream.close();
@@ -154,10 +153,10 @@ public class ConnectionManager {
         channel.getOutputStream().close();
         channel.disconnect();
 
-        return new CommandResponse(result, commandResponseCode, errorMessage, command, startDate, DateTime.now());
+        return new CommandResponse(result, commandResponseCode, errorMessage);
     }
 
-    public CommandResponse getFile(String remoteFile, String localFile)
+    public CommandResponse<File> getFile(String remoteFile, String localFile)
     {
         FileOutputStream fos=null;
         String errorMessages = "";
@@ -294,8 +293,7 @@ public class ConnectionManager {
             }
         }
 
-        //return new CommandResponse(new File(localFile), commandResponseCode, errorMessages , null, null,null);
-        return null;
+        return new CommandResponse<>(new File(localFile), commandResponseCode, errorMessages);
     }
 
     public CommandResponse readFile(String remoteFile)
@@ -405,7 +403,7 @@ public class ConnectionManager {
             commandResponseCode = CommandResponseCode.Failure;
         }
 
-        return new CommandResponse(result, commandResponseCode, errorMessage, null,null,null);
+        return new CommandResponse(result, commandResponseCode, errorMessage);
     }
 
     /**
@@ -413,7 +411,7 @@ public class ConnectionManager {
      * @param localFile - local file to be sent.
      * @param remoteFile - file to be written to on the remote host.
      */
-    public CommandResponse sendFile(String localFile, String remoteFile)
+    public CommandResponse<Void> sendFile(String localFile, String remoteFile)
     {
         FileInputStream fis=null;
         String errorMessages = "";
@@ -508,7 +506,7 @@ public class ConnectionManager {
             catch(Exception ee){}
         }
 
-        return new CommandResponse(null, commandResponseCode, errorMessages, null,null,null);
+        return new CommandResponse<>(null, commandResponseCode, errorMessages);
     }
 
     private static int checkAck(InputStream in) throws IOException{
@@ -553,7 +551,7 @@ public class ConnectionManager {
         return channel.getExitStatus() == 0 ? CommandResponseCode.Success : CommandResponseCode.Failure;
     }
 
-    private Session getSession()
+    private Session createSession()
     {
         Session s = null;
         java.util.Properties config = new java.util.Properties();
@@ -584,7 +582,7 @@ public class ConnectionManager {
 
         if(session == null)
         {
-            session = getSession();
+            session = createSession();
         }
 
         if(session.isConnected())
@@ -600,22 +598,27 @@ public class ConnectionManager {
 
             //Only send an sendUpdate if a brand new connection is being established.
             if(!reset)
-                connectable.getWebUpdater().sendUpdate(new WebUpdate("Connecting to: " + connectable.getHostName(), id, null, WebUpdateType.progressUpdate));
+                //connectable.getWebUpdater().sendUpdate(new WebUpdate("Connecting to: " + connectable.getHostName(), id, null, WebUpdateType.progressUpdate));
 
             session.connect();
 
             if(session.isConnected())
             {
-                if(!reset)
+                /*if(!reset)
+                {
                     connectable.getWebUpdater().sendUpdate(new WebUpdate(null, id,
                             new CommandResponse("Successfully connected to: " + connectable.getHostName(), CommandResponseCode.Success, null, null, startDate, DateTime.now()), WebUpdateType.progressUpdate));
+                }*/
+
             }
         }
         catch (JSchException e)
         {
-            if(!reset)
+            /*if(!reset)
+            {
                 connectable.getWebUpdater().sendUpdate(new WebUpdate(null, id,
                         new CommandResponse("Could not connect to: " + connectable.getHostName(), CommandResponseCode.Failure, null, null, startDate, DateTime.now()), WebUpdateType.progressUpdate));
+            }*/
 
             e.printStackTrace();
         }

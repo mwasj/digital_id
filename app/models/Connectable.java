@@ -1,13 +1,10 @@
 package models;
 
-import com.jcraft.jsch.JSchException;
+import commands.Command;
 import context.Context;
-import core.CommandResponse;
-import core.CommandRunner;
 import interfaces.WebUpdater;
 
 import javax.xml.bind.annotation.*;
-import java.io.IOException;
 import java.util.ArrayList;
 
 /**
@@ -18,17 +15,9 @@ import java.util.ArrayList;
 @XmlSeeAlso({Host.class, Switch.class, Inserv.class})
 public abstract class Connectable
 {
-    public void setCommandResponses(ArrayList<CommandResponse> commandResponses) {
-        this.commandResponses = commandResponses;
-    }
-
-    @XmlTransient
-
-    private ConnectionManager connectionManager;
-
-    public ConnectionManager getConnectionManager()
+    public void setCommands(ArrayList<Command> commands)
     {
-        return connectionManager;
+        this.commands = commands;
     }
 
     public String getHostName() {
@@ -43,10 +32,10 @@ public abstract class Connectable
         return password;
     }
 
-    private ArrayList<CommandResponse> commandResponses;
+    private ArrayList<Command> commands;
 
-    public ArrayList<CommandResponse> getCommandResponses() {
-        return commandResponses;
+    public ArrayList<Command> getCommands() {
+        return commands;
     }
 
     public void setContext(Context context) {
@@ -79,29 +68,17 @@ public abstract class Connectable
     @XmlTransient
     private String password;
 
-    protected Connectable(String hostName, String userName, String password, ArrayList<CommandResponse> commandResponses)
+    protected Connectable(String hostName, String userName, String password, ArrayList<Command> commands)
     {
         this.hostName = hostName;
         this.userName = userName;
         this.password = password;
-        connectionManager = new ConnectionManager(this);
-        this.commandResponses = commandResponses;
+        this.commands = commands;
     }
 
     protected Connectable()
     {
 
-    }
-
-    public void connect() throws IOException, JSchException
-    {
-        connectionManager.connect();
-    }
-
-    public void runCommands()
-    {
-        CommandRunner commandRunner = new CommandRunner(this);
-        this.commandResponses = commandRunner.execute();
     }
 
     public void updateWebInterface(WebUpdate webUpdate)
@@ -112,8 +89,21 @@ public abstract class Connectable
             System.out.println("Web updater == null, please set it first.");
     }
 
-    public void disconnect()
+    public int hashCode()
     {
-        connectionManager.close();
+        return this.getHostName().hashCode();
+    }
+
+    public boolean equals(Object object)
+    {
+        if(object instanceof Connectable)
+        {
+            Connectable c = (Connectable) object;
+            return c.hostName.equals(this.hostName);
+        }
+        else
+        {
+            return false;
+        }
     }
 }

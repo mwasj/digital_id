@@ -1,6 +1,7 @@
 package predefined_actions;
 
 import com.jcraft.jsch.JSchException;
+import commands.Command;
 import core.CommandResponse;
 import models.*;
 
@@ -14,7 +15,7 @@ public class Sg3Utils
 {
     public static CommandResponse getWindowsReport(Connectable connectable)
     {
-        long id =  Calendar.getInstance().getTimeInMillis();
+        /*long id =  Calendar.getInstance().getTimeInMillis();
         connectable.getWebUpdater().sendUpdate(new WebUpdate("sg3utils", id, null, WebUpdateType.progressUpdate));
 
         //Send the zip file to the host.
@@ -44,6 +45,8 @@ public class Sg3Utils
 
         connectable.getWebUpdater().sendUpdate(new WebUpdate("sg3utils", id, sg3UtilsResponse, WebUpdateType.progressUpdate));
 
-        return new CommandResponse(sg3UtilsResponse.getResult(), sg3UtilsResponse.getCommandResponseCode(),null, new Command("sg3utils",0,true,0,true),null,null);
+        return new CommandResponse(sg3UtilsResponse.getResult(), sg3UtilsResponse.getCommandResponseCode(),null, new Command("sg3utils",0,true,0,true),null,null);*/
+
+        return null;
     }
 }

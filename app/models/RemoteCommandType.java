@@ -3,7 +3,7 @@ package models;
 /**
  * Created by wasinski on 19/02/2015.
  */
-public enum CommandType
+public enum RemoteCommandType
 {
     Exec,
     Shell

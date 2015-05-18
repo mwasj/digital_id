@@ -1,6 +1,5 @@
 package controllers;
 
-import async.DigitalIdBuilder;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.google.common.reflect.TypeToken;
 import com.google.gson.Gson;
@@ -12,6 +11,7 @@ import models.WebUpdate;
 import play.mvc.Controller;
 import play.mvc.Result;
 import play.mvc.WebSocket;
+import runners.DigitalIdRunner;
 
 import java.io.File;
 import java.io.IOException;
@@ -24,8 +24,9 @@ public class DigitalIdController extends Controller
 {
     public static Result build(final String sessionName)
     {
-        DigitalIdBuilder builder = new DigitalIdBuilder(request().body().asJson().toString(), sessionName);
-        builder.start();
+        DigitalIdRunner runner = new DigitalIdRunner(request().body().asJson().toString(), sessionName);
+        runner.initialise();
+        runner.start();
         return ok();
     }
 

@@ -1,8 +1,9 @@
 package core;
 
+import commands.Command;
+import commands.SendRemoteCommand;
 import dtos.ContentDto;
 import models.*;
-import org.apache.commons.lang3.StringUtils;
 
 import java.math.BigInteger;
 import java.security.SecureRandom;
@@ -89,27 +90,28 @@ public class DigitalIdComparator
 
                     Accordion accordion = mainAccordion.addSubAccordion(new Accordion(connectable.getHostName(), divName, 0));
 
-                    for(CommandResponse commandResponse : connectable.getCommandResponses())
+                    for(Command command : connectable.getCommands())
                     {
-                        for(CommandResponse commandResponse1 : connectable2.getCommandResponses())
+                        for(Command command1 : connectable2.getCommands())
                         {
-                            if(commandResponse.getCommand().getCommand().equals(commandResponse1.getCommand().getCommand()) &&
-                                    (commandResponse.getCommand().isComparable() && commandResponse1.getCommand().isComparable()))
+                            if(command instanceof SendRemoteCommand && command1 instanceof SendRemoteCommand)
                             {
-                                foundCommand = true;
+                                if(((SendRemoteCommand)command).getCommandString().equals(((SendRemoteCommand)command1).getCommandString()) &&
+                                        command.isComparable() && command1.isComparable())
+                                {
+                                    foundCommand = true;
 
-                                String divName2 = createDivName(connectable);
+                                    String divName2 = createDivName(connectable);
 
-                                String before = commandResponse.getResult();
-                                String after = commandResponse1.getResult();
+                                    String before = (String)command.getCommandResponse().getResult();
+                                    String after = (String)command1.getCommandResponse().getResult();
 
-                                //printDifference(before, after);
+                                    //printDifference(before, after);
 
-                                accordion.addSubAccordion(new Accordion(commandResponse.getCommand().getCommand(),
-                                        divName2,
-                                        lineDifference(before, after)));
+                                    accordion.addSubAccordion(new Accordion(((SendRemoteCommand) command).getCommandString(), divName2, lineDifference(before, after)));
 
-                                contentDtos.add(new ContentDto(before, after, divName2));
+                                    contentDtos.add(new ContentDto(before, after, divName2));
+                                }
                             }
                         }
                     }

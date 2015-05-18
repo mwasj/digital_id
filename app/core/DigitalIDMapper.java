@@ -2,8 +2,10 @@ package core;
 
 import com.google.common.reflect.TypeToken;
 import com.google.gson.Gson;
+import commands.Command;
+import commands.CommandType;
+import commands.SendRemoteCommand;
 import models.*;
-import org.joda.time.DateTime;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -15,57 +17,60 @@ import java.util.ArrayList;
  */
 public class DigitalIDMapper
 {
-    public static DigitalID map(String jsonString, String sessionName)
+    private String jsonString;
+    private int webIndex;
+
+    public DigitalIDMapper(String jsonString)
     {
+        this.jsonString = jsonString;
+        this.webIndex = 1;
+    }
+
+    public DigitalID map(String jsonString, String sessionName)
+    {
+        System.out.println("The following json string was received:" + jsonString);
+
         JSONObject jsnobject = new JSONObject(jsonString);
         String name = jsnobject.getString("digitalIdName");
         String author = jsnobject.getString("digitalIdAuthor");
-        System.out.println(author);
+
         DigitalID digitalID = new DigitalID(author, name, sessionName);
+
         digitalID.addHosts(mapHosts(jsonString));
         digitalID.addSwitches(mapSwitches(jsonString));
         digitalID.addInservs(mapArrays(jsonString));
         return  digitalID;
     }
 
-    private static ArrayList<Host> mapHosts(String jsonString)
+    private ArrayList<Host> mapHosts(String jsonString)
     {
         ArrayList<Host> hosts = new ArrayList<>();
-
         JSONObject jsnobject = new JSONObject(jsonString);
         JSONArray jsonArray = jsnobject.getJSONArray("hosts");
 
         for(int i = 0; i < jsonArray.length(); i++)
         {
-            Host host = null;
             JSONObject jsonObject = jsonArray.getJSONObject(i);
 
             String hostType = jsonObject.getString("componentType");
             String hostName = jsonObject.getString("hostName");
             String username = jsonObject.getString("userName");
             String password = jsonObject.getString("password");
-            Type type = new TypeToken<ArrayList<Command>>(){}.getType();
-            ArrayList<Command> commands = new Gson().fromJson(jsonObject.getJSONArray("commands").toString(), type);
-            ArrayList<CommandResponse> commandResponses = new ArrayList<>();
-            for(Command c : commands)
-            {
-                commandResponses.add(new CommandResponse(null, null, null, c, null, null));
-            }
+
             if(hostType.equals("Windows"))
             {
-                host = new WindowsHost(hostName, username, password, commandResponses);
+                hosts.add(new WindowsHost(hostName, username, password, getCommands(jsonObject.getJSONArray("commands"))));
             }
             else if(hostType.equals("Linux"))
             {
 
             }
-            hosts.add(host);
         }
 
         return hosts;
     }
 
-    private static ArrayList<Switch> mapSwitches(String jsonString)
+    private ArrayList<Switch> mapSwitches(String jsonString)
     {
         ArrayList<Switch> switches = new ArrayList<>();
 
@@ -81,20 +86,14 @@ public class DigitalIDMapper
             String hostName = jsonObject.getString("hostName");
             String username = jsonObject.getString("userName");
             String password = jsonObject.getString("password");
-            Type type = new TypeToken<ArrayList<Command>>(){}.getType();
-            ArrayList<Command> commands = new Gson().fromJson(jsonObject.getJSONArray("commands").toString(), type);
-            ArrayList<CommandResponse> commandResponses = new ArrayList<>();
-            for(Command c : commands)
-            {
-                commandResponses.add(new CommandResponse(null, null, null, c, null, null));
-            }
+
             if(hostType.equals("Cisco"))
             {
-                s = new CiscoSwitch(hostName, username, password, null, commandResponses);
+                s = new CiscoSwitch(hostName, username, password, getCommands(jsonObject.getJSONArray("commands")));
             }
             else if(hostType.equals("Brocade"))
             {
-                s = new BrocadeSwitch(hostName, username, password, null, commandResponses);
+                s = new BrocadeSwitch(hostName, username, password, getCommands(jsonObject.getJSONArray("commands")));
             }
             else if(hostType.equals("Qlogic"))
             {
@@ -107,7 +106,7 @@ public class DigitalIDMapper
         return switches;
     }
 
-    private static ArrayList<Inserv> mapArrays(String jsonString)
+    private ArrayList<Inserv> mapArrays(String jsonString)
     {
         ArrayList<Inserv> arrays = new ArrayList<>();
 
@@ -116,24 +115,36 @@ public class DigitalIDMapper
 
         for(int i = 0; i < jsonArray.length(); i++)
         {
-            Inserv inserv = null;
+            Inserv inserv;
             JSONObject jsonObject = jsonArray.getJSONObject(i);
 
             String hostName = jsonObject.getString("hostName");
             String username = jsonObject.getString("userName");
             String password = jsonObject.getString("password");
-            Type type = new TypeToken<ArrayList<Command>>(){}.getType();
-            ArrayList<Command> commands = new Gson().fromJson(jsonObject.getJSONArray("commands").toString(), type);
-            ArrayList<CommandResponse> commandResponses = new ArrayList<>();
-            for(Command c : commands)
-            {
-                commandResponses.add(new CommandResponse(null, null, null, c, null, null));
-            }
-            inserv = new Inserv(hostName,username,password, commandResponses);
+
+            inserv = new Inserv(hostName,username,password, getCommands(jsonObject.getJSONArray("commands")));
 
             arrays.add(inserv);
         }
 
         return arrays;
     }
+
+    private ArrayList<Command> getCommands(JSONArray jsonArray)
+    {
+        ArrayList<Command> commands = new ArrayList<>();
+
+        for(int i = 0; i < jsonArray.length(); i++)
+        {
+            JSONObject jsonObject = jsonArray.getJSONObject(i);
+
+            CommandType commandType = (CommandType) jsonObject.getString("commandType");
+
+        }
+
+        return commands;
+    }
+
+
+
 }

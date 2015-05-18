@@ -14,7 +14,7 @@ import java.util.ArrayList;
  */
 @XmlRootElement(name="DigitalID")
 @XmlAccessorType(XmlAccessType.FIELD)
-public class DigitalID implements WebUpdater
+public class DigitalID
 {
     @XmlTransient
     private String sessionName;
@@ -95,7 +95,6 @@ public class DigitalID implements WebUpdater
         this.inservs = inservs;
         this.switches = switches;
         this.sessionName = sessionName;
-
         initialisePath();
     }
 
@@ -104,7 +103,6 @@ public class DigitalID implements WebUpdater
         this.author = author;
         this.name = name+"_"+author;
         this.sessionName = sessionName;
-
         initialisePath();
     }
 
@@ -161,54 +159,4 @@ public class DigitalID implements WebUpdater
 
         this.inservs.add(inserv);
     }
-
-    public void buildDigitalID() throws IOException, JSchException
-    {
-        if(hosts != null && hosts.size() > 0)
-        {
-            for(Host host : hosts)
-            {
-                host.setWebUpdater(this);
-                host.connect();
-                host.runCommands();
-                host.disconnect();
-
-            }
-        }
-
-        if(switches != null && switches.size() > 0)
-        {
-            for(Switch s : switches)
-            {
-                s.setWebUpdater(this);
-                s.connect();
-                s.runCommands();
-                s.disconnect();
-            }
-        }
-
-        if(inservs != null && inservs.size() > 0)
-        {
-            for(Inserv inserv : inservs)
-            {
-                System.out.println(inserv.getHostName());
-                inserv.setWebUpdater(this);
-                inserv.connect();
-                inserv.runCommands();
-                inserv.disconnect();
-            }
-        }
-
-        DigitalIDUtils.marshall(this);
-
-        sendUpdate(new WebUpdate(this.getName(), 0, null, WebUpdateType.finish));
-    }
-
-
-    @Override
-    public void sendUpdate(WebUpdate webUpdate) {
-        DigitalIdController.updateWebInterface(sessionName, webUpdate);
-    }
-
-
 }

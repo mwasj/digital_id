@@ -5,5 +5,12 @@ package core;
  */
 public class WebUpdater
 {
+    private String sessionName;
+
+    public WebUpdater(String sessionName)
+    {
+        this.sessionName = sessionName;
+    }
+
 
 }
