@@ -10,19 +10,22 @@
 
     NewComponentModalCtrl.$inject = ['$scope', '$modalInstance', 'currentComponent', 'componentOptions'];
 
-    /**
-     * @namespace ProfileController
-     */
     function NewComponentModalCtrl($scope, $modalInstance, currentComponent, componentOptions)
     {
-
-
-        //Define custom object to hold our commands.
-        function Command (command, interval, comparable, commandType) {
-            this.command = command;
+        //Define custom object to hold user defined commands.
+        function Command (commandString, interval, comparable)
+        {
+            this.commandString = commandString;
             this.interval = interval;
             this.comparable = comparable;
-            this.commandType = commandType;
+        }
+
+        //Define custom object to hold predefined actions.
+        function Action (actionIndex, description, commands)
+        {
+            this.actionIndex = actionIndex;
+            this.description = description;
+            this.commands = commands;
         }
 
         $scope.hostName = currentComponent.hostName;
@@ -31,18 +34,8 @@
         $scope.componentType = currentComponent.componentType;
         $scope.actions = currentComponent.actions;
         $scope.currentDeviceType = currentComponent.currentDeviceType;
-        $scope.commands = currentComponent.commands;
+        $scope.actions = currentComponent.actions;
         $scope.predefinedActionLabel = "Add a predefined action";
-        $scope.predefinedActions = currentComponent.predefinedActions;
-        console.log($scope.predefinedActions);
-        //Temporary TODO - delete.
-        //$scope.commands.push(new Command("systeminfo",0));
-        //$scope.componentType = componentOptions[0];
-
-        //Temporary to save time.
-        //$scope.hostName = "dl380pg8-74";
-        //$scope.userName = "Administrator";
-        //$scope.password = "ssmssm";
 
         $scope.componentLabel = $scope.componentType == undefined ? "Select " + currentComponent.currentDeviceType + " Type":  $scope.componentType;
 
@@ -54,14 +47,12 @@
             currentComponent.userName = $scope.userName;
             currentComponent.password =  $scope.password;
             currentComponent.componentType = $scope.componentType;
-            currentComponent.commands = $scope.commands;
+            currentComponent.actions = $scope.actions;
             currentComponent.predefinedActions= $scope.predefinedActions;
-            console.log("New component window, ok clicked.");
             $modalInstance.close(currentComponent);
         };
 
         $scope.cancel = function () {
-            console.log("New component window, cancel clicked.");
             $modalInstance.dismiss('cancel');
         };
 
@@ -71,38 +62,42 @@
             $scope.componentLabel = action;
         };
 
-
-        $scope.createEmptyCommand = function ()
+        $scope.addAction = function (action)
         {
-            console.log("createEmptyCommand called");
-            $scope.commands.push(new Command("", 0, false, UserDefined));
+            $scope.actions.push(action)
         }
 
-        $scope.createPredefinedCommand = function (predefinedAction)
+        $scope.addUserDefinedAction = function()
         {
-            $scope.commands.push(new Command(predefinedAction, 0, true, Predefined))
+            var commands = [];
+            commands.push(new Command("",0,false));
+
+            var action = new Action(0, "", commands);
+
+            commands.push(new Command(action.commands[0].commandString, action.commands[0].interval, action.commands[0].comparable));
+            action.commands = commands;
+
+            $scope.actions.push(action);
         }
 
-        $scope.removeCommand = function (command)
+        $scope.removeAction = function (action)
         {
-            for(var i = 0; i < $scope.commands.length; i++)
+            for(var i = 0; i < $scope.actions.length; i++)
             {
-                if(command === $scope.commands[i])
+                if(action === $scope.actions[i])
                 {
-                    console.log("Command removed.");
-                    $scope.commands.splice(i, 1);
+                    $scope.actions.splice(i, 1);
                 }
             }
         }
 
-        $scope.toggleSelection = function (command)
+        $scope.toggleSelection = function (action)
         {
-             for(var i = 0; i < $scope.commands.length; i++)
+             for(var i = 0; i < $scope.actions.length; i++)
              {
-                 if(command === $scope.commands[i])
+                 if(action === $scope.actions[i])
                  {
-                     $scope.commands[i].comparable = ! $scope.commands[i].comparable;
-                     console.log($scope.commands[i]);
+                     $scope.actions.commands[0].comparable = ! $scope.actions.commands[0].comparable;
                  }
              }
         }

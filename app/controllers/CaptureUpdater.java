@@ -1,11 +1,15 @@
 package controllers;
 
+import actions.ActionStatus;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.google.common.reflect.TypeToken;
 import com.google.gson.Gson;
-import core.CommandResponse;
-import models.Instruction;
+import com.google.gson.GsonBuilder;
+import dtos.ActionUpdateDto;
+import dtos.AnalysisDto;
+import dtos.CommandUpdateDto;
 import models.WebUpdate;
 import play.mvc.*;
 import play.libs.*;
@@ -15,6 +19,7 @@ import akka.actor.*;
 import scala.concurrent.Await;
 import scala.concurrent.duration.Duration;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
@@ -60,7 +65,6 @@ public class CaptureUpdater extends UntypedActor
         else if (message instanceof Update)
         {
             Update update = (Update) message;
-            String content = new Gson().toJson(update.webUpdate);
             String type = "";
 
             switch(update.webUpdate.getWebUpdateType())
@@ -71,11 +75,35 @@ public class CaptureUpdater extends UntypedActor
                 case progressUpdate:
                     type = "progressUpdate";
                     break;
+                case analysis:
+                    //sendAnalysis(update.username);
+                    break;
             }
-
-            sendUpdate(update.username, content, type);
         }
-
+        else if( message instanceof AnalysisDto)
+        {
+            AnalysisDto analysisDto = (AnalysisDto) message;
+            ObjectNode event = Json.newObject();
+            event.put("type", "analysis");
+            event.put("content", new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create().toJson(analysisDto.getActions()));
+            members.get(analysisDto.getUserName()).write(event);
+        }
+        else if( message instanceof ActionUpdateDto)
+        {
+            ActionUpdateDto actionUpdateDto = (ActionUpdateDto) message;
+            ObjectNode event = Json.newObject();
+            event.put("type", "action_update");
+            event.put("content", new Gson().toJson(actionUpdateDto));
+            members.get(actionUpdateDto.getUserName()).write(event);
+        }
+        else if( message instanceof CommandUpdateDto)
+        {
+            CommandUpdateDto commandUpdateDto = (CommandUpdateDto) message;
+            ObjectNode event = Json.newObject();
+            event.put("type", "command_update");
+            event.put("content", new Gson().toJson(commandUpdateDto));
+            members.get(commandUpdateDto.getUserName()).write(event);
+        }
     }
 
     private void sendUpdate(String username, String content, String type)
@@ -86,12 +114,26 @@ public class CaptureUpdater extends UntypedActor
         members.get(username).write(event);
     }
 
-    public static void update(String id, WebUpdate webUpdate) throws Exception
+    public static void update(String username, WebUpdate webUpdate) throws Exception
     {
-        actor.tell(new Update(id, webUpdate), null);
+        actor.tell(new Update(username, webUpdate), null);
         //String result = (String)  Await.result(ask(actor, new Update(id, infornatmion), 1000), Duration.create(1, TimeUnit.SECONDS));
     }
 
+    public static void sendAnalysis(AnalysisDto analysisDto)
+    {
+        actor.tell(analysisDto, null);
+    }
+
+    public static void sendActionUpdate(ActionUpdateDto actionUpdateDto)
+    {
+        actor.tell(actionUpdateDto, null);
+    }
+
+    public static void sendCommandUpdate(CommandUpdateDto commandUpdateDto)
+    {
+        actor.tell(commandUpdateDto, null);
+    }
     /**
      *
      * @param id

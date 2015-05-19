@@ -9,7 +9,18 @@
 
     function DigitalIdProgressCtrl($scope, $modalInstance, digitalID, UserService)
     {
+        //Define custom object to hold predefined actions.
+        function Action (name, commands)
+        {
+            this.name = name;
+            this.commands = commands;
+        }
+
         $scope.updates = [];
+        $scope.actions = [];
+        $scope.selectedAction = undefined;
+
+
         $scope.downloadReady = false;
         var sessionName = Math.random().toString(36).substring(7);
         $scope.digitalID = digitalID;
@@ -35,18 +46,28 @@
 
             if(obj.type === "analysis")
             {
+                console.log("analysis received");
+
                 var obj2 = JSON.parse(obj.content);
 
                 for(var i = 0; i < obj2.length; i++)
                 {
-                    $scope.updates.push(obj2[i].hostName);
-                    for(var y = 0; y < obj2[i].instructions.length; y++)
-                    {
-                        $scope.updates.push(obj2[i].instructions[y].command);
-                    }
+                    $scope.actions.push(new Action(obj2[i].name, obj2[i].commands));
                 }
+
             }
-            else if(obj.type === "progressUpdate")
+
+            if(obj.type === "action_update")
+            {
+                console.log("action update received");
+            }
+
+            if(obj.type === "command_update")
+            {
+                console.log("command update received");
+            }
+
+            if(obj.type === "progressUpdate")
             {
                 var parsedContent = JSON.parse(obj.content);
 
@@ -110,6 +131,16 @@
 
          $scope.cancel = function(){
                 $modalInstance.dismiss('cancel');
+         }
+
+         $scope.selectAction = function(action)
+         {
+            $scope.selectedAction = action;
+
+            for(var i = 0; i < action.commands.length; i++)
+            {
+                console.log(action.commands[i]);
+            }
          }
     };
 

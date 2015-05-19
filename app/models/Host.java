@@ -1,9 +1,6 @@
 package models;
 
 import actions.Action;
-import commands.Command;
-import interfaces.HostPredefinedActionListener;
-
 import javax.xml.bind.annotation.XmlSeeAlso;
 import java.util.ArrayList;
 
@@ -11,7 +8,7 @@ import java.util.ArrayList;
  * Created by wasinski on 27/01/2015.
  */
 @XmlSeeAlso({WindowsHost.class})
-public abstract class Host extends Connectable implements HostPredefinedActionListener
+public abstract class Host extends Connectable
 {
     protected Host(){}
 

@@ -195,3 +195,14 @@ hr
 .no-digitalIds-label{
     font-style: italic;
 }
+
+#actions_pane{
+    float:left;
+    width:25%;
+    overflow:hidden;
+}
+#commands_pane{
+    float:left;
+    width:75%;
+    overflow:hidden;
+}

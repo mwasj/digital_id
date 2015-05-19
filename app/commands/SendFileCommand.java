@@ -11,11 +11,15 @@ public class SendFileCommand extends Command
     private String localFile;
     private String remoteFile;
 
-    public SendFileCommand(String localFile, String remoteFile)
+    public SendFileCommand(String displayName,String localFile, String remoteFile)
     {
-        super(0, false);
+        super(displayName, 0, false);
         this.localFile = localFile;
         this.remoteFile = remoteFile;
+    }
+
+    public SendFileCommand()
+    {
     }
 
     @Override

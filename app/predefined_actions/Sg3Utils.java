@@ -1,11 +1,16 @@
 package predefined_actions;
 
+import actions.Action;
 import com.jcraft.jsch.JSchException;
 import commands.Command;
+import commands.ReadFileCommand;
+import commands.SendFileCommand;
+import commands.SendRemoteCommand;
 import core.CommandResponse;
 import models.*;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Calendar;
 
 /**
@@ -13,40 +18,19 @@ import java.util.Calendar;
  */
 public class Sg3Utils
 {
-    public static CommandResponse getWindowsReport(Connectable connectable)
+    public static Action windowsSg3UtilsAction()
     {
-        /*long id =  Calendar.getInstance().getTimeInMillis();
-        connectable.getWebUpdater().sendUpdate(new WebUpdate("sg3utils", id, null, WebUpdateType.progressUpdate));
+        ArrayList<Command> commands = new ArrayList<>();
 
-        //Send the zip file to the host.
-        connectable.getConnectionManager().sendFile("C:/digital_id.zip", "c:\\digital_id.zip");
+        commands.add(new SendFileCommand("Sending file C:/digital_id.zip","C:/digital_id.zip", "c:\\digital_id.zip"));
+        commands.add(new SendRemoteCommand("Extracting archive","powershell.exe -noprofile -command \"&{ $shell = new-object -com shell.application; $zip = $shell.NameSpace(\"'C:\\digital_id.zip'\"); foreach($item in $zip.items()) { $shell.Namespace(\"'C:\\'\").copyhere($item, 0x10); }}\"", RemoteCommandType.Shell, 0, false));
+        commands.add(new SendRemoteCommand("Running scripts","powershell.exe -executionPolicy bypass -file \"c:\\digital_id\\sg3_utils.ps1", RemoteCommandType.Shell, 0, false));
+        commands.add(new ReadFileCommand("Capturing results","c:\\digital_id\\sg3_utils.txt", 0, true));
+        commands.add(new SendRemoteCommand("Performing initial cleanup","powershell.exe  -noprofile -command \"&{ Remove-item c:\\digital_id -Force -Recurse }\"", RemoteCommandType.Shell, 0,false));
+        commands.add(new SendRemoteCommand("Performing secondary cleanup","powershell.exe  -noprofile -command \"&{ Remove-item c:\\digital_id.zip -Force }\"", RemoteCommandType.Shell, 0,false));
 
-        CommandResponse sg3UtilsResponse = null;
+        Action sg3UtilsAction = new Action(commands, "Run Sg3utils");
 
-        try {
-            //Send command to extract the file.
-            connectable.getConnectionManager().sendCommand(new Command("powershell.exe -noprofile -command \"&{ $shell = new-object -com shell.application; $zip = $shell.NameSpace(\"'C:\\digital_id.zip'\"); foreach($item in $zip.items()) { $shell.Namespace(\"'C:\\'\").copyhere($item, 0x10); }}\"", 0, true, 0, false), CommandType.Shell);
-
-            //Run the PowerShell script to generate the report.
-            connectable.getConnectionManager()
-                    .sendCommand(new Command("powershell.exe -executionPolicy bypass -file \"c:\\digital_id\\sg3_utils.ps1", 0, true, 0, false), CommandType.Shell);
-
-            //Retrieve the contents of the report.
-            sg3UtilsResponse = connectable.getConnectionManager().readFile("c:\\digital_id\\sg3_utils.txt");
-
-            //Perform a cleanup on the host.
-            connectable.getConnectionManager().sendCommand(new Command("powershell.exe  -noprofile -command \"&{ Remove-item c:\\digital_id -Force -Recurse }\"",0,false,0,false), CommandType.Shell);
-            connectable.getConnectionManager().sendCommand(new Command("powershell.exe  -noprofile -command \"&{ Remove-item c:\\digital_id.zip -Force }\"",0,false,0,false), CommandType.Shell);
-        }
-            catch (IOException | JSchException e)
-        {
-            e.printStackTrace();
-        }
-
-        connectable.getWebUpdater().sendUpdate(new WebUpdate("sg3utils", id, sg3UtilsResponse, WebUpdateType.progressUpdate));
-
-        return new CommandResponse(sg3UtilsResponse.getResult(), sg3UtilsResponse.getCommandResponseCode(),null, new Command("sg3utils",0,true,0,true),null,null);*/
-
-        return null;
+        return sg3UtilsAction;
     }
 }

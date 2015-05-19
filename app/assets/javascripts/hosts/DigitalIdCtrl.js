@@ -7,7 +7,25 @@
 
     NewHostCtrl.$inject = ['$scope', '$modal', '$log', 'UserService'];
 
-    function NewHostCtrl($scope, $modal, $log, UserService) {
+    function NewHostCtrl($scope, $modal, $log, UserService)
+    {
+
+        //Define custom object to hold user defined commands.
+        function Command (commandString, interval, comparable)
+        {
+            this.commandString = commandString;
+            this.interval = interval;
+            this.comparable = comparable;
+        }
+
+        //Define custom object to hold predefined actions.
+        function Action (actionIndex, description, commands)
+        {
+            this.actionIndex = actionIndex;
+            this.description = description;
+            this.commands = commands;
+        }
+
         console.log("NewHostCtrl constructed.");
 
         $scope.hosts = [];
@@ -29,6 +47,11 @@
 
         $scope.dropdownisopen = undefined;
 
+        //Temporary, for testing purposes.
+        $scope.actions = [];
+        var commands = [];
+        $scope.actions.push(new Action(1, "Run sg3 Utils", commands))
+
         $scope.open = function (deviceType, component, idx, e)
         {
             var edit = false;
@@ -36,8 +59,8 @@
 
             currentComponent.currentDeviceType = deviceType;
             $scope.currentDeviceType = deviceType;
-            currentComponent.commands = [];
-            currentComponent.predefinedActions = [];
+            currentComponent.actions = $scope.actions;
+
 
             if(component != undefined)
             {
@@ -45,8 +68,7 @@
                 currentComponent.userName = component.userName;
                 currentComponent.password = component.password;
                 currentComponent.componentType = component.componentType;
-                currentComponent.commands = component.commands;
-                currentComponent.predefinedActions = component.predefinedActions;
+                currentComponent.actions = component.actions;
                 currentComponent.id = component.id;
 
                 edit = true;
@@ -64,7 +86,6 @@
             {
                 case 'Host':
                     componentOptions = ['Windows', 'Linux'];
-                    currentComponent.predefinedActions = ['Run sg3utils'];
                     break;
                 case 'Switch':
                     componentOptions = ['Cisco', 'Qlogic', 'Brocade'];

@@ -1,9 +1,12 @@
 package core;
 
+import actions.Action;
 import commands.Command;
+import commands.SendRemoteCommand;
 import models.*;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import predefined_actions.Sg3Utils;
 
 import java.util.ArrayList;
 
@@ -13,15 +16,17 @@ import java.util.ArrayList;
 public class DigitalIDMapper
 {
     private String jsonString;
+    private String sessionName;
     private int webIndex;
 
-    public DigitalIDMapper(String jsonString)
+    public DigitalIDMapper(String jsonString, String sessionName)
     {
         this.jsonString = jsonString;
+        this.sessionName = sessionName;
         this.webIndex = 1;
     }
 
-    public DigitalID map(String jsonString, String sessionName)
+    public DigitalID map()
     {
         System.out.println("The following json string was received:" + jsonString);
 
@@ -54,7 +59,7 @@ public class DigitalIDMapper
 
             if(hostType.equals("Windows"))
             {
-                hosts.add(new WindowsHost(hostName, username, password, getCommands(jsonObject.getJSONArray("commands"))));
+                hosts.add(new WindowsHost(hostName, username, password, mapActions(jsonObject.getJSONArray("actions"))));
             }
             else if(hostType.equals("Linux"))
             {
@@ -84,11 +89,11 @@ public class DigitalIDMapper
 
             if(hostType.equals("Cisco"))
             {
-                s = new CiscoSwitch(hostName, username, password, getCommands(jsonObject.getJSONArray("commands")));
+                s = new CiscoSwitch(hostName, username, password, mapActions(jsonObject.getJSONArray("actions")));
             }
             else if(hostType.equals("Brocade"))
             {
-                s = new BrocadeSwitch(hostName, username, password, getCommands(jsonObject.getJSONArray("commands")));
+                s = new BrocadeSwitch(hostName, username, password, mapActions(jsonObject.getJSONArray("actions")));
             }
             else if(hostType.equals("Qlogic"))
             {
@@ -117,7 +122,7 @@ public class DigitalIDMapper
             String username = jsonObject.getString("userName");
             String password = jsonObject.getString("password");
 
-            inserv = new Inserv(hostName,username,password, getCommands(jsonObject.getJSONArray("commands")));
+            inserv = new Inserv(hostName,username,password, mapActions(jsonObject.getJSONArray("actions")));
 
             arrays.add(inserv);
         }
@@ -125,17 +130,44 @@ public class DigitalIDMapper
         return arrays;
     }
 
-    private ArrayList<Command> getCommands(JSONArray jsonArray)
+    private ArrayList<Action> mapActions(JSONArray jsonArray)
     {
-        ArrayList<Command> commands = new ArrayList<>();
+        ArrayList<Action> actions = new ArrayList<>();
 
         for(int i = 0; i < jsonArray.length(); i++)
         {
             JSONObject jsonObject = jsonArray.getJSONObject(i);
 
+            String description = jsonObject.getString("description");
+            int actionIndex = jsonObject.getInt("actionIndex");
+
+            //TODO - replace with proper mapper.
+            if(actionIndex != 0)
+            {
+                actions.add(Sg3Utils.windowsSg3UtilsAction());
+            }
+            else
+            {
+                JSONArray commandsArray = jsonObject.getJSONArray("commands");
+                ArrayList<Command> commands = new ArrayList<>();
+
+                for(int y = 0; y < commandsArray.length(); y++)
+                {
+                    JSONObject commandJsonObject = commandsArray.getJSONObject(y);
+
+                    String commandString = commandJsonObject.getString("commandString");
+                    int interval = commandJsonObject.getInt("interval");
+                    boolean comparable = commandJsonObject.getBoolean("comparable");
+
+                    commands.add(new SendRemoteCommand("Executing command: "+commandString, commandString, RemoteCommandType.Exec, interval,comparable));
+
+                }
+
+                actions.add(new Action(commands, description));
+            }
         }
 
-        return commands;
+        return actions;
     }
 
 

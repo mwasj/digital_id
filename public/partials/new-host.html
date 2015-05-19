@@ -47,9 +47,11 @@
 
     <div class="form-group" style="margin-left: 15px">
 
-        <label>Execute the following commands:</label>
+        <label>Select one of the following:</label>
         <br />
-        <button class="btn btn-primary" ng-click="createEmptyCommand()">Add command</button>
+        <button class="btn btn-primary" ng-click="addUserDefinedAction()">Execute your own command</button>
+
+        or
 
         <div class="btn-group" dropdown is-open="dropdownisopen2">
 
@@ -58,29 +60,49 @@
             </button>
 
             <ul class="dropdown-menu">
-                <li ng-repeat="a in $parent.predefinedActions">
-                    <a ng-click="createPredefinedCommand(a)">{{a}}</a>
+                <li ng-repeat="action in $parent.actions">
+                    <a ng-click="addAction(action)">{{a.description}}</a>
                 </li>
             </ul>
         </div>
 
 
         <table>
-            <tr ng-show="$parent.commands.length > 0">
-                <th>Command</th><th>Then wait for</th><th>Comparable</th>
+            <tr ng-show="$parent.actions.length > 0">
+                <th>Command</th><th>Then wait for (sec)</th><th>Comparable</th>
             </tr>
-            <tr ng-repeat="command in $parent.commands" style="margin-top: 15px">
-                <td><input type="text" class="form-control" name="command" id="command" placeholder="Type your command here" ng-model="command.command" ng-disabled="command.commandType === Predefined"></td>
-                <td><input type="text" class="form-control" name="interval" id="interval" placeholder="0 sec." ng-model="command.interval"></td>
+
+            <tr ng-repeat="action in $parent.actions" style="margin-top: 15px">
+                <td>
+                    <input type="text"
+                           class="form-control"
+                           name="action.description"
+                           id="action.description"
+                           placeholder="Type your command here"
+                           ng-model="action.description"
+                           ng-disabled="action.actionIndex !== 0">
+                </td>
+
+                <td>
+                    <input type="text"
+                           class="form-control"
+                           name="interval"
+                           id="interval"
+                           placeholder="0 sec."
+                           ng-model="action.commands[0].interval"
+                           ng-disabled="action.actionIndex !== 0">
+                </td>
+
                 <td>
                     <input
                             type="checkbox"
-                            name=command.command"
-                            value="command.command"
-                            ng-click="$parent.toggleSelection(command)"
-                            ng-checked="command.comparable">
+                            name=action.command"
+                            value="action.command"
+                            ng-click="$parent.toggleSelection(action)"
+                            ng-checked="action.actionIndex !== 0 ? true : action.commands[0].comparable"
+                            ng-disabled="action.actionIndex !== 0">
                 </td>
-                <td><button class="btn btn-danger" ng-click="removeCommand(command)">Delete</button></td>
+                <td><button class="btn btn-danger" ng-click="$parent.removeAction(action)">Delete</button></td>
             </tr>
         </table>
     </div>

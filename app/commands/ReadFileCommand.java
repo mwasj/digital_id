@@ -10,8 +10,8 @@ public class ReadFileCommand extends Command {
 
     private String remoteFile;
 
-    public ReadFileCommand(int waitFor, boolean comparable, String remoteFile) {
-        super(waitFor, comparable);
+    public ReadFileCommand(String displayName, String remoteFile, int waitFor, boolean comparable) {
+        super(displayName, waitFor, comparable);
 
         this.remoteFile = remoteFile;
     }

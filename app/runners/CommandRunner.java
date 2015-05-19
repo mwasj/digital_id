@@ -1,6 +1,8 @@
 package runners;
 
 import commands.Command;
+import commands.CommandStatus;
+import commands.CommandUpdateInterface;
 import core.ConnectionManager;
 import core.WebUpdater;
 import models.*;
@@ -15,11 +17,13 @@ public class CommandRunner
 {
     private ConnectionManager connectionManager;
     private ArrayList<Command> commands;
+    private CommandUpdateInterface commandUpdateInterface;
 
-    public CommandRunner(ConnectionManager connectionManager, ArrayList<Command> commands)
+    public CommandRunner(ConnectionManager connectionManager, ArrayList<Command> commands, CommandUpdateInterface commandUpdateInterface)
     {
         this.commands = commands;
         this.connectionManager = connectionManager;
+        this.commandUpdateInterface = commandUpdateInterface;
     }
 
     public void initialise()
@@ -32,13 +36,13 @@ public class CommandRunner
         for(Command c : commands)
         {
             c.initialise(connectionManager);
+
+            c.setCommandStatus(CommandStatus.Executing);
+            commandUpdateInterface.sendCommandUpdate(c.getCommandStatus(),null,c.getWebId());
             c.execute();
 
             if(c.getWaitForValue() > 0)
             {
-                long id =  Calendar.getInstance().getTimeInMillis();
-                int seconds = (c.getWaitForValue());
-
                 //connectable.getWebUpdater().sendUpdate(new WebUpdate("Sleeping for: " + seconds + " seconds", id, null, WebUpdateType.progressUpdate));
 
                 try {

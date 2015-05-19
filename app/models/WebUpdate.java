@@ -1,16 +1,18 @@
 package models;
 
-import core.CommandResponse;
-
 /**
  * Created by wasinski on 30/04/2015.
  */
-public class WebUpdate
+public class WebUpdate<T>
 {
     private String text;
     private long  id;
-    private CommandResponse commandResponse;
+    private T content;
     private WebUpdateType webUpdateType;
+
+    public T getContent() {
+        return content;
+    }
 
     public WebUpdateType getWebUpdateType() {
         return webUpdateType;
@@ -24,15 +26,11 @@ public class WebUpdate
         return id;
     }
 
-    public CommandResponse getCommandResponse() {
-        return commandResponse;
-    }
-
-    public WebUpdate(String text, long id, CommandResponse commandResponse, WebUpdateType webUpdateType)
+    public WebUpdate(String text, long id, T content, WebUpdateType webUpdateType)
     {
         this.text = text;
         this.id = id;
-        this.commandResponse = commandResponse;
+        this.content = content;
         this.webUpdateType = webUpdateType;
     }
 

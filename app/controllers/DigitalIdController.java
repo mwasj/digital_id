@@ -26,6 +26,7 @@ public class DigitalIdController extends Controller
     {
         DigitalIdRunner runner = new DigitalIdRunner(request().body().asJson().toString(), sessionName);
         runner.initialise();
+        runner.generateAnalysis();
         runner.start();
         return ok();
     }

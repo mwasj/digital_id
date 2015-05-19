@@ -1,5 +1,7 @@
 package core;
 
+import com.google.gson.annotations.Expose;
+
 import javax.xml.bind.annotation.*;
 
 /**
@@ -8,10 +10,11 @@ import javax.xml.bind.annotation.*;
 @XmlAccessorType(XmlAccessType.FIELD)
 public class CommandResponse<T>
 {
+    @Expose
     private T result;
-
+    @Expose
     private CommandResponseCode commandResponseCode;
-
+    @Expose
     private String errorMessage;
 
     public T getResult() {

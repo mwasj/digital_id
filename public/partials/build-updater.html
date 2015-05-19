@@ -3,35 +3,52 @@
         <p class="pull-left">{{$parent.headerTitle}}</p>
     </div>
 
+    <div>
 
-    <accordion>
-        <accordion-group ng-repeat="update in $parent.updates" heading="{{h.hostName}}">
-            <accordion-heading>
-                {{update.text}}
+        <div id="actions_pane">
 
-                <div class="spinner" ng-show="update.status == null">
-                    <div class="rect1"></div>
-                    <div class="rect2"></div>
-                    <div class="rect3"></div>
-                    <div class="rect4"></div>
-                    <div class="rect5"></div>
-                </div>
+            <div ng-repeat="action in $parent.actions">
+                <button class="btn btn-sm btn-primary"
+                        type="button"
+                        ng-model="action"
+                        ng-click="selectAction(action)">{{action.name}}
+                </button>
+            </div>
 
-                <div class="isa_success" ng-show="update.status == 'Success'">
-                    <i class="fa fa-check"></i>
-                    OK
-                </div>
+        </div>
 
-                <div class="isa_error" ng-show="update.status == 'Failure'">
-                    <i class="fa fa-times-circle"></i>
-                    Fail
-                </div>
+        <div id="commands_pane">
 
-            </accordion-heading>
+            <accordion>
+                <accordion-group ng-repeat="command in $parent.selectedAction.commands" heading="{{command.displayName}}">
+                    <accordion-heading>
+                        {{command.displayName}}
 
-            <pre>{{update.data}}</pre>
-        </accordion-group>
-    </accordion>
+                        <div class="spinner" ng-show="command.commandStatus == executing">
+                            <div class="rect1"></div>
+                            <div class="rect2"></div>
+                            <div class="rect3"></div>
+                            <div class="rect4"></div>
+                            <div class="rect5"></div>
+                        </div>
+
+                        <div class="isa_success" ng-show="update.status == 'Success'">
+                            <i class="fa fa-check"></i>
+                            OK
+                        </div>
+
+                        <div class="isa_error" ng-show="update.status == 'Failure'">
+                            <i class="fa fa-times-circle"></i>
+                            Fail
+                        </div>
+
+                    </accordion-heading>
+
+                    <pre>{{update.data}}</pre>
+                </accordion-group>
+            </accordion>
+        </div>
+    </div>
 
     <button class="btn btn-sm btn-danger" id="btn_cancel" ng-click="$parent.cancel()">{{$parent.downloadReady ? 'Close' : 'Cancel'}}</button>
     <a href="/digitalid/download/{{$parent.downloadUrl}}.xml" class="btn btn-sm btn-success" ng-disabled="!$parent.downloadReady" target="_blank">Download XML file</a>

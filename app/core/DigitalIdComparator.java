@@ -90,7 +90,7 @@ public class DigitalIdComparator
 
                     Accordion accordion = mainAccordion.addSubAccordion(new Accordion(connectable.getHostName(), divName, 0));
 
-                    for(Command command : connectable.getActions())
+                    /*for(Command command : connectable.getActions())
                     {
                         for(Command command1 : connectable2.getActions())
                         {
@@ -114,7 +114,7 @@ public class DigitalIdComparator
                                 }
                             }
                         }
-                    }
+                    }*/
 
                     //Could not find any commands that match.
                     if(!foundCommand)

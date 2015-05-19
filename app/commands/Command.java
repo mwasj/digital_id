@@ -1,5 +1,6 @@
 package commands;
 
+import com.google.gson.annotations.Expose;
 import core.CommandResponse;
 import core.ConnectionManager;
 import org.joda.time.DateTime;
@@ -7,6 +8,7 @@ import org.joda.time.DateTime;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
+import java.util.UUID;
 
 /**
  * Represents the command object being executed on the device.
@@ -15,11 +17,31 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlAccessorType(XmlAccessType.FIELD)
 public abstract class Command implements CommandInterface
 {
+    @Expose
     private int waitFor;
+    @Expose
     private boolean comparable;
+    @Expose
     private CommandResponse commandResponse;
+
     private ConnectionManager connectionManager;
-    private int webId;
+
+    @Expose
+    private String webId;
+
+    @Expose
+    private CommandStatus commandStatus;
+
+    @Expose
+    private String displayName;
+
+    public CommandStatus getCommandStatus() {
+        return commandStatus;
+    }
+
+    public void setCommandStatus(CommandStatus commandStatus) {
+        this.commandStatus = commandStatus;
+    }
 
     public void setConnectionManager(ConnectionManager connectionManager) {
         this.connectionManager = connectionManager;
@@ -38,9 +60,9 @@ public abstract class Command implements CommandInterface
     {
         this.commandResponse = commandResponse1;
     }
-
+    @Expose
     private DateTime executionStartTime;
-
+    @Expose
     private DateTime executionFinishTime;
 
     public DateTime getExecutionStartTime() {
@@ -69,22 +91,28 @@ public abstract class Command implements CommandInterface
         return waitFor;
     }
 
-    public int getWebId() {
+    public String getWebId() {
         return webId;
     }
 
-    public void setWebId(int webId) {
-        this.webId = webId;
+    public String getDisplayName() {
+        return displayName;
     }
 
-    public Command(int waitFor, boolean comparable)
+    public Command(String displayName, int waitFor, boolean comparable)
     {
+        this.displayName = displayName;
         this.waitFor = waitFor;
         this.comparable = comparable;
+        this.webId = UUID.randomUUID().toString().replaceAll("-","");
+        this.commandStatus = CommandStatus.NotRun;
     }
 
     /**
      * Empty constructor required by JAXB.
      */
-    public Command(){}
+    public Command()
+    {
+        this.webId = UUID.randomUUID().toString().replaceAll("-","");
+    }
 }

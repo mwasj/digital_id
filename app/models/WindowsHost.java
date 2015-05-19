@@ -37,11 +37,4 @@ public class WindowsHost extends Host {
     {
         setContext(new WindowsContext(new WindowsCommandSet()));
     }
-
-
-    @Override
-    public CommandResponse runSg3Utils()
-    {
-        return Sg3Utils.getWindowsReport(this);
-    }
 }
