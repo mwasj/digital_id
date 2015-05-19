@@ -4,6 +4,7 @@ import com.google.gson.annotations.Expose;
 import commands.Command;
 import commands.CommandStatus;
 import commands.CommandUpdateInterface;
+import core.CommandResponseCode;
 import core.ConnectionManager;
 import core.WebUpdater;
 import dtos.CommandUpdateDto;
@@ -65,7 +66,7 @@ public class Action implements CommandUpdateInterface
 
     public Action()
     {
-        this.webId = UUID.randomUUID().toString().replaceAll("-","");
+        this.webId = UUID.randomUUID().toString().replaceAll("-", "");
         this.actionStatus = ActionStatus.NotRun;
     }
 
@@ -81,6 +82,25 @@ public class Action implements CommandUpdateInterface
         }
 
         commands = commandRunner.runCommands();
+
+        setActionStatus(determineStatus());
+
+        webUpdater.sendActionUpdate(getActionStatus(), webId);
+    }
+
+    private ActionStatus determineStatus()
+    {
+        ActionStatus status = ActionStatus.Pass;
+
+        for(Command command : getCommands())
+        {
+            if(command.getCommandResponse().getCommandResponseCode() == CommandResponseCode.Failure)
+            {
+                status = ActionStatus.Fail;
+            }
+        }
+
+        return status;
     }
 
     public void initialise(Connectable connectable, String sessionName)
@@ -97,6 +117,6 @@ public class Action implements CommandUpdateInterface
     @Override
     public void sendCommandUpdate(CommandStatus commandStatus, String data, String webId)
     {
-        webUpdater.sendCommandUpdate(webId,commandStatus,data);
+        webUpdater.sendCommandUpdate(webId, commandStatus, data);
     }
 }

@@ -8,11 +8,6 @@
 GET     /                           @controllers.Application.index
 GET     /randomUUID                 @controllers.Application.randomUUID
 
-# User management API
-GET     /users                      @controllers.Users.findUsers
-POST    /user                       @controllers.Users.createUser
-PUT     /user/:firstName/:lastName  @controllers.Users.updateUser(firstName: String, lastName: String)
-
 POST     /digitalid/create                         controllers.DigitalIdController.build(sessionName)
 POST     /digitalid/compare                        controllers.DigitalIdController.compare
 GET      /digitalid/create                         controllers.DigitalIdController.render

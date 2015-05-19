@@ -1,8 +1,10 @@
 package runners;
 
+import actions.ActionStatus;
 import commands.Command;
 import commands.CommandStatus;
 import commands.CommandUpdateInterface;
+import core.CommandResponseCode;
 import core.ConnectionManager;
 import core.WebUpdater;
 import models.*;
@@ -38,8 +40,10 @@ public class CommandRunner
             c.initialise(connectionManager);
 
             c.setCommandStatus(CommandStatus.Executing);
-            commandUpdateInterface.sendCommandUpdate(c.getCommandStatus(),null,c.getWebId());
+            commandUpdateInterface.sendCommandUpdate(c.getCommandStatus(), null, c.getWebId());
             c.execute();
+            c.setCommandStatus(c.getCommandResponse().getCommandResponseCode() == CommandResponseCode.Success ? CommandStatus.Pass : CommandStatus.Fail);
+            commandUpdateInterface.sendCommandUpdate(c.getCommandStatus(), (String) c.getCommandResponse().getResult(), c.getWebId());
 
             if(c.getWaitForValue() > 0)
             {

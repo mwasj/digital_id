@@ -8,22 +8,24 @@
         <div id="actions_pane">
 
             <div ng-repeat="action in $parent.actions">
-                <button class="btn btn-sm btn-primary"
+                <div class="action"
                         type="button"
                         ng-model="action"
-                        ng-click="selectAction(action)">{{action.name}}
-                </button>
+                        ng-click="selectAction(action)"
+                        ng-class="{selected_action_background: $parent.selectedAction.webId === action.webId, non_selected_action_background: $parent.selectedAction.webId != action.webId}">{{action.name}} {{action.actionStatus}}
+
+                </div>
             </div>
 
         </div>
 
-        <div id="commands_pane">
+        <div id="commands_pane" class="selected_action_commands">
 
             <accordion>
                 <accordion-group ng-repeat="command in $parent.selectedAction.commands" heading="{{command.displayName}}">
                     <accordion-heading>
                         {{command.displayName}}
-
+                        {{command.commandStatus}}
                         <div class="spinner" ng-show="command.commandStatus == executing">
                             <div class="rect1"></div>
                             <div class="rect2"></div>
@@ -44,7 +46,7 @@
 
                     </accordion-heading>
 
-                    <pre>{{update.data}}</pre>
+                    <pre>{{command.data}}</pre>
                 </accordion-group>
             </accordion>
         </div>

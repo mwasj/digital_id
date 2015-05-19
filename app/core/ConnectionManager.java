@@ -411,7 +411,7 @@ public class ConnectionManager {
      * @param localFile - local file to be sent.
      * @param remoteFile - file to be written to on the remote host.
      */
-    public CommandResponse<Void> sendFile(String localFile, String remoteFile)
+    public CommandResponse<String> sendFile(String localFile, String remoteFile)
     {
         FileInputStream fis=null;
         String errorMessages = "";
@@ -506,7 +506,7 @@ public class ConnectionManager {
             catch(Exception ee){}
         }
 
-        return new CommandResponse<>(null, commandResponseCode, errorMessages);
+        return new CommandResponse<>("File has been transferred successfully", commandResponseCode, errorMessages);
     }
 
     private static int checkAck(InputStream in) throws IOException{

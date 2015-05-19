@@ -71,12 +71,7 @@
         {
             var commands = [];
             commands.push(new Command("",0,false));
-
             var action = new Action(0, "", commands);
-
-            commands.push(new Command(action.commands[0].commandString, action.commands[0].interval, action.commands[0].comparable));
-            action.commands = commands;
-
             $scope.actions.push(action);
         }
 
@@ -97,7 +92,7 @@
              {
                  if(action === $scope.actions[i])
                  {
-                     $scope.actions.commands[0].comparable = ! $scope.actions.commands[0].comparable;
+                     $scope.actions[i].commands[0].comparable = !$scope.actions[i].commands[0].comparable;
                  }
              }
         }

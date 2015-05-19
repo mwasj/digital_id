@@ -10,10 +10,18 @@
     function DigitalIdProgressCtrl($scope, $modalInstance, digitalID, UserService)
     {
         //Define custom object to hold predefined actions.
-        function Action (name, commands)
+        function Action (name, webId, actionStatus, commands)
         {
             this.name = name;
             this.commands = commands;
+            this.webId = webId;
+            this.actionStatus = actionStatus;
+        }
+
+        function Command (commandStatus, data)
+        {
+            this.commandStatus = commandStatus;
+            this.data = data;
         }
 
         $scope.updates = [];
@@ -52,19 +60,43 @@
 
                 for(var i = 0; i < obj2.length; i++)
                 {
-                    $scope.actions.push(new Action(obj2[i].name, obj2[i].commands));
+                    $scope.actions.push(new Action(obj2[i].name, obj2[i].webId,obj2[i].actionStatus, obj2[i].commands));
                 }
 
+                $scope.selectedAction = $scope.actions[0];
             }
 
             if(obj.type === "action_update")
             {
-                console.log("action update received");
+                var actionDto = JSON.parse(obj.content);
+
+                for(var i = 0; i < $scope.actions.length; i++)
+                {
+                    if(actionDto.webId === $scope.actions[i].webId)
+                    {
+                        $scope.actions[i].actionStatus = actionDto.actionStatus;
+                        console.log($scope.actions[i]);
+                    }
+                }
             }
 
             if(obj.type === "command_update")
             {
-                console.log("command update received");
+                var commandDto = JSON.parse(obj.content);
+
+                for(var i = 0; i < $scope.actions.length; i++)
+                {
+                    for(var x = 0; x < $scope.actions[i].commands.length; x++)
+                    {
+                        if(commandDto.webId === $scope.actions[i].commands[x].webId)
+                        {
+                            $scope.actions[i].commands[x].data = commandDto.data;
+                            $scope.actions[i].commands[x].commandStatus = commandDto.commandStatus;
+                        }
+                    }
+                }
+
+                console.log(commandDto);
             }
 
             if(obj.type === "progressUpdate")
