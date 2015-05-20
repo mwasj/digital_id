@@ -29,8 +29,6 @@ public class Sg3Utils
         commands.add(new SendRemoteCommand("Performing initial cleanup","powershell.exe  -noprofile -command \"&{ Remove-item c:\\digital_id -Force -Recurse }\"", RemoteCommandType.Shell, 0,false));
         commands.add(new SendRemoteCommand("Performing secondary cleanup","powershell.exe  -noprofile -command \"&{ Remove-item c:\\digital_id.zip -Force }\"", RemoteCommandType.Shell, 0,false));
 
-        Action sg3UtilsAction = new Action(commands, "Run Sg3utils");
-
-        return sg3UtilsAction;
+        return new Action(commands, "Run Sg3utils");
     }
 }

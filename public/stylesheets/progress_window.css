@@ -24,3 +24,8 @@
 {
     background: rgb(183, 183, 183);
 }
+
+.percentage
+{
+    float: right;
+}

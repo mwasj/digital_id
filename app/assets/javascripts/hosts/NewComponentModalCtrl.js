@@ -71,7 +71,7 @@
         {
             var commands = [];
             commands.push(new Command("",0,false));
-            var action = new Action(0, "", commands);
+            var action = new Action(0, commands[0].commandString, commands);
             $scope.actions.push(action);
         }
 

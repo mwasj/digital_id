@@ -12,8 +12,30 @@
                         type="button"
                         ng-model="action"
                         ng-click="selectAction(action)"
-                        ng-class="{selected_action_background: $parent.selectedAction.webId === action.webId, non_selected_action_background: $parent.selectedAction.webId != action.webId}">{{action.name}} {{action.actionStatus}}
+                        ng-class="{selected_action_background: $parent.selectedAction.webId === action.webId, non_selected_action_background: $parent.selectedAction.webId != action.webId}">{{action.name}}
 
+
+
+                        <div class="percentage">
+                            {{action.percentageCompleted}}%
+                            <div class="spinner" ng-show="action.percentageCompleted != 100 && action.actionStatus === 'Executing'">
+                                <div class="rect1"></div>
+                                <div class="rect2"></div>
+                                <div class="rect3"></div>
+                                <div class="rect4"></div>
+                                <div class="rect5"></div>
+                            </div>
+
+                            <div class="isa_success" ng-show="action.actionStatus === 'Pass'" class="margin-bottom: 10px">
+                                <i class="fa fa-check"></i>
+                                OK
+                            </div>
+
+                            <div class="isa_error" ng-show="action.actionStatus === 'Fail'" class="margin-bottom: 10px">
+                                <i class="fa fa-times-circle"></i>
+                                Fail
+                            </div>
+                        </div>
                 </div>
             </div>
 
@@ -25,8 +47,8 @@
                 <accordion-group ng-repeat="command in $parent.selectedAction.commands" heading="{{command.displayName}}">
                     <accordion-heading>
                         {{command.displayName}}
-                        {{command.commandStatus}}
-                        <div class="spinner" ng-show="command.commandStatus == executing">
+
+                        <div class="spinner" ng-show="command.commandStatus === 'Executing'" class="margin-bottom: 10px">
                             <div class="rect1"></div>
                             <div class="rect2"></div>
                             <div class="rect3"></div>
@@ -34,12 +56,12 @@
                             <div class="rect5"></div>
                         </div>
 
-                        <div class="isa_success" ng-show="update.status == 'Success'">
+                        <div class="isa_success" ng-show="command.commandStatus === 'Pass'" class="margin-bottom: 10px">
                             <i class="fa fa-check"></i>
                             OK
                         </div>
 
-                        <div class="isa_error" ng-show="update.status == 'Failure'">
+                        <div class="isa_error" ng-show="command.commandStatus === 'Fail'" class="margin-bottom: 10px">
                             <i class="fa fa-times-circle"></i>
                             Fail
                         </div>

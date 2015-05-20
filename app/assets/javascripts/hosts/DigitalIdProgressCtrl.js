@@ -10,12 +10,13 @@
     function DigitalIdProgressCtrl($scope, $modalInstance, digitalID, UserService)
     {
         //Define custom object to hold predefined actions.
-        function Action (name, webId, actionStatus, commands)
+        function Action (name, webId, actionStatus, commands, percentageCompleted)
         {
             this.name = name;
             this.commands = commands;
             this.webId = webId;
             this.actionStatus = actionStatus;
+            this.percentageCompleted = percentageCompleted;
         }
 
         function Command (commandStatus, data)
@@ -60,7 +61,7 @@
 
                 for(var i = 0; i < obj2.length; i++)
                 {
-                    $scope.actions.push(new Action(obj2[i].name, obj2[i].webId,obj2[i].actionStatus, obj2[i].commands));
+                    $scope.actions.push(new Action(obj2[i].name, obj2[i].webId,obj2[i].actionStatus, obj2[i].commands, 0));
                 }
 
                 $scope.selectedAction = $scope.actions[0];
@@ -92,9 +93,16 @@
                         {
                             $scope.actions[i].commands[x].data = commandDto.data;
                             $scope.actions[i].commands[x].commandStatus = commandDto.commandStatus;
+
+                            if($scope.actions[i].commands[x].commandStatus === 'Pass' || $scope.actions[i].commands[x].commandStatus === 'Fail')
+                            {
+                                $scope.actions[i].percentageCompleted = Math.ceil((((x+1)/$scope.actions[i].commands.length)*100));
+                            }
+
                         }
                     }
                 }
+
 
                 console.log(commandDto);
             }
