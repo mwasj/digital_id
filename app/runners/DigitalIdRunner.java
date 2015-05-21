@@ -26,15 +26,20 @@ public class DigitalIdRunner extends Thread
         this.jsonString = jsonString;
         this.sessionName = sessionName;
         this.digitalIDMapper = new DigitalIDMapper(this.jsonString, this.sessionName);
+        this.digitalID = digitalIDMapper.map();
+    }
+
+    public DigitalIdRunner(DigitalID digitalID)
+    {
+        this.digitalID = digitalID;
     }
 
     public void initialise()
     {
-        this.digitalID = digitalIDMapper.map();
         this.webUpdater = new WebUpdater(digitalID.getSessionName());
     }
 
-    public void generateAnalysis()
+    public void sendAnalysis()
     {
         ArrayList<Action> actions = new ArrayList<>();
 

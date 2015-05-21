@@ -11,19 +11,24 @@ import dtos.CommandUpdateDto;
 import models.Connectable;
 import runners.CommandRunner;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlRootElement;
 import java.util.ArrayList;
 import java.util.UUID;
 
 /**
  * Created by Michal on 18/05/2015.
  */
+@XmlRootElement
+@XmlAccessorType(XmlAccessType.FIELD)
 public class Action implements CommandUpdateInterface
 {
     @Expose
     private ArrayList<Command> commands;
     @Expose
     private String name;
-
+    @Expose
     private ActionType actionType;
     @Expose
     private String webId;

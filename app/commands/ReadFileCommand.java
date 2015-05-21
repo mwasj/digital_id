@@ -3,9 +3,15 @@ package commands;
 import core.CommandResponse;
 import core.ConnectionManager;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlRootElement;
+
 /**
  * Created by Michal on 18/05/2015.
  */
+@XmlRootElement
+@XmlAccessorType(XmlAccessType.FIELD)
 public class ReadFileCommand extends Command {
 
     private String remoteFile;

@@ -2,14 +2,11 @@ package core;
 
 import actions.Action;
 import actions.ActionStatus;
-import commands.Command;
 import commands.CommandStatus;
-import controllers.CaptureUpdater;
+import controllers.WebUpdateForwarder;
 import dtos.ActionUpdateDto;
 import dtos.AnalysisDto;
 import dtos.CommandUpdateDto;
-import models.WebUpdate;
-import models.WebUpdateType;
 
 import java.util.ArrayList;
 
@@ -28,7 +25,7 @@ public class WebUpdater
     public void sendAnalysis(ArrayList<Action> actions)
     {
         try {
-            CaptureUpdater.sendAnalysis(new AnalysisDto(sessionName, actions));
+            WebUpdateForwarder.sendAnalysis(new AnalysisDto(sessionName, actions));
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -36,11 +33,11 @@ public class WebUpdater
 
     public void sendCommandUpdate(String webId, CommandStatus commandStatus, String data)
     {
-        CaptureUpdater.sendCommandUpdate(new CommandUpdateDto(webId,commandStatus,data,sessionName));
+        WebUpdateForwarder.sendCommandUpdate(new CommandUpdateDto(webId, commandStatus, data, sessionName));
     }
 
     public void sendActionUpdate(ActionStatus actionStatus, String webId)
     {
-        CaptureUpdater.sendActionUpdate(new ActionUpdateDto(sessionName, webId, actionStatus));
+        WebUpdateForwarder.sendActionUpdate(new ActionUpdateDto(sessionName, webId, actionStatus));
     }
 }

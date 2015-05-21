@@ -3,11 +3,13 @@ package commands;
 import com.google.gson.annotations.Expose;
 import core.CommandResponse;
 import core.ConnectionManager;
+import models.WindowsHost;
 import org.joda.time.DateTime;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlSeeAlso;
 import java.util.UUID;
 
 /**
@@ -15,6 +17,7 @@ import java.util.UUID;
  */
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
+@XmlSeeAlso({DownloadFileCommand.class, SendFileCommand.class, SendRemoteCommand.class, ReadFileCommand.class})
 public abstract class Command implements CommandInterface
 {
     @Expose

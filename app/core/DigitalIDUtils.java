@@ -1,6 +1,6 @@
 package core;
 
-import commands.Command;
+import commands.*;
 import models.*;
 import org.joda.time.DateTime;
 
@@ -25,7 +25,10 @@ public class DigitalIDUtils
     public static void marshall(DigitalID digitalID)
     {
         try {
-            JAXBContext contextA = JAXBContext.newInstance(DigitalID.class, Switch.class, CiscoSwitch.class, Inserv.class, Host.class, Connectable.class, BrocadeSwitch.class, CommandResponse.class, DateTime.class, Command.class);
+            JAXBContext contextA = JAXBContext.newInstance(DigitalID.class, Switch.class, CiscoSwitch.class, Inserv.class, Host.class,
+                                                            Connectable.class, BrocadeSwitch.class, CommandResponse.class, DateTime.class,
+                                                            Command.class, DownloadFileCommand.class, SendFileCommand.class, SendRemoteCommand.class,
+                                                            ReadFileCommand.class);
             Marshaller marshaller = contextA.createMarshaller();
             marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
             marshaller.setProperty("jaxb.encoding", "UTF-8");

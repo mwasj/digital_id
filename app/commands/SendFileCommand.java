@@ -3,9 +3,15 @@ package commands;
 import core.CommandResponse;
 import core.ConnectionManager;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlRootElement;
+
 /**
  * Created by wasinski on 15/05/2015.
  */
+@XmlRootElement
+@XmlAccessorType(XmlAccessType.FIELD)
 public class SendFileCommand extends Command
 {
     private String localFile;

@@ -26,7 +26,7 @@ public class DigitalIdController extends Controller
     {
         DigitalIdRunner runner = new DigitalIdRunner(request().body().asJson().toString(), sessionName);
         runner.initialise();
-        runner.generateAnalysis();
+        runner.sendAnalysis();
         runner.start();
         return ok();
     }
@@ -80,7 +80,7 @@ public class DigitalIdController extends Controller
                 // Join the socketUpdater room.
                 try {
                     System.out.println("Chat called: " + username);
-                    CaptureUpdater.register(username, in, out);
+                    WebUpdateForwarder.register(username, in, out);
                 } catch (Exception ex)
                 {
                     System.out.println(ex);
@@ -93,7 +93,7 @@ public class DigitalIdController extends Controller
     public static void updateWebInterface(String username, WebUpdate webUpdate)
     {
         try {
-            CaptureUpdater.update(username, webUpdate);
+            WebUpdateForwarder.update(username, webUpdate);
         } catch (Exception e) {
             e.printStackTrace();
         }
