@@ -94,4 +94,18 @@ class UserService
        )
        deferred.promise
 
+    openDigitalID: (filename) ->
+      @$log.debug("This is the file" + filename)
+      deferred = @$q.defer()
+      @$http.post("/digitalid/generate", filename)
+      .success((data, status, headers) =>
+        @$log.info("Successfully downloaded digitalid - status #{status}")
+        deferred.resolve(data)
+      )
+      .error((data, status, headers) =>
+        @$log.error("Failed to download digitalid - status #{status}")
+        deferred.reject(data)
+      )
+      deferred.promise
+
 servicesModule.service('UserService', UserService)

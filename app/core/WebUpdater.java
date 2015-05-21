@@ -31,6 +31,8 @@ public class WebUpdater
         }
     }
 
+    public WebUpdater(){}
+
     public void sendCommandUpdate(String webId, CommandStatus commandStatus, String data)
     {
         WebUpdateForwarder.sendCommandUpdate(new CommandUpdateDto(webId, commandStatus, data, sessionName));

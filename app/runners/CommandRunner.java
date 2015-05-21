@@ -32,7 +32,7 @@ public class CommandRunner
     {
         connectionManager.connect();
     }
-
+    public CommandRunner(){}
     public ArrayList<Command> runCommands()
     {
         for(Command c : commands)

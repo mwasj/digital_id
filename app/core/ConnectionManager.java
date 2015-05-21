@@ -36,7 +36,7 @@ public class ConnectionManager {
         }
     }
 
-
+    public ConnectionManager(){}
     public void connect()
     {
         session = createSession();

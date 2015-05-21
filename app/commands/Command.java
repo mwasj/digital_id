@@ -6,10 +6,7 @@ import core.ConnectionManager;
 import models.WindowsHost;
 import org.joda.time.DateTime;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlSeeAlso;
+import javax.xml.bind.annotation.*;
 import java.util.UUID;
 
 /**
@@ -26,7 +23,7 @@ public abstract class Command implements CommandInterface
     private boolean comparable;
     @Expose
     private CommandResponse commandResponse;
-
+    @XmlTransient
     private ConnectionManager connectionManager;
 
     @Expose

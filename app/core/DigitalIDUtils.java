@@ -47,7 +47,10 @@ public class DigitalIDUtils
             return null;
 
         try {
-            JAXBContext context = JAXBContext.newInstance(DigitalID.class, Switch.class, CiscoSwitch.class, Inserv.class, Host.class, Connectable.class, BrocadeSwitch.class, CommandResponse.class, DateTime.class, Command.class);
+            JAXBContext context = JAXBContext.newInstance(DigitalID.class, Switch.class, CiscoSwitch.class, Inserv.class, Host.class,
+                    Connectable.class, BrocadeSwitch.class, CommandResponse.class, DateTime.class,
+                    Command.class, DownloadFileCommand.class, SendFileCommand.class, SendRemoteCommand.class,
+                    ReadFileCommand.class);
             Unmarshaller jaxbUnmarshaller = context.createUnmarshaller();
             return  (DigitalID) jaxbUnmarshaller.unmarshal(file);
         } catch (JAXBException e) {

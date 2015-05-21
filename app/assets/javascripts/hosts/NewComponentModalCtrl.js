@@ -37,6 +37,15 @@
         $scope.actions = currentComponent.actions;
         $scope.predefinedActionLabel = "Add a predefined action";
 
+        if($scope.currentDeviceType === "Host")
+        {
+            $scope.hostName = "dl380pg8-74";
+            $scope.userName = "Administrator";
+            $scope.password = "ssmssm";
+
+            $scope.componentType = "Windows";
+        }
+
         $scope.componentLabel = $scope.componentType == undefined ? "Select " + currentComponent.currentDeviceType + " Type":  $scope.componentType;
 
         $scope.componentOptions = componentOptions;
@@ -71,6 +80,7 @@
         {
             var commands = [];
             commands.push(new Command("",0,false));
+
             var action = new Action(0, commands[0].commandString, commands);
             $scope.actions.push(action);
         }

@@ -99,5 +99,25 @@ public class DigitalIdController extends Controller
         }
     }
 
+    public static Result generateDigitalIdReport()
+    {
+        System.out.println("Called");
+        ArrayList<String> xml = new Gson().fromJson(request().body().asJson().toString(), new TypeToken<ArrayList<String>>() {}.getType());
+        System.out.println("getDigitalIdReport called with: " + xml.get(0));
+        DigitalID digitalId = DigitalIDUtils.unMarshall("C:\\digital_ids\\"+xml.get(0));
+        DigitalIdComparator comparator = new DigitalIdComparator(digitalId, null);
+        comparator.generateNonComparisonReport();
 
+        HtmlGenerator generator = new HtmlGenerator(comparator.getAccordions(), comparator.getContentDtos());
+
+        String html = "";
+
+        try {
+            html = generator.generateReportBackbone();
+        } catch (IOException e)
+        {
+            e.printStackTrace();
+        }
+        return ok(html);
+    }
 }

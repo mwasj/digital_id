@@ -21,9 +21,11 @@
                             ng-checked="selection.indexOf(digitalId) > -1"
                             class="roundedTwo">
 
-                    <a ng-click="downloadDigitalId(digitalId)">
+                    <a ng-click="displayDigitalId(digitalId)">
                         {{digitalId.displayName}}
                     </a>
+
+
                 </accordion-heading>
 
                 <label>Created on: {{digitalId.creationTime}}</label>
@@ -31,6 +33,8 @@
                 <label>Author: {{digitalId.author}}</label>
                 <br>
                 <label>Size: {{digitalId.size}} KB</label>
+
+                <div dynamic="htmlString"></div>
 
             </accordion-group>
 
@@ -53,6 +57,4 @@
             <div class="rect5"></div>
         </div>
     </div>
-
-    <div dynamic="htmlString"></div>
 </div>

@@ -3,6 +3,7 @@ package runners;
 import actions.Action;
 import core.DigitalID;
 import core.DigitalIDMapper;
+import core.DigitalIDUtils;
 import core.WebUpdater;
 import models.Host;
 import models.Inserv;
@@ -33,7 +34,7 @@ public class DigitalIdRunner extends Thread
     {
         this.digitalID = digitalID;
     }
-
+    public DigitalIdRunner(){}
     public void initialise()
     {
         this.webUpdater = new WebUpdater(digitalID.getSessionName());
@@ -81,5 +82,9 @@ public class DigitalIdRunner extends Thread
             }
 
         }
+
+        //TODO - Add the rest of devices.
+
+        DigitalIDUtils.marshall(digitalID);
     }
 }

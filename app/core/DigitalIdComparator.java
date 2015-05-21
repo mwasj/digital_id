@@ -1,7 +1,7 @@
 package core;
 
+import actions.Action;
 import commands.Command;
-import commands.SendRemoteCommand;
 import dtos.ContentDto;
 import models.*;
 
@@ -44,22 +44,40 @@ public class DigitalIdComparator
     {
         if(digitalID1.getHosts() != null && digitalID2.getHosts() != null)
         {
-            buildAccordion(digitalID1.getHosts(), digitalID2.getHosts(), "Hosts");
+            buildAccordions(digitalID1.getHosts(), digitalID2.getHosts(), "Hosts");
         }
 
         if(digitalID1.getSwitches() != null && digitalID2.getSwitches() != null)
         {
-            buildAccordion(digitalID1.getSwitches(), digitalID2.getSwitches(), "Switches");
+            buildAccordions(digitalID1.getSwitches(), digitalID2.getSwitches(), "Switches");
         }
 
         if(digitalID1.getInservs() != null && digitalID2.getInservs() != null)
         {
-            buildAccordion(digitalID1.getInservs(), digitalID2.getInservs(), "Arrays");
+            buildAccordions(digitalID1.getInservs(), digitalID2.getInservs(), "Arrays");
         }
 
         if(incompatible)
         {
             markIncompatible();
+        }
+    }
+
+    public void generateNonComparisonReport()
+    {
+        if(digitalID1.getHosts() != null)
+        {
+            buildAccordions(digitalID1.getHosts(), "Hosts");
+        }
+
+        if(digitalID1.getSwitches() != null)
+        {
+            buildAccordions(digitalID1.getSwitches(), "Switches");
+        }
+
+        if(digitalID1.getInservs() != null)
+        {
+            buildAccordions(digitalID1.getInservs(), "Arrays");
         }
     }
 
@@ -72,7 +90,7 @@ public class DigitalIdComparator
         contentDtos.add(new ContentDto(message, null, divName));
     }
 
-    private <T> void buildAccordion (ArrayList<T> array1, ArrayList<T> array2, String title)
+    private <T> void buildAccordions(ArrayList<T> array1, ArrayList<T> array2, String title)
     {
         boolean foundConnectable = false;
         boolean foundCommand = false;
@@ -129,6 +147,35 @@ public class DigitalIdComparator
         if(!foundConnectable)
         {
             contentDtos.add(new ContentDto("Could not find matching devices to compare in both Digital IDs", null, mainAccordion.getDivName()));
+        }
+
+        accordions.add(mainAccordion);
+    }
+
+    private <T> void buildAccordions(ArrayList<T> array1, String title)
+    {
+        Accordion mainAccordion = new Accordion(title, title, 0);
+
+        for(Connectable connectable : (ArrayList<Connectable>) array1)
+        {
+            System.out.println(connectable.getHostName());
+                String divName = createDivName(connectable);
+
+                Accordion accordion = mainAccordion.addSubAccordion(new Accordion(connectable.getHostName(), divName, 0));
+
+                for(Action action : connectable.getActions())
+                {
+                    for(Command command : action.getCommands())
+                    {
+                        if(command.isComparable())
+                        {
+                            System.out.println(command.getCommandResponse().getResult());
+                            String resultDivName = createDivName(connectable);
+                            accordion.addSubAccordion(new Accordion(command.getDisplayName(), resultDivName, 0));
+                            contentDtos.add(new ContentDto((String)command.getCommandResponse().getResult(), null, resultDivName));
+                        }
+                    }
+                }
         }
 
         accordions.add(mainAccordion);

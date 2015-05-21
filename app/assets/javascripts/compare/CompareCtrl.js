@@ -44,8 +44,10 @@
             console.log($scope.selection);
         };
 
-        $scope.goCompare = function(){
+        $scope.goCompare = function()
+        {
             $scope.generationInProgress = true;
+
             UserService.compareDigitalIDs($scope.selection)
 
                     .then(function(data)
@@ -70,6 +72,36 @@
                         console.log(error);
                     });
 
+        }
+
+        $scope.displayDigitalId = function(digitalid)
+        {
+            console.log(digitalid.url);
+            var omg = []
+            omg.push(digitalid.url);
+            UserService.openDigitalID(omg)
+
+                .then(function(data)
+                {
+                    $scope.htmlString = data.accordionHtml;
+                    console.log(data.accordionHtml);
+                    for(var i = 0; i < data.accordions.length; i++)
+                    {
+
+
+
+                         if(data.accordions[i].content1 !== '')
+                         {
+                             console.log("data: " + data.accordions[i].content1);
+                             addIncompatible(data.accordions[i].divName, data.accordions[i].content1);
+                         }
+
+
+
+                    }
+                }, function(error) {
+                    console.log(error);
+                });
         }
 
         function diffUsingJS(viewType, sectionName, s1, s2)
