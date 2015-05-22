@@ -12,7 +12,6 @@ import models.RemoteCommandType;
 import models.WindowsHost;
 import org.junit.Before;
 import org.junit.Test;
-import runners.DigitalIdRunner;
 
 import java.util.ArrayList;
 
