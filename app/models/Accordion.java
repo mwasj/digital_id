@@ -10,12 +10,17 @@ import java.util.Map;
 public class Accordion
 {
     private String title;
+    private String data;
     private ArrayList<Accordion> subAccordions;
     private Accordion parentAccordion;
     private String divName;
     private int noOfChanges;
     private Map<String, Integer> map;
     private String context;
+
+    public String getData() {
+        return data;
+    }
 
     public String getDivName() {
         return divName;
@@ -46,10 +51,11 @@ public class Accordion
         return parentAccordion;
     }
 
-    public Accordion(String title, String divName, int noOfChanges)
+    public Accordion(String title, String divName, int noOfChanges, String data)
     {
         this.divName = divName;
         this.title = title;
+        this.data = data;
         this.subAccordions = null;
         this.noOfChanges = noOfChanges;
         this.map = new HashMap<>();

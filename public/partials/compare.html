@@ -2,14 +2,11 @@
 
     <h1>Compare Digital IDs</h1>
 
-    <div class="jumbotron" style="margin-top: 20px">
-        <p class="pull-left" ng-show="digitalIds.length > 0">Select two Digital IDs from the list below:</p>
-
+    <div class="row">
         <label ng-show="digitalIds.length == 0" class="no-digitalIds-label">There are currently no Digital IDs present on this server</label>
-        <label style="float: right; margin-right: 15px;" ng-show="digitalIds.length > 0">Select</label>
-        <br><br>
-        <accordion ng-show="digitalIds.length > 0">
-            <accordion-group ng-repeat="digitalId in digitalIds"  heading="{{digitalId.fileName}}">
+
+        <accordion ng-show="digitalIds.length > 0" class="col-md-2">
+            <accordion-group ng-repeat="digitalId in digitalIds"  heading="{{digitalId.fileName}}" data-drag="true" jqyoui-draggable="{animate:true}" data-jqyoui-options="{revert: 'invalid'}">
 
                 <accordion-heading>
 
@@ -21,10 +18,7 @@
                             ng-checked="selection.indexOf(digitalId) > -1"
                             class="roundedTwo">
 
-                    <a ng-click="displayDigitalId(digitalId)">
-                        {{digitalId.displayName}}
-                    </a>
-
+                    {{digitalId.displayName}}
 
                 </accordion-heading>
 
@@ -34,19 +28,26 @@
                 <br>
                 <label>Size: {{digitalId.size}} KB</label>
 
-                <div dynamic="htmlString"></div>
+                <a href="#" ng-click="displayDigitalId(digitalId)">Open</a>
 
+                <!--<div dynamic="htmlString"></div>-->
             </accordion-group>
-
-
         </accordion>
-
-        <button class="btn btn-success" id="btn_compare" ng-click="goCompare()" ng-disabled="selection.length != 2" ng-show="digitalIds.length >= 2">Compare</button>
     </div>
-    <br>
-    <hr>
-    <br>
-    <div ng-show="generationInProgress" class="center-div">
+
+    <div class="row">
+        <h2>Drag & drop here.</h2>
+        <div class="col-md-6 before_digitalid" data-drop="true" jqyoui-droppable style='background: lightgreen'>
+            <h3>Before</h3>
+        </div>
+        <div class="col-md-6 after_digitalid" data-drop="true" jqyoui-droppable style='background: lightblue'>
+            <h3>After</h3>
+        </div>
+    </div>
+
+    <button class="btn btn-success" id="btn_compare" ng-click="goCompare()" ng-disabled="selection.length != 2" ng-show="digitalIds.length >= 2">Compare</button>
+
+    <div ng-show="generationInProgress">
         <h1>Diff generation in progress</h1>
         <br>
         <div class="spinner">

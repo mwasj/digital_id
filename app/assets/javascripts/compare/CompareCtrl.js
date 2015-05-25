@@ -14,6 +14,8 @@
         $scope.selection = [];
         $scope.generationInProgress = false;
         $scope.htmlString = '';
+        $scope.digitalIdBefore = [];
+
         console.log($scope.htmlString);
         UserService.listDigitalIDs()
             .then(function(data) {
@@ -85,7 +87,7 @@
                 {
                     $scope.htmlString = data.accordionHtml;
                     console.log(data.accordionHtml);
-                    for(var i = 0; i < data.accordions.length; i++)
+                    /*for(var i = 0; i < data.accordions.length; i++)
                     {
 
 
@@ -98,7 +100,7 @@
 
 
 
-                    }
+                    }*/
                 }, function(error) {
                     console.log(error);
                 });

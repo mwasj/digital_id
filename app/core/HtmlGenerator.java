@@ -25,7 +25,7 @@ public class HtmlGenerator
 
     public HtmlGenerator(ArrayList<Accordion> accordions, ArrayList<ContentDto> contentDtos)
     {
-        accordion = new Accordion(null, null, 0);
+        accordion = new Accordion(null, null, 0, null);
         this.contentDtos = contentDtos;
         accordion.setSubAccordions(accordions);
     }
@@ -46,7 +46,7 @@ public class HtmlGenerator
 
             System.out.println(a.getTitle());
             s = s + "<accordion><accordion-group><accordion-heading><a "+ style + "> "
-                    + a.getTitle() + " " + changes +"  </a> </accordion-heading><div dynamic="+a.getDivName()+"></div>";
+                    + a.getTitle() + " " + changes +"  </a> </accordion-heading><div dynamic="+a.getDivName()+"><pre>"+( a.getData() == null ? "" : a.getData())+"</pre></div>";
         }
 
         if(a.getSubAccordions() != null)

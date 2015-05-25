@@ -1,0 +1,9 @@
+.before_digitalid{
+    border-right: 1px solid black;
+    height: 200px;
+}
+
+.after_digitalid {
+    border-left: 1px solid black;
+    height: 200px;
+}
