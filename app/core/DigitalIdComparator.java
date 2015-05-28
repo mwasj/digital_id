@@ -87,7 +87,7 @@ public class DigitalIdComparator
         String divName = "incompatible";
         Accordion mainAccordion = new Accordion(message, divName,-1,null);
         accordions.add(mainAccordion);
-        contentDtos.add(new ContentDto(message, null, divName));
+       // contentDtos.add(new ContentDto(message, null, divName));
     }
 
     private <T> void buildAccordions(ArrayList<T> array1, ArrayList<T> array2, String title)
@@ -137,7 +137,7 @@ public class DigitalIdComparator
                     //Could not find any commands that match.
                     if(!foundCommand)
                     {
-                        contentDtos.add(new ContentDto("Could not find matching commands to compare in both Digital IDs", null, divName));
+                        //contentDtos.add(new ContentDto("Could not find matching commands to compare in both Digital IDs", null, divName));
                     }
                 }
             }
@@ -146,7 +146,7 @@ public class DigitalIdComparator
         //Could find any connectable objects whose names match.
         if(!foundConnectable)
         {
-            contentDtos.add(new ContentDto("Could not find matching devices to compare in both Digital IDs", null, mainAccordion.getDivName()));
+            //contentDtos.add(new ContentDto("Could not find matching devices to compare in both Digital IDs", null, mainAccordion.getDivName()));
         }
 
         accordions.add(mainAccordion);
@@ -172,7 +172,7 @@ public class DigitalIdComparator
                             System.out.println(command.getCommandResponse().getResult());
                             String resultDivName = createDivName(connectable);
                             accordion.addSubAccordion(new Accordion(command.getDisplayName(), resultDivName, 0, (String)command.getCommandResponse().getResult()));
-                            contentDtos.add(new ContentDto((String)command.getCommandResponse().getResult(), null, resultDivName));
+                            contentDtos.add(new ContentDto(command.getDisplayName() + " on " + connectable.getHostName(), (String) command.getCommandResponse().getResult()));
                         }
                     }
                 }

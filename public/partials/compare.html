@@ -3,12 +3,11 @@
     <h1>Compare Digital IDs</h1>
 
     <div class="row">
-        <label ng-show="digitalIds.length == 0" class="no-digitalIds-label">There are currently no Digital IDs present on this server</label>
 
-        <accordion ng-show="digitalIds.length > 0" class="col-md-2">
-            <accordion-group ng-repeat="digitalId in digitalIds"  heading="{{digitalId.fileName}}" data-drag="true" jqyoui-draggable="{animate:true}" data-jqyoui-options="{revert: 'invalid'}">
+        <label ng-show="digitalIds.length == 0"
+               class="no-digitalIds-label">There are currently no Digital IDs present on this server</label>
 
-                <accordion-heading>
+        <!--<accordion ng-show="digitalIds.length > 0" class="col-md-2">
 
                     <input
                             type="checkbox"
@@ -17,45 +16,166 @@
                             ng-click="toggleSelection(digitalId, $event)"
                             ng-checked="selection.indexOf(digitalId) > -1"
                             class="roundedTwo">
+-->
 
-                    {{digitalId.displayName}}
+        <label ng-repeat="digitalId in digitalIds">
 
-                </accordion-heading>
+            <div class="btn btn-info btn-draggable"
+                 data-drag="true"
+                 jqyoui-draggable="{onStop:'stopCallback(digitalId)'}"
+                 data-jqyoui-options="{revert: 'invalid'}"
+                 ng-model="digitalId"
+                 ng-show="digitalId !== undefined">
 
-                <label>Created on: {{digitalId.creationTime}}</label>
-                <br>
-                <label>Author: {{digitalId.author}}</label>
-                <br>
-                <label>Size: {{digitalId.size}} KB</label>
+                {{digitalId.displayName}}
 
-                <a href="#" ng-click="displayDigitalId(digitalId)">Open</a>
-
-                <!--<div dynamic="htmlString"></div>-->
-            </accordion-group>
-        </accordion>
+            </div>
+        </label>
     </div>
 
     <div class="row">
-        <h2>Drag & drop here.</h2>
-        <div class="col-md-6 before_digitalid" data-drop="true" jqyoui-droppable style='background: lightgreen'>
-            <h3>Before</h3>
+
+        <div class="col-md-6 before_digitalid">
+
+                <h3>Before</h3>
+
+                <div class="drag-item-box"
+                     ng-model="digitalid_before"
+                     data-drop="true"
+                     jqyoui-droppable>
+
+                    <label class="drag-item-label" ng-show="digitalid_before === undefined">Drag an item anywhere into this box. Preview will be loaded automatically.</label>
+
+                    <div class="col-md-6 digitalid-name-box" ng-show="digitalid_before !== undefined">
+                        <div class="btn btn-info btn-draggable"
+                             ng-model="digitalid_before"
+                             ng-show="digitalid_before !== undefined">
+
+                            {{digitalid_before.displayName}}
+                        </div>
+                    </div>
+
+                    <div class="col-md-6 digitalid-info-box" ng-show="digitalid_before !== undefined" class="digitalid-info-box">
+
+                        <label>Created on: {{digitalid_before.creationTime}}</label>
+                        <br>
+                        <label>Author: {{digitalid_before.author}}</label>
+                        <br>
+                        <label>Size: {{digitalid_before.size}} KB</label>
+
+                    </div>
+                </div>
+
+                <h4>Preview</h4>
+
+                <div class="preview-box">
+
+                    <label class="preview-label" ng-show="digitalid_before_array.length === 0">No data loaded.</label>
+
+                    <accordion ng-show="digitalid_before_array !== undefined">
+
+                        <accordion-group ng-repeat="contentDto in digitalid_before_array"
+                                         heading="{{contentDto.displayString}}"
+                                         ng-model="content">
+
+                            <accordion-heading>
+
+                                <input
+                                        type="checkbox"
+                                        name="{{digitalId}}"
+                                        value="{{digitalId}}"
+                                        ng-click="toggleSelection(digitalId, $event)"
+                                        ng-checked="selection.indexOf(digitalId) > -1"
+                                        class="roundedTwo">
+
+                                {{contentDto.displayString}}
+
+                            </accordion-heading>
+
+                            <pre>{{contentDto.content}}</pre>
+                        </accordion-group>
+
+                    </accordion>
+
+                </div>
         </div>
-        <div class="col-md-6 after_digitalid" data-drop="true" jqyoui-droppable style='background: lightblue'>
+
+        <div class="col-md-6 after_digitalid">
+
             <h3>After</h3>
+
+            <div class="drag-item-box"
+                 ng-model="digitalid_after"
+                 data-drop="true"
+                 jqyoui-droppable>
+
+                <label class="drag-item-label" ng-show="digitalid_after === undefined">Drag an item anywhere into this box. Preview will be loaded automatically.</label>
+
+                <div class="col-md-6 digitalid-name-box" ng-show="digitalid_after !== undefined">
+                    <div class="btn btn-info btn-draggable"
+                         ng-model="digitalid_after"
+                         ng-show="digitalid_after !== undefined">
+
+                        {{digitalid_after.displayName}}
+                    </div>
+                </div>
+
+                <div class="col-md-6 digitalid-info-box" ng-show="digitalid_after !== undefined" class="digitalid-info-box">
+
+                    <label>Created on: {{digitalid_after.creationTime}}</label>
+                    <br>
+                    <label>Author: {{digitalid_after.author}}</label>
+                    <br>
+                    <label>Size: {{digitalid_after.size}} KB</label>
+
+                </div>
+            </div>
+
+            <h4>Preview</h4>
+
+            <div class="preview-box">
+
+                <label class="preview-label" ng-show="digitalid_after_array.length === 0">No data loaded.</label>
+
+                <accordion ng-show="digitalid_after_array !== undefined">
+
+                    <accordion-group ng-repeat="contentDto in digitalid_after_array"
+                                     heading="{{contentDto.displayString}}"
+                                     ng-model="content">
+
+                        <accordion-heading>
+
+                            <input
+                                    type="checkbox"
+                                    name="{{digitalId}}"
+                                    value="{{digitalId}}"
+                                    ng-click="toggleSelection(digitalId, $event)"
+                                    ng-checked="selection.indexOf(digitalId) > -1"
+                                    class="roundedTwo">
+
+                            {{contentDto.displayString}}
+
+                        </accordion-heading>
+
+                        <pre>{{contentDto.content}}</pre>
+                    </accordion-group>
+
+                </accordion>
+
+            </div>
+        </div>
+
+        <button class="btn btn-success" id="btn_compare" ng-click="goCompare()" ng-disabled="selection.length == 2" ng-show="digitalIds.length >= 2">Compare</button>
+
+        <div ng-show="generationInProgress">
+            <h1>Diff generation in progress</h1>
+            <br>
+            <div class="spinner">
+                <div class="rect1"></div>
+                <div class="rect2"></div>
+                <div class="rect3"></div>
+                <div class="rect4"></div>
+                <div class="rect5"></div>
+            </div>
         </div>
     </div>
-
-    <button class="btn btn-success" id="btn_compare" ng-click="goCompare()" ng-disabled="selection.length != 2" ng-show="digitalIds.length >= 2">Compare</button>
-
-    <div ng-show="generationInProgress">
-        <h1>Diff generation in progress</h1>
-        <br>
-        <div class="spinner">
-            <div class="rect1"></div>
-            <div class="rect2"></div>
-            <div class="rect3"></div>
-            <div class="rect4"></div>
-            <div class="rect5"></div>
-        </div>
-    </div>
-</div>

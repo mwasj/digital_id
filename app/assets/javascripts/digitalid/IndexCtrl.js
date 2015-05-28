@@ -5,10 +5,10 @@
         .module('myApp')
         .controller('IndexCtrl', IndexCtrl);
 
-    IndexCtrl.$inject = ['$scope', '$log', 'UserService'];
+    IndexCtrl.$inject = ['$scope', '$log', 'DigitalIdService'];
 
 
-    function IndexCtrl($scope, $log, UserService)
+    function IndexCtrl($scope, $log, DigitalIdService)
     {
         console.log("IndexCtrl constructed.");
 
@@ -21,7 +21,7 @@
                 }
         }
 
-        UserService.listDigitalIDs()
+        DigitalIdService.listDigitalIDs()
             .then(function(data)
             {
                 parseFileList(data);

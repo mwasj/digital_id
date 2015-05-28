@@ -5,9 +5,9 @@
         .module('myApp')
         .controller('NewHostCtrl', NewHostCtrl);
 
-    NewHostCtrl.$inject = ['$scope', '$modal', '$log', 'UserService'];
+    NewHostCtrl.$inject = ['$scope', '$modal', '$log', 'DigitalIdService'];
 
-    function NewHostCtrl($scope, $modal, $log, UserService)
+    function NewHostCtrl($scope, $modal, $log, DigitalIdService)
     {
 
         //Define custom object to hold user defined commands.

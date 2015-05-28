@@ -5,9 +5,9 @@
         .module('myApp')
         .controller('DigitalIdProgressCtrl', DigitalIdProgressCtrl);
 
-    DigitalIdProgressCtrl.$inject = ['$scope', '$modalInstance', 'digitalID', 'UserService'];
+    DigitalIdProgressCtrl.$inject = ['$scope', '$modalInstance', 'digitalID', 'DigitalIdService'];
 
-    function DigitalIdProgressCtrl($scope, $modalInstance, digitalID, UserService)
+    function DigitalIdProgressCtrl($scope, $modalInstance, digitalID, DigitalIdService)
     {
         //Define custom object to hold predefined actions.
         function Action (name, webId, actionStatus, commands, percentageCompleted)
@@ -167,7 +167,7 @@
                 }, 5); // wait 5 milisecond for the connection...
         }
 
-        UserService.buildDigitalID(digitalID, sessionName);
+        DigitalIdService.buildDigitalID(digitalID, sessionName);
 
          $scope.cancel = function(){
                 $modalInstance.dismiss('cancel');

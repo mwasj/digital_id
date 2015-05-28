@@ -5,19 +5,30 @@
         .module('myApp')
         .controller('CompareCtrl', CompareCtrl);
 
-    CompareCtrl.$inject = ['$scope', '$log', 'UserService', '$sce', '$parse'];
+    CompareCtrl.$inject = ['$scope', '$log', 'DigitalIdService', '$parse'];
 
-    function CompareCtrl($scope, $log, UserService, $sce, $parse) {
+    function CompareCtrl($scope, $log, DigitalIdService, $parse)
+    {
         console.log("CompareCtrl constructed.");
+
+        //Define custom object to hold the content retrieved when a digitalid is opened
+        function ContentDto (displayString, content)
+        {
+            this.displayString = displayString;
+            this.content = content;
+        }
 
         $scope.digitalIds = [];
         $scope.selection = [];
         $scope.generationInProgress = false;
         $scope.htmlString = '';
         $scope.digitalIdBefore = [];
+        $scope.digitalid_before = undefined;
+        $scope.digitalid_before_array = [];
+        $scope.digitalid_after = undefined;
+        $scope.digitalid_after_array = [];
 
-        console.log($scope.htmlString);
-        UserService.listDigitalIDs()
+        DigitalIdService.listDigitalIDs()
             .then(function(data) {
                 console.log(data);
                 $scope.digitalIds = data;
@@ -48,7 +59,9 @@
 
         $scope.goCompare = function()
         {
-            $scope.generationInProgress = true;
+            console.log($scope.digitalid_before);
+            console.log($scope.digitalid_after);
+            /*$scope.generationInProgress = true;
 
             UserService.compareDigitalIDs($scope.selection)
 
@@ -72,8 +85,37 @@
                         }
                     }, function(error) {
                         console.log(error);
-                    });
+                    });*/
 
+        }
+
+        $scope.stopCallback = function(event, ui, digitalid)
+        {
+            console.log("Stop Callback called: ");
+            console.log(digitalid.url);
+                        var omg = []
+                        omg.push(digitalid.url);
+                        DigitalIdService.openDigitalID(omg)
+
+                            .then(function(data)
+                            {
+                                console.log(data.accordionHtml);
+                                for(var i = 0; i < data.accordions.length; i++)
+                                {
+                                     console.log(data.accordions[i]);
+                                     $scope.digitalid_before_array.push(new ContentDto(data.accordions[i].displayString, data.accordions[i].content));
+                                }
+                            }, function(error) {
+                                console.log(error);
+                            });
+
+            console.log($scope.digitalid_before_array);
+        }
+
+        $scope.startCallback = function(event, ui, item)
+        {
+            console.log("Start Callback called: ");
+            console.log(item);
         }
 
         $scope.displayDigitalId = function(digitalid)
