@@ -17,8 +17,8 @@ public class DownloadFileCommand extends Command {
     private String remoteFile;
     private String localFile;
 
-    public DownloadFileCommand(String displayName, int waitFor, String remoteFile, String localFile) {
-        super(displayName, waitFor, false);
+    public DownloadFileCommand(int id, String displayName, int waitFor, String remoteFile, String localFile) {
+        super(id, displayName, waitFor, false);
 
         this.remoteFile = remoteFile;
         this.localFile = localFile;

@@ -12,10 +12,17 @@
         console.log("CompareCtrl constructed.");
 
         //Define custom object to hold the content retrieved when a digitalid is opened
-        function ContentDto (displayString, content)
+        function ContentDto (id, displayString, content)
         {
+            this.id = id;
             this.displayString = displayString;
             this.content = content;
+        }
+
+        function ContainerDTO (fileName, id)
+        {
+                this.fileName = fileName;
+                this.id = id;
         }
 
         $scope.digitalIds = [];
@@ -27,6 +34,9 @@
         $scope.digitalid_before_array = [];
         $scope.digitalid_after = undefined;
         $scope.digitalid_after_array = [];
+        $scope.clickedDigitalId = undefined;
+        $scope.beforeSelection = [];
+        $scope.afterSelection = []';
 
         DigitalIdService.listDigitalIDs()
             .then(function(data) {
@@ -36,26 +46,67 @@
                 console.log(error);
             });
 
-        $scope.toggleSelection = function toggleSelection(digitalId, e)
+        $scope.toggleSelection = function toggleSelection(digitalId, e, before)
         {
             if (e) {
                 e.originalEvent.cancelBubble=true;
             }
 
-            var idx = $scope.selection.indexOf(digitalId.url);
+            var idx = -1;
+
+            if(before)
+            {
+                $scope.beforeSelection.splice(idx, 1);
+
+
+                for(var i = 0; i < $scope.beforeSelection.length; i++)
+                {
+                    if($scope.beforeSelection[i].)
+                }
+            }
+            else
+            {
+                $scope.afterSelection.splice(idx, 1);
+            }
+
+
+            var idx = before ? $scope.beforeSelection.indexOf(digitalId) : $scope.afterSelection.indexOf(digitalId);
 
             // is currently selected
-            if (idx > -1) {
-              $scope.selection.splice(idx, 1);
+            if (idx > -1)
+            {
+                if(before)
+                {
+                    $scope.beforeSelection.splice(idx, 1);
+                }
+                else
+                {
+                    $scope.afterSelection.splice(idx, 1);
+                }
+
             }
 
             // is newly selected
-            else {
-              $scope.selection.push(digitalId.url);
+            else
+            {
+                if(before)
+                {
+                    $scope.beforeSelection.push();
+                }
+                else
+                {
+                    $scope.afterSelection.splice();
+                }
             }
 
-            console.log($scope.selection);
+            console.log($scope.beforeSelection);
+            console.log($scope.afterSelection);
         };
+
+        $scope.loadDigitalIdInformation = function(digitalId)
+        {
+            $scope.clickedDigitalId = digitalId;
+        }
 
         $scope.goCompare = function()
         {
@@ -92,60 +143,45 @@
         $scope.stopCallback = function(event, ui, digitalid)
         {
             console.log("Stop Callback called: ");
-            console.log(digitalid.url);
-                        var omg = []
-                        omg.push(digitalid.url);
-                        DigitalIdService.openDigitalID(omg)
+            console.log(ui);
 
-                            .then(function(data)
-                            {
-                                console.log(data.accordionHtml);
-                                for(var i = 0; i < data.accordions.length; i++)
-                                {
-                                     console.log(data.accordions[i]);
-                                     $scope.digitalid_before_array.push(new ContentDto(data.accordions[i].displayString, data.accordions[i].content));
-                                }
-                            }, function(error) {
-                                console.log(error);
-                            });
+            console.log(digitalid.url);
+
 
             console.log($scope.digitalid_before_array);
         }
 
-        $scope.startCallback = function(event, ui, item)
+        $scope.dropBeforeCallback = function(event, ui, digitalid)
         {
-            console.log("Start Callback called: ");
-            console.log(item);
+            $scope.digitalid_before_array.length = 0;
+            $scope.digitalid_before_array = downloadPreview(digitalid);
         }
 
-        $scope.displayDigitalId = function(digitalid)
+        $scope.dropAfterCallback = function(event, ui, digitalid)
         {
-            console.log(digitalid.url);
+            $scope.digitalid_after_array.length = 0
+            $scope.digitalid_after_array = downloadPreview(digitalid);
+        }
+
+        function downloadPreview(digitalid)
+        {
+            var retrievedData = [];
             var omg = []
             omg.push(digitalid.url);
-            UserService.openDigitalID(omg)
+            DigitalIdService.openDigitalID(omg)
 
                 .then(function(data)
                 {
-                    $scope.htmlString = data.accordionHtml;
-                    console.log(data.accordionHtml);
-                    /*for(var i = 0; i < data.accordions.length; i++)
+                    for(var i = 0; i < data.accordions.length; i++)
                     {
+                         retrievedData.push(new ContentDto(data.accordions[i].id, data.accordions[i].displayString, data.accordions[i].content));
+                    }
 
-
-
-                         if(data.accordions[i].content1 !== '')
-                         {
-                             console.log("data: " + data.accordions[i].content1);
-                             addIncompatible(data.accordions[i].divName, data.accordions[i].content1);
-                         }
-
-
-
-                    }*/
                 }, function(error) {
                     console.log(error);
                 });
+
+            return retrievedData;
         }
 
         function diffUsingJS(viewType, sectionName, s1, s2)
@@ -185,6 +221,8 @@
         {
             $scope[divName] = note;
         }
+
+
     }
 
 

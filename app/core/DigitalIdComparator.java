@@ -172,7 +172,7 @@ public class DigitalIdComparator
                             System.out.println(command.getCommandResponse().getResult());
                             String resultDivName = createDivName(connectable);
                             accordion.addSubAccordion(new Accordion(command.getDisplayName(), resultDivName, 0, (String)command.getCommandResponse().getResult()));
-                            contentDtos.add(new ContentDto(command.getDisplayName() + " on " + connectable.getHostName(), (String) command.getCommandResponse().getResult()));
+                            contentDtos.add(new ContentDto(command.getId(), command.getDisplayName() + " on " + connectable.getHostName(), (String) command.getCommandResponse().getResult()));
                         }
                     }
                 }

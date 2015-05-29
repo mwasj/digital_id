@@ -159,7 +159,7 @@ public class DigitalIDMapper
                     int interval = commandJsonObject.getInt("interval");
                     boolean comparable = commandJsonObject.getBoolean("comparable");
 
-                    commands.add(new SendRemoteCommand("Executing command: "+commandString, commandString, RemoteCommandType.Exec, interval,comparable));
+                    commands.add(new SendRemoteCommand(0,"Executing command: "+commandString, commandString, RemoteCommandType.Exec, interval,comparable));
 
                 }
 

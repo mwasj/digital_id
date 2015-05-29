@@ -28,7 +28,7 @@ public class ActionTests
     public void setUp()
     {
         commands = new ArrayList<>();
-        commands.add(new SendRemoteCommand("Executing command pwd","pwd", RemoteCommandType.Exec ,0, false));
+        commands.add(new SendRemoteCommand(0,"Executing command pwd","pwd", RemoteCommandType.Exec ,0, false));
 
         Action action = new Action(commands, "test action");
         actions = new ArrayList<>();

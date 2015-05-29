@@ -16,8 +16,8 @@ public class ReadFileCommand extends Command {
 
     private String remoteFile;
 
-    public ReadFileCommand(String displayName, String remoteFile, int waitFor, boolean comparable) {
-        super(displayName, waitFor, comparable);
+    public ReadFileCommand(int id, String displayName, String remoteFile, int waitFor, boolean comparable) {
+        super(id, displayName, waitFor, comparable);
 
         this.remoteFile = remoteFile;
     }

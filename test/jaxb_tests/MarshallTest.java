@@ -29,7 +29,7 @@ public class MarshallTest
     public void setUp()
     {
         commands = new ArrayList<>();
-        Command sendRemoteCommand = new SendRemoteCommand("Executing command pwd","pwd", RemoteCommandType.Exec ,0, false);
+        Command sendRemoteCommand = new SendRemoteCommand(0,"Executing command pwd","pwd", RemoteCommandType.Exec ,0, false);
         sendRemoteCommand.setCommandResponse(new CommandResponse("current dir", CommandResponseCode.Success, ""));
         commands.add(sendRemoteCommand);
 

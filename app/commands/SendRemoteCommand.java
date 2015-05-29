@@ -31,9 +31,9 @@ public class SendRemoteCommand extends Command
         return commandString;
     }
 
-    public SendRemoteCommand(String displayName, String commandString, RemoteCommandType remoteCommandType, int waitFor, boolean comparable)
+    public SendRemoteCommand(int id, String displayName, String commandString, RemoteCommandType remoteCommandType, int waitFor, boolean comparable)
     {
-        super(displayName, waitFor, comparable);
+        super(id, displayName, waitFor, comparable);
 
         this.commandString = commandString;
         this.remoteCommandType = remoteCommandType;

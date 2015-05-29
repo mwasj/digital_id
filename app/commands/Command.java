@@ -32,6 +32,7 @@ public abstract class Command implements CommandInterface
     @Expose
     private CommandStatus commandStatus;
 
+    private int id;
     @Expose
     private String displayName;
 
@@ -99,8 +100,13 @@ public abstract class Command implements CommandInterface
         return displayName;
     }
 
-    public Command(String displayName, int waitFor, boolean comparable)
+    public int getId() {
+        return id;
+    }
+
+    public Command(int id, String displayName, int waitFor, boolean comparable)
     {
+        this.id = id;
         this.displayName = displayName;
         this.waitFor = waitFor;
         this.comparable = comparable;

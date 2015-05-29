@@ -1,36 +1,40 @@
 <div ng-controller="CompareCtrl">
 
-    <h1>Compare Digital IDs</h1>
+    <h3>Available Digital IDs</h3>
 
     <div class="row">
 
         <label ng-show="digitalIds.length == 0"
                class="no-digitalIds-label">There are currently no Digital IDs present on this server</label>
 
-        <!--<accordion ng-show="digitalIds.length > 0" class="col-md-2">
+        <div class="col-md-6 digitalid-list">
+            <div ng-repeat="digitalId in digitalIds">
 
-                    <input
-                            type="checkbox"
-                            name="{{digitalId}}"
-                            value="{{digitalId}}"
-                            ng-click="toggleSelection(digitalId, $event)"
-                            ng-checked="selection.indexOf(digitalId) > -1"
-                            class="roundedTwo">
--->
+                <div class="btn btn-info btn-draggable"
+                     data-drag="true"
+                     jqyoui-draggable="{onStop:'stopCallback(digitalId)'}"
+                     data-jqyoui-options="{revert: 'invalid'}"
+                     ng-model="digitalId"
+                     ng-show="digitalId !== undefined"
+                     ng-click="loadDigitalIdInformation(digitalId)">
 
-        <label ng-repeat="digitalId in digitalIds">
+                    {{digitalId.displayName}}
 
-            <div class="btn btn-info btn-draggable"
-                 data-drag="true"
-                 jqyoui-draggable="{onStop:'stopCallback(digitalId)'}"
-                 data-jqyoui-options="{revert: 'invalid'}"
-                 ng-model="digitalId"
-                 ng-show="digitalId !== undefined">
-
-                {{digitalId.displayName}}
-
+                </div>
+                <br>
             </div>
-        </label>
+            <br>
+        </div>
+
+        <div class="col-md-6">
+
+            <label ng-show="clickedDigitalId !== undefined">Created on: {{clickedDigitalId.creationTime}}</label>
+            <br>
+            <label ng-show="clickedDigitalId !== undefined">Author: {{clickedDigitalId.author}}</label>
+            <br>
+            <label ng-show="clickedDigitalId !== undefined">Size: {{clickedDigitalId.size}} KB</label>
+
+        </div>
     </div>
 
     <div class="row">
@@ -42,7 +46,7 @@
                 <div class="drag-item-box"
                      ng-model="digitalid_before"
                      data-drop="true"
-                     jqyoui-droppable>
+                     jqyoui-droppable="{onDrop:'dropBeforeCallback(digitalid_before)'}">
 
                     <label class="drag-item-label" ng-show="digitalid_before === undefined">Drag an item anywhere into this box. Preview will be loaded automatically.</label>
 
@@ -82,10 +86,10 @@
 
                                 <input
                                         type="checkbox"
-                                        name="{{digitalId}}"
-                                        value="{{digitalId}}"
-                                        ng-click="toggleSelection(digitalId, $event)"
-                                        ng-checked="selection.indexOf(digitalId) > -1"
+                                        name="{{contentDto}}"
+                                        value="{{contentDto}}"
+                                        ng-click="toggleSelection(contentDto, $event, true)"
+                                        ng-checked="selection.indexOf(contentDto) > -1"
                                         class="roundedTwo">
 
                                 {{contentDto.displayString}}
@@ -107,7 +111,7 @@
             <div class="drag-item-box"
                  ng-model="digitalid_after"
                  data-drop="true"
-                 jqyoui-droppable>
+                 jqyoui-droppable="{onDrop:'dropAfterCallback(digitalid_after)'}">
 
                 <label class="drag-item-label" ng-show="digitalid_after === undefined">Drag an item anywhere into this box. Preview will be loaded automatically.</label>
 
@@ -147,10 +151,10 @@
 
                             <input
                                     type="checkbox"
-                                    name="{{digitalId}}"
-                                    value="{{digitalId}}"
-                                    ng-click="toggleSelection(digitalId, $event)"
-                                    ng-checked="selection.indexOf(digitalId) > -1"
+                                    name="{{contentDto}}"
+                                    value="{{contentDto}}"
+                                    ng-click="toggleSelection(contentDto, $event, false)"
+                                    ng-checked="selection.indexOf(contentDto) > -1"
                                     class="roundedTwo">
 
                             {{contentDto.displayString}}
@@ -165,7 +169,7 @@
             </div>
         </div>
 
-        <button class="btn btn-success" id="btn_compare" ng-click="goCompare()" ng-disabled="selection.length == 2" ng-show="digitalIds.length >= 2">Compare</button>
+        <!--<button class="btn btn-success" id="btn_compare" ng-click="goCompare()" ng-disabled="selection.length == 2" ng-show="digitalIds.length >= 2">Compare</button>-->
 
         <div ng-show="generationInProgress">
             <h1>Diff generation in progress</h1>
