@@ -56,8 +56,20 @@
 }
 
 .digitalid-list{
-    height: 300px;
+    height: 100%;
     width: 200px;
     margin-left: 5px;
     border-right: 1px solid black;
+}
+
+.compare-button{
+    float: right;
+}
+
+.custom-modal .modal-dialog {
+  width: 80%;
+}
+
+.results_window{
+    align: center;
 }

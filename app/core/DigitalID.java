@@ -75,6 +75,27 @@ public class DigitalID
         return author;
     }
 
+    public ArrayList<Connectable> getConnectables()
+    {
+        ArrayList<Connectable> connectables = new ArrayList<>();
+
+        if(hosts != null)
+        {
+            connectables.addAll(hosts);
+        }
+
+        if(switches != null)
+        {
+            connectables.addAll(switches);
+        }
+
+        if(inservs != null)
+        {
+            connectables.addAll(inservs);
+        }
+
+        return connectables;
+    }
     /**
      * Empty constructor requrired by JAXB
      */

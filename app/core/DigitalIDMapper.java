@@ -17,13 +17,13 @@ public class DigitalIDMapper
 {
     private String jsonString;
     private String sessionName;
-    private int webIndex;
+    private int actionIndex;
 
     public DigitalIDMapper(String jsonString, String sessionName)
     {
         this.jsonString = jsonString;
         this.sessionName = sessionName;
-        this.webIndex = 1;
+        this.actionIndex = 0;
     }
 
     public DigitalID map()
@@ -163,7 +163,8 @@ public class DigitalIDMapper
 
                 }
 
-                actions.add(new Action(commands, description));
+                actions.add(new Action(actionIndex, commands, description));
+                actionIndex += 1;
             }
         }
 

@@ -7,6 +7,7 @@ import core.DigitalID;
 import core.DigitalIDUtils;
 import core.DigitalIdComparator;
 import core.HtmlGenerator;
+import dtos.ComparisonDTO;
 import models.WebUpdate;
 import play.mvc.Controller;
 import play.mvc.Result;
@@ -44,23 +45,12 @@ public class DigitalIdController extends Controller
     public static Result compare()
     {
         System.out.println("Compare called with: " + request().body().asJson().toString());
-        ArrayList<String> xmls = new Gson().fromJson(request().body().asJson().toString(), new TypeToken<ArrayList<String>>() {}.getType());
-        DigitalID before = DigitalIDUtils.unMarshall("C:\\digital_ids\\"+xmls.get(0));
-        DigitalID after = DigitalIDUtils.unMarshall("C:\\digital_ids\\"+xmls.get(1));
-        DigitalIdComparator comparator = new DigitalIdComparator(before, after);
-        comparator.compare();
 
-        HtmlGenerator generator = new HtmlGenerator(comparator.getAccordions(), comparator.getContentDtos());
+        ComparisonDTO comparisonDTO = new Gson().fromJson(request().body().asJson().toString(), new TypeToken<ComparisonDTO>() {}.getType());
 
-        String html = "";
+        DigitalIdComparator comparator = new DigitalIdComparator(comparisonDTO);
 
-        try {
-            html = generator.generateReportBackbone();
-        } catch (IOException e)
-        {
-            e.printStackTrace();
-        }
-        return ok(html);
+        return ok(new Gson().toJson(comparator.performComparison()));
     }
 
     public static Result download(String filename)

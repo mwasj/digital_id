@@ -2,6 +2,9 @@ package core;
 
 import actions.Action;
 import commands.Command;
+import dtos.ComparisonContentDTO;
+import dtos.ComparisonDTO;
+import dtos.ContainerDTO;
 import dtos.ContentDto;
 import models.*;
 
@@ -21,6 +24,19 @@ public class DigitalIdComparator
     private DigitalID digitalID2;
     private ArrayList<Accordion> accordions;
     private ArrayList<ContentDto> contentDtos;
+    private ComparisonDTO comparisonDTO;
+
+    public DigitalIdComparator(ComparisonDTO comparisonDTO)
+    {
+        digitalID1 = DigitalIDUtils.unMarshall("C:\\digital_ids\\"+comparisonDTO.getBeforeArray().get(0).getFileName()+".xml");
+        digitalID2 = DigitalIDUtils.unMarshall("C:\\digital_ids\\"+comparisonDTO.getAfterArray().get(0).getFileName()+".xml");
+        this.comparisonDTO = comparisonDTO;
+    }
+
+    public ArrayList<ComparisonContentDTO> performComparison()
+    {
+        return compare(buildActionList(digitalID1,comparisonDTO.getBeforeArray()), buildActionList(digitalID2,comparisonDTO.getAfterArray()));
+    }
 
     public ArrayList<ContentDto> getContentDtos() {
         return contentDtos;
@@ -38,29 +54,6 @@ public class DigitalIdComparator
         this.accordions = new ArrayList<>();
         this.contentDtos = new ArrayList<>();
         this.incompatible = true;
-    }
-
-    public void compare()
-    {
-        if(digitalID1.getHosts() != null && digitalID2.getHosts() != null)
-        {
-            buildAccordions(digitalID1.getHosts(), digitalID2.getHosts(), "Hosts");
-        }
-
-        if(digitalID1.getSwitches() != null && digitalID2.getSwitches() != null)
-        {
-            buildAccordions(digitalID1.getSwitches(), digitalID2.getSwitches(), "Switches");
-        }
-
-        if(digitalID1.getInservs() != null && digitalID2.getInservs() != null)
-        {
-            buildAccordions(digitalID1.getInservs(), digitalID2.getInservs(), "Arrays");
-        }
-
-        if(incompatible)
-        {
-            markIncompatible();
-        }
     }
 
     public void generateNonComparisonReport()
@@ -90,25 +83,59 @@ public class DigitalIdComparator
        // contentDtos.add(new ContentDto(message, null, divName));
     }
 
-    private <T> void buildAccordions(ArrayList<T> array1, ArrayList<T> array2, String title)
+    private ArrayList<Action> buildActionList(DigitalID digitalId, ArrayList<ContainerDTO> containers)
     {
-        boolean foundConnectable = false;
-        boolean foundCommand = false;
-        Accordion mainAccordion = new Accordion(title, title, 0,null);
+        ArrayList<Action> actions = new ArrayList<>();
 
-        for(Connectable connectable : (ArrayList<Connectable>) array1)
+        for(ContainerDTO containerDTO : containers) {
+            for (Connectable connectable : digitalId.getConnectables()) {
+                for (Action action : connectable.getActions()) {
+                    if (action.getId() == containerDTO.getId()) {
+                        actions.add(action);
+                    }
+                }
+            }
+        }
+        return actions;
+    }
+
+    private ArrayList<ComparisonContentDTO> compare(ArrayList<Action> beforeActions, ArrayList<Action> afterActions)
+    {
+        Action action1;
+        Action action2;
+        ArrayList<ComparisonContentDTO> comparisonContentDTOs = new ArrayList<>();
+
+        for(int i = 0; i < beforeActions.size(); i++)
+        {
+            action1 = beforeActions.get(i);
+            action2 = afterActions.get(i);
+
+            System.out.println((String) action1.getCommandResult().getCommandResponse().getResult());
+            System.out.println((String) action2.getCommandResult().getCommandResponse().getResult());
+
+            comparisonContentDTOs.add(new ComparisonContentDTO(""+action1.getId(), action1.getCommandResult().getDisplayName(),
+                    (String) action1.getCommandResult().getCommandResponse().getResult(),
+                    (String) action2.getCommandResult().getCommandResponse().getResult()));
+        }
+
+        /*for(Connectable connectable : (ArrayList<Connectable>) array1)
         {
             for(Connectable connectable2 : (ArrayList<Connectable>) array2)
             {
                 if(connectable.getHostName().equals(connectable2.getHostName()))
                 {
+                    for(Action action : connectable.getActions())
+                    {
+
+                    }
+
                     foundConnectable = true;
                     incompatible = false;
                     String divName = createDivName(connectable);
 
                     Accordion accordion = mainAccordion.addSubAccordion(new Accordion(connectable.getHostName(), divName, 0,null));
 
-                    /*for(Command command : connectable.getActions())
+                    for(Command command : connectable.getActions())
                     {
                         for(Command command1 : connectable2.getActions())
                         {
@@ -132,8 +159,7 @@ public class DigitalIdComparator
                                 }
                             }
                         }
-                    }*/
-
+                    }
                     //Could not find any commands that match.
                     if(!foundCommand)
                     {
@@ -147,9 +173,9 @@ public class DigitalIdComparator
         if(!foundConnectable)
         {
             //contentDtos.add(new ContentDto("Could not find matching devices to compare in both Digital IDs", null, mainAccordion.getDivName()));
-        }
+        }*/
 
-        accordions.add(mainAccordion);
+        return comparisonContentDTOs;
     }
 
     private <T> void buildAccordions(ArrayList<T> array1, String title)
@@ -169,10 +195,9 @@ public class DigitalIdComparator
                     {
                         if(command.isComparable())
                         {
-                            System.out.println(command.getCommandResponse().getResult());
                             String resultDivName = createDivName(connectable);
                             accordion.addSubAccordion(new Accordion(command.getDisplayName(), resultDivName, 0, (String)command.getCommandResponse().getResult()));
-                            contentDtos.add(new ContentDto(command.getId(), command.getDisplayName() + " on " + connectable.getHostName(), (String) command.getCommandResponse().getResult()));
+                            contentDtos.add(new ContentDto(action.getId(), digitalID1.getName(), command.getDisplayName() + " on " + connectable.getHostName(), (String) command.getCommandResponse().getResult()));
                         }
                     }
                 }

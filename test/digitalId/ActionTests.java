@@ -30,7 +30,7 @@ public class ActionTests
         commands = new ArrayList<>();
         commands.add(new SendRemoteCommand(0,"Executing command pwd","pwd", RemoteCommandType.Exec ,0, false));
 
-        Action action = new Action(commands, "test action");
+        Action action = new Action(0, commands, "test action");
         actions = new ArrayList<>();
         actions.add(action);
         

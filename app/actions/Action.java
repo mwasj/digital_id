@@ -35,6 +35,13 @@ public class Action implements CommandUpdateInterface
     @Expose
     private ActionStatus actionStatus;
 
+    @Expose
+    private int id;
+
+    public int getId() {
+        return id;
+    }
+
     public ActionStatus getActionStatus() {
         return actionStatus;
     }
@@ -61,8 +68,9 @@ public class Action implements CommandUpdateInterface
      * @param commands
      * @param name
      */
-    public Action(ArrayList<Command> commands, String name)
+    public Action(int id, ArrayList<Command> commands, String name)
     {
+        this.id = id;
         this.commands = commands;
         this.name = name;
         this.webId = UUID.randomUUID().toString().replaceAll("-","");
@@ -71,6 +79,7 @@ public class Action implements CommandUpdateInterface
 
     public Action()
     {
+        this.id = 0;
         this.webId = UUID.randomUUID().toString().replaceAll("-", "");
         this.actionStatus = ActionStatus.NotRun;
     }
@@ -118,6 +127,18 @@ public class Action implements CommandUpdateInterface
         commandRunner.initialise();
     }
 
+    public Command getCommandResult()
+    {
+        for(Command command : getCommands())
+        {
+            if(command.isComparable())
+            {
+                return command;
+            }
+        }
+
+        return null;
+    }
 
     @Override
     public void sendCommandUpdate(CommandStatus commandStatus, String data, String webId)

@@ -2,6 +2,8 @@
 
     <h3>Available Digital IDs</h3>
 
+    <button class="btn btn-success compare-button" id="btn_compare" ng-click="goCompare()" ng-disabled="selection.length == 2" ng-show="comparePossible">Compare</button>
+
     <div class="row">
 
         <label ng-show="digitalIds.length == 0"
@@ -35,6 +37,7 @@
             <label ng-show="clickedDigitalId !== undefined">Size: {{clickedDigitalId.size}} KB</label>
 
         </div>
+
     </div>
 
     <div class="row">
@@ -88,7 +91,7 @@
                                         type="checkbox"
                                         name="{{contentDto}}"
                                         value="{{contentDto}}"
-                                        ng-click="toggleSelection(contentDto, $event, true)"
+                                        ng-click="modifySelection(contentDto, $event, true)"
                                         ng-checked="selection.indexOf(contentDto) > -1"
                                         class="roundedTwo">
 
@@ -153,7 +156,7 @@
                                     type="checkbox"
                                     name="{{contentDto}}"
                                     value="{{contentDto}}"
-                                    ng-click="toggleSelection(contentDto, $event, false)"
+                                    ng-click="modifySelection(contentDto, $event, false)"
                                     ng-checked="selection.indexOf(contentDto) > -1"
                                     class="roundedTwo">
 
@@ -169,7 +172,7 @@
             </div>
         </div>
 
-        <!--<button class="btn btn-success" id="btn_compare" ng-click="goCompare()" ng-disabled="selection.length == 2" ng-show="digitalIds.length >= 2">Compare</button>-->
+
 
         <div ng-show="generationInProgress">
             <h1>Diff generation in progress</h1>

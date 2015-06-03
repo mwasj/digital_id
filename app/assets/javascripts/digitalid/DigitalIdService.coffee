@@ -35,10 +35,10 @@ class DigitalIdService
         )
         deferred.promise
 
-    compareDigitalIDs: (list) ->
-       @$log.debug("This is the list" + list)
+    compareDigitalIDs: (comparisonDTO) ->
+       @$log.debug("This is the comparisonDTO" + comparisonDTO)
        deferred = @$q.defer()
-       @$http.post("/digitalid/compare", list)
+       @$http.post("/digitalid/compare", comparisonDTO)
        .success((data, status, headers) =>
              @$log.info("Successfully compared digital ids - status #{status}")
              deferred.resolve(data)

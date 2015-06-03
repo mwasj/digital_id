@@ -33,7 +33,7 @@ public class MarshallTest
         sendRemoteCommand.setCommandResponse(new CommandResponse("current dir", CommandResponseCode.Success, ""));
         commands.add(sendRemoteCommand);
 
-        Action action = new Action(commands, "test action");
+        Action action = new Action(0, commands, "test action");
         actions = new ArrayList<>();
         actions.add(action);
 

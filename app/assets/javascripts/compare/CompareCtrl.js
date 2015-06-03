@@ -5,16 +5,17 @@
         .module('myApp')
         .controller('CompareCtrl', CompareCtrl);
 
-    CompareCtrl.$inject = ['$scope', '$log', 'DigitalIdService', '$parse'];
+    CompareCtrl.$inject = ['$scope', '$log', 'DigitalIdService', '$parse', '$modal'];
 
-    function CompareCtrl($scope, $log, DigitalIdService, $parse)
+    function CompareCtrl($scope, $log, DigitalIdService, $parse, $modal)
     {
         console.log("CompareCtrl constructed.");
 
         //Define custom object to hold the content retrieved when a digitalid is opened
-        function ContentDto (id, displayString, content)
+        function ContentDto (id, fileName, displayString, content)
         {
             this.id = id;
+            this.fileName = fileName;
             this.displayString = displayString;
             this.content = content;
         }
@@ -23,6 +24,12 @@
         {
                 this.fileName = fileName;
                 this.id = id;
+        }
+
+        function ComparisonDTO (beforeArray, afterArray)
+        {
+            this.beforeArray = beforeArray;
+            this.afterArray = afterArray;
         }
 
         $scope.digitalIds = [];
@@ -36,7 +43,8 @@
         $scope.digitalid_after_array = [];
         $scope.clickedDigitalId = undefined;
         $scope.beforeSelection = [];
-        $scope.afterSelection = []';
+        $scope.afterSelection = [];
+        $scope.comparePossible = false;
 
         DigitalIdService.listDigitalIDs()
             .then(function(data) {
@@ -46,62 +54,51 @@
                 console.log(error);
             });
 
-        $scope.toggleSelection = function toggleSelection(digitalId, e, before)
+        /**/
+        $scope.modifySelection = function modifySelection(contentDto, e, before)
         {
             if (e) {
                 e.originalEvent.cancelBubble=true;
             }
 
-            var idx = -1;
-
             if(before)
             {
-                $scope.beforeSelection.splice(idx, 1);
-
-
-                for(var i = 0; i < $scope.beforeSelection.length; i++)
-                {
-                    if($scope.beforeSelection[i].)
-                }
+                $scope.beforeSelection = toggleSelection(contentDto, $scope.beforeSelection);
             }
             else
             {
-                $scope.afterSelection.splice(idx, 1);
-            }
-
-
-            var idx = before ? $scope.beforeSelection.indexOf(digitalId) : $scope.afterSelection.indexOf(digitalId);
-
-            // is currently selected
-            if (idx > -1)
-            {
-                if(before)
-                {
-                    $scope.beforeSelection.splice(idx, 1);
-                }
-                else
-                {
-                    $scope.afterSelection.splice(idx, 1);
-                }
-
-            }
-
-            // is newly selected
-            else
-            {
-                if(before)
-                {
-                    $scope.beforeSelection.push();
-                }
-                else
-                {
-                    $scope.afterSelection.splice();
-                }
+                $scope.afterSelection = toggleSelection(contentDto, $scope.afterSelection);
             }
 
             console.log($scope.beforeSelection);
             console.log($scope.afterSelection);
+
+            $scope.comparePossible = ($scope.beforeSelection.length === $scope.afterSelection.length) && ($scope.beforeSelection.length > 0 && $scope.afterSelection.length > 0)
         };
+
+        function toggleSelection(contentDto, currentSelection)
+        {
+            var idx = -1;
+
+            for(var i = 0; i < currentSelection.length; i++)
+            {
+                if(currentSelection[i].id === contentDto.id)
+                {
+                    idx = i;
+                }
+            }
+
+            if (idx === -1)
+            {
+                currentSelection.push(new ContainerDTO(contentDto.fileName, contentDto.id));
+            }
+            else
+            {
+                currentSelection.splice(idx, 1);
+            }
+
+            return currentSelection;
+        }
 
         $scope.loadDigitalIdInformation = function(digitalId)
         {
@@ -110,33 +107,32 @@
 
         $scope.goCompare = function()
         {
-            console.log($scope.digitalid_before);
-            console.log($scope.digitalid_after);
-            /*$scope.generationInProgress = true;
+            var comparisonDTO = new ComparisonDTO($scope.beforeSelection, $scope.afterSelection);
 
-            UserService.compareDigitalIDs($scope.selection)
+            $scope.generationInProgress = true;
+
+            DigitalIdService.compareDigitalIDs(comparisonDTO)
 
                     .then(function(data)
                     {
                         $scope.generationInProgress = false;
-                        console.log(data.accordionHtml)
-                        $scope.htmlString = data.accordionHtml;
-                        console.log(data.accordions.length);
-                        for(var i = 0; i < data.accordions.length; i++)
-                        {
-                            if(data.accordions[i].content2 != undefined)
-                            {
-                                diffUsingJS(0, data.accordions[i].divName, data.accordions[i].content1, data.accordions[i].content2);
-                            }
-                            else
-                            {
-                                addIncompatible(data.accordions[i].divName, data.accordions[i].content1);
-                            }
+                        console.log(data);
 
-                        }
+                         var modalInstance = $modal.open({
+                                templateUrl: '/assets/partials/compare_results.html',
+                                controller: 'CompareResultsCtrl',
+                                backdrop: 'static',
+                                windowClass: 'custom-modal',
+                                resolve:
+                                {
+                                    resultsArray: function () {
+                                        return data;
+                                    }
+                                }
+                            });
                     }, function(error) {
                         console.log(error);
-                    });*/
+                    });
 
         }
 
@@ -151,12 +147,15 @@
             console.log($scope.digitalid_before_array);
         }
 
+        /*Populates the digitalid_before_array array with information retrieved from the server.
+        This information appears in the preview section.*/
         $scope.dropBeforeCallback = function(event, ui, digitalid)
         {
             $scope.digitalid_before_array.length = 0;
             $scope.digitalid_before_array = downloadPreview(digitalid);
         }
 
+        /*As above, but for the digitalid_after_array*/
         $scope.dropAfterCallback = function(event, ui, digitalid)
         {
             $scope.digitalid_after_array.length = 0
@@ -174,7 +173,7 @@
                 {
                     for(var i = 0; i < data.accordions.length; i++)
                     {
-                         retrievedData.push(new ContentDto(data.accordions[i].id, data.accordions[i].displayString, data.accordions[i].content));
+                         retrievedData.push(new ContentDto(data.accordions[i].id, data.accordions[i].fileName, data.accordions[i].displayString, data.accordions[i].content));
                     }
 
                 }, function(error) {
@@ -184,43 +183,7 @@
             return retrievedData;
         }
 
-        function diffUsingJS(viewType, sectionName, s1, s2)
-        {
-            var base = difflib.stringAsLines(s1);
-            var newtxt = difflib.stringAsLines(s2);
 
-            var no_white_spaces1 = [];
-            var no_white_spaces2 = [];
-
-            for(var i = 0; i < base.length; i++)
-            {
-                no_white_spaces1.push(base[i].replace(/\s/g, ""));
-            }
-
-            for(var i = 0; i < newtxt.length; i++)
-            {
-                no_white_spaces2.push(newtxt[i].replace(/\s/g, ""));
-            }
-
-            var sm = new difflib.SequenceMatcher(no_white_spaces1, no_white_spaces2);
-            var opcodes = sm.get_opcodes();
-            var contextSize = 0;
-            $scope[sectionName] = diffview.buildView({
-                      baseTextLines: base,
-                      newTextLines: newtxt,
-                      opcodes: opcodes,
-                      baseTextName: "Before",
-                      newTextName: "After",
-                      contextSize: 0,
-                      viewType: viewType
-              });
-
-        }
-
-        function addIncompatible(divName, note)
-        {
-            $scope[divName] = note;
-        }
 
 
     }

@@ -1,0 +1,17 @@
+<div class="results_window">
+    <accordion>
+
+        <accordion-group ng-repeat="comparisonContentDto in $parent.resultsArray"
+                         heading="test">
+
+            <accordion-heading>
+
+                {{comparisonContentDto.displayString}}
+
+            </accordion-heading>
+
+            <div dynamic="comparisonContentDto.tableContent"></div>
+        </accordion-group>
+
+    </accordion>
+</div>
